@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import LayoutWrapper from "@/components/layout/layout-wrapper";
+import AppProviders from "@/providers/AppProviders";
 
 import "./globals.css";
 
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased`}>
-        <LayoutWrapper>{children}</LayoutWrapper>
+        <AppProviders>
+          <LayoutWrapper>{children}</LayoutWrapper>
+        </AppProviders>
       </body>
     </html>
   );
