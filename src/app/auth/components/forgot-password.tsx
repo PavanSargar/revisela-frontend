@@ -30,8 +30,10 @@ const resetPasswordSchema = z
 type EmailFormData = z.infer<typeof emailSchema>;
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
+type Step = "email" | "otp" | "reset";
+
 const ForgotPassword = () => {
-  const [step, setStep] = useState<"email" | "otp" | "reset">("email");
+  const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [showPassword, setShowPassword] = useState(false);

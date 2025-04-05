@@ -31,7 +31,7 @@ const Sidebar = (props: Props) => {
   const inactiveItemStyle = "text-secondary-black hover:bg-light-gray";
 
   return (
-    <aside className="fixed top-[3.75rem] left-0 h-full w-64 bg-white border-r border-gray-200 shadow-sm z-10 overflow-y-auto hide-scrollbar">
+    <aside className="fixed top-[3.75rem] z-50 left-0 h-full w-64 bg-[#FAFAFA] overflow-y-auto hide-scrollbar">
       <div className="flex flex-col p-4">
         <nav className="space-y-2">
           {/* Main Navigation */}

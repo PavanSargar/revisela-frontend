@@ -1,13 +1,19 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "../ui/Button";
 import Logo from "@/assets/icons/revisela-logo.png";
-
 type Props = {};
 
 const RootNavbar = (props: Props) => {
+  const router = useRouter();
+
+  const handleAccountSettingsClick = () => {
+    router.push("/account-settings");
+  };
+
   return (
-    <div className="flex items-center justify-between mx-[15px] sm:mx-[30px] mt-[22px] pb-[22px] overflow-hidden">
+    <div className="fixed z-[100] h-[77px] top-0 left-0 right-0 flex items-center justify-between px-[15px] sm:px-[30px] py-[22px] bg-white">
       <Image src={Logo} alt="Logo" />
 
       {/* Search bar */}
@@ -73,7 +79,10 @@ const RootNavbar = (props: Props) => {
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
         </Button>
-        <Button className="h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 p-0">
+        <Button
+          onClick={handleAccountSettingsClick}
+          className="h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 p-0"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

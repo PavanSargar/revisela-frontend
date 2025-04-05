@@ -1,5 +1,6 @@
+"use client";
+
 import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DateValues {
@@ -14,6 +15,7 @@ interface DateInputProps {
   className?: string;
   onChange?: (values: DateValues) => void;
   error?: string;
+  value?: DateValues;
 }
 
 export const DateInput: React.FC<DateInputProps> = ({
@@ -22,6 +24,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   className,
   onChange,
   error,
+  value,
 }) => {
   const [selectedValues, setSelectedValues] = useState({
     month: "",
