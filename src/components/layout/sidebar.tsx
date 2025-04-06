@@ -28,7 +28,8 @@ const Sidebar = (props: Props) => {
   };
 
   const activeItemStyle = "bg-[#0890A8] text-white";
-  const inactiveItemStyle = "text-secondary-black hover:bg-light-gray";
+  const inactiveItemStyle =
+    "text-secondary-black hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer";
 
   return (
     <aside className="fixed top-[3.75rem] z-50 left-0 h-full w-64 bg-[#FAFAFA] overflow-y-auto hide-scrollbar">
@@ -121,7 +122,7 @@ const Sidebar = (props: Props) => {
                 className={`flex items-center gap-3 p-2 rounded-md ${
                   isActive("/classes/bio")
                     ? "bg-[#0890A8] text-white"
-                    : "hover:bg-light-gray"
+                    : "hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer"
                 }`}
               >
                 <div
@@ -152,7 +153,7 @@ const Sidebar = (props: Props) => {
                 className={`flex items-center gap-3 p-2 rounded-md ${
                   isActive("/classes/maths")
                     ? "bg-[#0890A8] text-white"
-                    : "hover:bg-light-gray"
+                    : "hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer"
                 }`}
               >
                 <div
