@@ -15,7 +15,7 @@ import GoogleIcon from "@/assets/icons/google.svg";
 import MicrosoftIcon from "@/assets/icons/microsoft.svg";
 
 const signupSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  name: z.string().min(2, "Full name must be at least 2 characters"),
   username: z
     .string()
     .min(3, "Username must be at least 3 characters")
@@ -55,7 +55,7 @@ const SignUp = () => {
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      fullName: "",
+      name: "",
       username: "",
       email: "",
       password: "",
@@ -73,7 +73,7 @@ const SignUp = () => {
 
     signup(
       {
-        fullName: data.fullName,
+        name: data.name,
         username: data.username,
         email: data.email,
         password: data.password,
@@ -81,7 +81,8 @@ const SignUp = () => {
       },
       {
         onSuccess: () => {
-          router.push("/?login=true");
+          // Direct navigation to dashboard
+          window.location.href = "/dashboard"; // Force a full page refresh
         },
       }
     );
@@ -127,8 +128,8 @@ const SignUp = () => {
         label="Full Name"
         placeholder="Enter your full name"
         type="text"
-        {...register("fullName")}
-        error={errors.fullName?.message}
+        {...register("name")}
+        error={errors.name?.message}
       />
       <Input
         label="Username"

@@ -1,4 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { QUIZ_ENDPOINTS } from "../endpoints";
+import { apiRequest } from "../apiClient";
 
 interface QuizSet {
   id: string;
@@ -7,66 +9,162 @@ interface QuizSet {
   createdAt: string;
   updatedAt: string;
   questionCount: number;
+  tags?: string[];
+  isPublic?: boolean;
 }
 
-// Fetch user's quiz sets
+// Fetch all public quizzes
 export const useQuizSets = () => {
   return useQuery({
-    queryKey: ["quizSets"],
+    queryKey: ["quizzes"],
     queryFn: async () => {
-      const response = await fetch("/api/quiz-sets");
+      const response = await apiRequest<QuizSet[]>(QUIZ_ENDPOINTS.GET_QUIZZES);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch quiz sets");
+      if (response.error) {
+        throw response.error;
       }
 
-      return response.json() as Promise<QuizSet[]>;
+      return response.data!;
     },
   });
 };
 
-// Get a specific quiz set
-export const useQuizSet = (id: string) => {
+// Fetch user's created quizzes
+export const useMyQuizzes = () => {
   return useQuery({
-    queryKey: ["quizSet", id],
+    queryKey: ["myQuizzes"],
     queryFn: async () => {
-      const response = await fetch(`/api/quiz-sets/${id}`);
+      const response = await apiRequest<QuizSet[]>(
+        QUIZ_ENDPOINTS.GET_MY_QUIZZES
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch quiz set");
+      if (response.error) {
+        throw response.error;
       }
 
-      return response.json() as Promise<QuizSet>;
+      return response.data!;
+    },
+  });
+};
+
+// Search quizzes
+export const useSearchQuizzes = (query: string) => {
+  return useQuery({
+    queryKey: ["quizSearch", query],
+    queryFn: async () => {
+      const response = await apiRequest<QuizSet[]>(
+        QUIZ_ENDPOINTS.SEARCH_QUIZZES,
+        {
+          params: { q: query },
+        }
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data!;
+    },
+    enabled: !!query && query.length > 0,
+  });
+};
+
+// Get a specific quiz
+export const useQuizSet = (id: string) => {
+  return useQuery({
+    queryKey: ["quiz", id],
+    queryFn: async () => {
+      const response = await apiRequest<QuizSet>(QUIZ_ENDPOINTS.GET_QUIZ(id));
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data!;
     },
     enabled: !!id, // Only run when id is available
   });
 };
 
-// Create a new quiz set
-export const useCreateQuizSet = () => {
+// Create a new quiz
+export const useCreateQuiz = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (
       data: Omit<QuizSet, "id" | "createdAt" | "updatedAt">
     ) => {
-      const response = await fetch("/api/quiz-sets", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const response = await apiRequest<QuizSet>(QUIZ_ENDPOINTS.CREATE_QUIZ, {
+        body: data,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to create quiz set");
+      if (response.error) {
+        throw response.error;
       }
 
-      return response.json() as Promise<QuizSet>;
+      return response.data!;
     },
     onSuccess: () => {
-      // Invalidate the quiz sets query to refetch the list
-      queryClient.invalidateQueries({ queryKey: ["quizSets"] });
+      // Invalidate all related queries to refetch the lists
+      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
+      queryClient.invalidateQueries({ queryKey: ["myQuizzes"] });
+    },
+  });
+};
+
+// Update a quiz
+export const useUpdateQuiz = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<QuizSet>;
+    }) => {
+      const response = await apiRequest<QuizSet>(
+        QUIZ_ENDPOINTS.UPDATE_QUIZ(id),
+        {
+          body: data,
+        }
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data!;
+    },
+    onSuccess: (data, variables) => {
+      // Invalidate specific quiz and lists
+      queryClient.invalidateQueries({ queryKey: ["quiz", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
+      queryClient.invalidateQueries({ queryKey: ["myQuizzes"] });
+    },
+  });
+};
+
+// Delete a quiz
+export const useDeleteQuiz = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest(QUIZ_ENDPOINTS.DELETE_QUIZ(id));
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return id;
+    },
+    onSuccess: (id) => {
+      // Invalidate all related queries
+      queryClient.invalidateQueries({ queryKey: ["quiz", id] });
+      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
+      queryClient.invalidateQueries({ queryKey: ["myQuizzes"] });
     },
   });
 };

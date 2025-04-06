@@ -95,8 +95,7 @@ const ForgotPassword = () => {
       },
       {
         onSuccess: () => {
-          // Redirect to login page after successful password reset
-          router.push("/?login=true");
+          router.push("/");
         },
       }
     );

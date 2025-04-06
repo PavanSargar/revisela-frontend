@@ -29,13 +29,16 @@ export const Modal: React.FC<ModalProps> = ({
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.documentElement.classList.add("modal-open");
+      document.body.classList.add("modal-open");
     } else {
-      document.body.style.overflow = "";
+      document.documentElement.classList.remove("modal-open");
+      document.body.classList.remove("modal-open");
     }
 
     return () => {
-      document.body.style.overflow = "";
+      document.documentElement.classList.remove("modal-open");
+      document.body.classList.remove("modal-open");
     };
   }, [isOpen]);
 
