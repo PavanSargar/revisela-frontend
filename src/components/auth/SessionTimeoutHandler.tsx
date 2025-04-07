@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { useRouter } from "next/navigation";
 import { logout } from "@/store/slices/authSlice";
@@ -32,21 +32,18 @@ export const SessionTimeoutHandler = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isAuthenticated || !token) return;
+  const handleSessionTimeout = useCallback(() => {
+    // Clear warning
+    setShowWarning(false);
 
-    // First check when component mounts
-    checkTokenExpiration();
+    // Dispatch logout action
+    dispatch(logout());
 
-    // Set up interval to check token expiration
-    const intervalId = setInterval(checkTokenExpiration, CHECK_INTERVAL);
+    // Redirect to login
+    router.push("/auth/login?session=expired");
+  }, [dispatch, router]);
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [token, isAuthenticated]);
-
-  const checkTokenExpiration = () => {
+  const checkTokenExpiration = useCallback(() => {
     if (!token) return;
 
     const expirationTime = getTokenExpiration(token);
@@ -65,18 +62,21 @@ export const SessionTimeoutHandler = () => {
       // Token has expired, log out
       handleSessionTimeout();
     }
-  };
+  }, [token, handleSessionTimeout]);
 
-  const handleSessionTimeout = () => {
-    // Clear warning
-    setShowWarning(false);
+  useEffect(() => {
+    if (!isAuthenticated || !token) return;
 
-    // Dispatch logout action
-    dispatch(logout());
+    // First check when component mounts
+    checkTokenExpiration();
 
-    // Redirect to login
-    router.push("/auth/login?session=expired");
-  };
+    // Set up interval to check token expiration
+    const intervalId = setInterval(checkTokenExpiration, CHECK_INTERVAL);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [token, isAuthenticated, checkTokenExpiration]);
 
   // Format remaining time into minutes
   const formatTimeRemaining = () => {

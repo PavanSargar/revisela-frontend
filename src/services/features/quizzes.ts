@@ -11,6 +11,16 @@ interface QuizSet {
   // Add other relevant properties based on your application's data model
 }
 
+// Add a type definition for quizzes
+interface QuizData {
+  _id: string;
+  title: string;
+  description?: string;
+  questions?: unknown[];
+  createdBy?: string;
+  // Add other properties as needed
+}
+
 // Get quizzes by tag
 export const useQuizzesByTag = (tag: string) => {
   return useQuery({
@@ -64,7 +74,9 @@ export const useDeleteQuiz = () => {
 
   return useMutation({
     mutationFn: async (quizId: string) => {
-      const response = await apiRequest(QUIZ_ENDPOINTS.DELETE_QUIZ(quizId));
+      const response = await apiRequest<{ success: boolean }>(
+        QUIZ_ENDPOINTS.DELETE_QUIZ(quizId)
+      );
 
       if (response.error) {
         throw response.error;
