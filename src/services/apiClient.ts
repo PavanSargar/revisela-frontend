@@ -22,6 +22,9 @@ export interface ApiResponse<T> {
   status: number;
 }
 
+// Define better types to replace any
+type ApiData = Record<string, unknown>;
+
 /**
  * Makes an API request using the endpoint configuration
  *
@@ -29,7 +32,7 @@ export interface ApiResponse<T> {
  * @param options Request options like body, params, headers
  * @returns Promise with typed response
  */
-export async function apiRequest<T = any>(
+export async function apiRequest<T = ApiData>(
   endpoint: EndpointConfig,
   options: ApiRequestOptions = {}
 ): Promise<ApiResponse<T>> {

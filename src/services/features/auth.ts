@@ -30,11 +30,12 @@ interface ResetPasswordData {
   newPassword: string;
 }
 
-interface User {
-  id: string;
+interface UserData {
+  _id: string;
   name: string;
   email: string;
   username?: string;
+  // Add other properties as needed
 }
 
 interface LoginResponse {
@@ -113,22 +114,22 @@ export const useSignup = () => {
 
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       // Check if the signup API returns a token and user data
-      if (data.result?.access_token && data.result?.user) {
+      if (data?.result?.access_token && data?.result?.user) {
         // Format user data to match the expected structure
         const user = {
-          id: data.result.user._id,
-          name: data.result.user.name,
-          email: data.result.user.email,
-          username: data.result.user.username,
+          id: data?.result.user._id,
+          name: data?.result.user.name,
+          email: data?.result.user.email,
+          username: data?.result.user.username,
         };
 
         // Store token in localStorage
-        localStorage.setItem("authToken", data.result.access_token);
+        localStorage.setItem("authToken", data?.result.access_token);
 
         // Update Redux state
-        dispatch(loginSuccess({ user, token: data.result.access_token }));
+        dispatch(loginSuccess({ user, token: data?.result.access_token }));
       }
     },
   });
@@ -241,7 +242,7 @@ export const useInitAuthUser = () => {
     },
     enabled: isAuthenticated && !!token && !user,
     meta: {
-      onSuccess: (data: any) => {
+      onSuccess: (data: UserData) => {
         dispatch(updateUser(data));
       },
       onError: () => {
@@ -266,7 +267,7 @@ export const useRefreshToken = () => {
 
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       // Assuming the same response structure as login
       const user = {
         id: data.result.user._id,
