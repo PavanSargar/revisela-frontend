@@ -27,6 +27,13 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    initAuth: (state) => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        state.token = token;
+        state.isAuthenticated = true;
+      }
+    },
     loginStart: (state) => {
       state.isLoading = true;
       state.error = null;
@@ -59,7 +66,13 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout, updateUser } =
-  authSlice.actions;
+export const {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  logout,
+  updateUser,
+  initAuth,
+} = authSlice.actions;
 
 export default authSlice.reducer;

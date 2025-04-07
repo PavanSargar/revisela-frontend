@@ -46,7 +46,7 @@ const Login = () => {
       },
       {
         onSuccess: () => {
-          router.push("/");
+          window.location.href = "/dashboard";
         },
       }
     );

@@ -4,8 +4,11 @@ import {
   loginFailure,
   loginStart,
   logout,
+  updateUser,
 } from "@/store/slices/authSlice";
-import { useAppDispatch } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { AUTH_ENDPOINTS, USER_ENDPOINTS } from "../endpoints";
+import { apiRequest } from "../apiClient";
 
 // Type definitions
 interface LoginCredentials {
@@ -14,7 +17,7 @@ interface LoginCredentials {
 }
 
 interface SignupData {
-  fullName: string;
+  name: string;
   username: string;
   email: string;
   password: string;
@@ -35,29 +38,33 @@ interface User {
 }
 
 interface LoginResponse {
-  user: User;
-  token: string;
+  result: {
+    user: {
+      _id: string;
+      name: string;
+      email: string;
+      username?: string;
+      // Add other user properties if needed
+    };
+    access_token: string;
+  };
+  totalCount: number;
 }
 
 // API functions
 const loginApi = async (
   credentials: LoginCredentials
 ): Promise<LoginResponse> => {
-  // In a real app, this would be a fetch call to your API
-  const response = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  });
+  const { data, error } = await apiRequest<LoginResponse>(
+    AUTH_ENDPOINTS.LOGIN,
+    { body: credentials, withAuth: false }
+  );
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Login failed");
+  if (error) {
+    throw error;
   }
 
-  return response.json();
+  return data!;
 };
 
 // Hook for login mutation
@@ -70,10 +77,18 @@ export const useLogin = () => {
       dispatch(loginStart());
     },
     onSuccess: (data) => {
-      dispatch(loginSuccess({ user: data.user, token: data.token }));
+      // Adapt the response to match the expected structure in your Redux store
+      const user = {
+        id: data.result.user._id,
+        name: data.result.user.name,
+        email: data.result.user.email,
+        username: data.result.user.username,
+      };
 
-      // Optional: Store token in localStorage or a secure cookie
-      localStorage.setItem("auth_token", data.token);
+      dispatch(loginSuccess({ user, token: data.result.access_token }));
+
+      // Store token in localStorage with the correct name
+      localStorage.setItem("authToken", data.result.access_token);
     },
     onError: (error) => {
       dispatch(loginFailure(error.message));
@@ -83,22 +98,38 @@ export const useLogin = () => {
 
 // Hook for signup mutation
 export const useSignup = () => {
+  const dispatch = useAppDispatch();
+
   return useMutation({
     mutationFn: async (data: SignupData) => {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const response = await apiRequest(AUTH_ENDPOINTS.SIGNUP, {
+        body: data,
+        withAuth: false,
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Signup failed");
+      if (response.error) {
+        throw response.error;
       }
 
-      return response.json();
+      return response.data;
+    },
+    onSuccess: (data) => {
+      // Check if the signup API returns a token and user data
+      if (data.result?.access_token && data.result?.user) {
+        // Format user data to match the expected structure
+        const user = {
+          id: data.result.user._id,
+          name: data.result.user.name,
+          email: data.result.user.email,
+          username: data.result.user.username,
+        };
+
+        // Store token in localStorage
+        localStorage.setItem("authToken", data.result.access_token);
+
+        // Update Redux state
+        dispatch(loginSuccess({ user, token: data.result.access_token }));
+      }
     },
   });
 };
@@ -108,13 +139,13 @@ export const useUserProfile = (userId: string) => {
   return useQuery({
     queryKey: ["user", userId],
     queryFn: async () => {
-      const response = await fetch(`/api/users/${userId}`);
+      const response = await apiRequest(USER_ENDPOINTS.GET_USER(userId));
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch user profile");
+      if (response.error) {
+        throw response.error;
       }
 
-      return response.json();
+      return response.data;
     },
     enabled: !!userId, // Only run when userId is available
   });
@@ -124,20 +155,16 @@ export const useUserProfile = (userId: string) => {
 export const useResetPassword = () => {
   return useMutation({
     mutationFn: async (data: ResetPasswordData) => {
-      const response = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const response = await apiRequest(AUTH_ENDPOINTS.RESET_PASSWORD, {
+        body: data,
+        withAuth: false,
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Password reset failed");
+      if (response.error) {
+        throw response.error;
       }
 
-      return response.json();
+      return response.data;
     },
   });
 };
@@ -148,19 +175,108 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      // In a real app, you might want to call an API to invalidate the token
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-      });
+      const response = await apiRequest(AUTH_ENDPOINTS.LOGOUT);
 
       // Even if the API call fails, we still want to clear the local state
-      localStorage.removeItem("auth_token");
+      localStorage.removeItem("authToken");
 
-      return response.ok;
+      return response.status === 200;
     },
     onSettled: () => {
       // Always dispatch logout, regardless of API success or failure
       dispatch(logout());
+    },
+  });
+};
+
+// Hook for requesting password reset (forgot password)
+export const useForgotPassword = () => {
+  return useMutation({
+    mutationFn: async (email: string) => {
+      const response = await apiRequest(AUTH_ENDPOINTS.FORGOT_PASSWORD, {
+        body: { email },
+        withAuth: false,
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data;
+    },
+  });
+};
+
+// Hook for verifying OTP
+export const useVerifyOtp = () => {
+  return useMutation({
+    mutationFn: async (data: { email: string; otp: string }) => {
+      const response = await apiRequest(AUTH_ENDPOINTS.VERIFY_OTP, {
+        body: data,
+        withAuth: false,
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data;
+    },
+  });
+};
+
+// In src/services/features/auth.ts
+export const useInitAuthUser = () => {
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, token, user } = useAppSelector(
+    (state) => state.auth
+  );
+
+  return useQuery({
+    queryKey: ["user", "me"],
+    queryFn: async () => {
+      const response = await apiRequest(USER_ENDPOINTS.GET_PROFILE);
+      if (response.error) throw response.error;
+      return response.data;
+    },
+    enabled: isAuthenticated && !!token && !user,
+    meta: {
+      onSuccess: (data: any) => {
+        dispatch(updateUser(data));
+      },
+      onError: () => {
+        // If fetching user fails, token might be invalid
+        dispatch(logout());
+      },
+    },
+  });
+};
+
+// Hook for refreshing token
+export const useRefreshToken = () => {
+  const dispatch = useAppDispatch();
+
+  return useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest(AUTH_ENDPOINTS.REFRESH_TOKEN);
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data;
+    },
+    onSuccess: (data) => {
+      // Assuming the same response structure as login
+      const user = {
+        id: data.result.user._id,
+        name: data.result.user.name,
+        email: data.result.user.email,
+        username: data.result.user.username,
+      };
+
+      dispatch(loginSuccess({ user, token: data.result.access_token }));
+      localStorage.setItem("authToken", data.result.access_token);
     },
   });
 };
