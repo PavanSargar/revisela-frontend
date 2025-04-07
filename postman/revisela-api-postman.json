@@ -1,0 +1,1237 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6",
+    "name": "ReviselaAPI",
+    "description": "Collection for testing the Revisela API authentication and user management endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global pre-request script that runs before every request",
+          "console.log('Making request to: ' + pm.request.url.toString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script that runs after every request",
+          "console.log('Response status: ' + pm.response.code);",
+          "",
+          "// Log any errors",
+          "if (pm.response.code >= 400) {",
+          "    console.error('Request failed with status: ' + pm.response.code);",
+          "    try {",
+          "        console.error(JSON.stringify(pm.response.json(), null, 2));",
+          "    } catch (e) {",
+          "        console.error(pm.response.text());",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Check if we got a valid response first",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    try {",
+                  "        const jsonData = pm.response.json();",
+                  "        ",
+                  "        // Check if access_token exists and save it",
+                  "        if (jsonData.access_token) {",
+                  "            pm.environment.set(\"authToken\", jsonData.access_token);",
+                  "            console.log(\"✅ Auth token saved successfully from registration\");",
+                  "        } else {",
+                  "            console.error(\"❌ No access_token found in the response\");",
+                  "            console.log(\"Response body:\", JSON.stringify(jsonData));",
+                  "        }",
+                  "        ",
+                  "        // Save user ID if available",
+                  "        if (jsonData.user && jsonData.user._id) {",
+                  "            pm.environment.set(\"userId\", jsonData.user._id);",
+                  "            console.log(\"✅ User ID saved: \" + jsonData.user._id);",
+                  "        }",
+                  "    } catch (error) {",
+                  "        console.error(\"❌ Error parsing response JSON: \" + error);",
+                  "        console.log(\"Response body: \" + pm.response.text());",
+                  "    }",
+                  "} else {",
+                  "    console.error(\"❌ Request failed with status: \" + pm.response.code);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Test User\",\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Register a new user"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Check if we got a valid response first",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    try {",
+                  "        const jsonData = pm.response.json();",
+                  "        ",
+                  "        // Check if access_token exists and save it",
+                  "        if (jsonData.access_token) {",
+                  "            pm.environment.set(\"authToken\", jsonData.access_token);",
+                  "            console.log(\"✅ Auth token saved successfully from login\");",
+                  "        } else {",
+                  "            console.error(\"❌ No access_token found in the response\");",
+                  "            console.log(\"Response body:\", JSON.stringify(jsonData));",
+                  "        }",
+                  "        ",
+                  "        // Save user ID if available",
+                  "        if (jsonData.user && jsonData.user._id) {",
+                  "            pm.environment.set(\"userId\", jsonData.user._id);",
+                  "            console.log(\"✅ User ID saved: \" + jsonData.user._id);",
+                  "        }",
+                  "    } catch (error) {",
+                  "        console.error(\"❌ Error parsing response JSON: \" + error);",
+                  "        console.log(\"Response body: \" + pm.response.text());",
+                  "    }",
+                  "} else {",
+                  "    console.error(\"❌ Request failed with status: \" + pm.response.code);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login with email and password"
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login as a system admin user"
+          },
+          "response": []
+        }
+      ],
+      "description": "Authentication endpoints"
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"New User\",\n    \"username\": \"newuser\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            },
+            "description": "Create a new user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            },
+            "description": "Get all users"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}",
+                  "description": "User ID to fetch"
+                }
+              ]
+            },
+            "description": "Get a user by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by Email",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/email/:email",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "email", ":email"],
+              "variable": [
+                {
+                  "key": "email",
+                  "value": "test@example.com",
+                  "description": "Email to search for"
+                }
+              ]
+            },
+            "description": "Get a user by email"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Updated Name\",\n    \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}",
+                  "description": "User ID to update"
+                }
+              ]
+            },
+            "description": "Update a user"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}",
+                  "description": "User ID to delete"
+                }
+              ]
+            },
+            "description": "Delete a user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/profile/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "profile", "me"]
+            },
+            "description": "Get the current user's profile"
+          },
+          "response": []
+        }
+      ],
+      "description": "User management endpoints"
+    },
+    {
+      "name": "Quizzes",
+      "item": [
+        {
+          "name": "Create Quiz",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData._id) {",
+                  "    pm.environment.set(\"quizId\", jsonData._id);",
+                  "    console.log(\"Quiz ID saved: \" + jsonData._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"JavaScript Basics\",\n  \"description\": \"Test your JavaScript knowledge with this quiz\",\n  \"tags\": [\"javascript\", \"programming\", \"web development\"],\n  \"isPublic\": true,\n  \"questions\": [\n    {\n      \"type\": \"flashCard\",\n      \"question\": \"What is JavaScript?\",\n      \"answer\": \"JavaScript is a high-level, interpreted programming language that conforms to the ECMAScript specification.\",\n      \"image\": \"https://example.com/javascript-logo.png\"\n    },\n    {\n      \"type\": \"mcq\",\n      \"question\": \"Which of the following is not a JavaScript data type?\",\n      \"answer\": \"float\",\n      \"options\": [\n        {\"label\": \"String\", \"value\": \"string\"},\n        {\"label\": \"Number\", \"value\": \"number\"},\n        {\"label\": \"Boolean\", \"value\": \"boolean\"},\n        {\"label\": \"Float\", \"value\": \"float\"},\n        {\"label\": \"Object\", \"value\": \"object\"}\n      ]\n    },\n    {\n      \"type\": \"fillIn\",\n      \"question\": \"Complete the code: const greeting = \\\"Hello, \\\" + ___;\",\n      \"answer\": \"name\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quizzes",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes"]
+            },
+            "description": "Create a new quiz"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Quizzes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quizzes?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Get all public quizzes with pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quiz by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quizzes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{quizId}}",
+                  "description": "Quiz ID to fetch"
+                }
+              ]
+            },
+            "description": "Get a quiz by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Quizzes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quizzes/my-quizzes?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes", "my-quizzes"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Get all quizzes created by the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Quizzes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quizzes/search?q=javascript&limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "javascript",
+                  "description": "Search query"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Search quizzes by title, description, or tags"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quizzes by Tag",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quizzes/tags/:tag?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes", "tags", ":tag"],
+              "variable": [
+                {
+                  "key": "tag",
+                  "value": "javascript",
+                  "description": "Tag to filter by"
+                }
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Get quizzes filtered by tag"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Quiz",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated JavaScript Basics\",\n  \"description\": \"Updated description for JavaScript basics quiz\",\n  \"tags\": [\"javascript\", \"programming\", \"web development\", \"beginner\"],\n  \"isPublic\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quizzes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{quizId}}",
+                  "description": "Quiz ID to update"
+                }
+              ]
+            },
+            "description": "Update a quiz (only quiz creator can update)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Quiz",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quizzes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{quizId}}",
+                  "description": "Quiz ID to delete"
+                }
+              ]
+            },
+            "description": "Delete a quiz (only quiz creator can delete)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Quiz management endpoints"
+    },
+    {
+      "name": "Classes",
+      "item": [
+        {
+          "name": "Create Class",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData._id) {",
+                  "    pm.environment.set(\"classId\", jsonData._id);",
+                  "    console.log(\"Class ID saved: \" + jsonData._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Advanced Physics\",\n    \"description\": \"A class for advanced physics studies\",\n    \"subject\": \"Physics\",\n    \"isPublic\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes"]
+            },
+            "description": "Create a new class"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Member",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData._id) {",
+                  "    pm.environment.set(\"classMemberId\", jsonData._id);",
+                  "    console.log(\"Class Member ID saved: \" + jsonData._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"student@example.com\",\n    \"role\": \"member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "members"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}"
+                }
+              ]
+            },
+            "description": "Add a member to a class"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Classes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/my-classes",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", "my-classes"]
+            },
+            "description": "Get all classes the current user is a member of"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Class by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}"
+                }
+              ]
+            },
+            "description": "Get a class by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Updated Physics Class\",\n    \"description\": \"Updated description for the physics class\",\n    \"subject\": \"Physics Advanced\",\n    \"isPublic\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}"
+                }
+              ]
+            },
+            "description": "Update a class (admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}"
+                }
+              ]
+            },
+            "description": "Delete a class (admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Class Members",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "members"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}"
+                }
+              ]
+            },
+            "description": "Get all members of a class"
+          },
+          "response": []
+        },
+        {
+          "name": "Accept Invitation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/accept-invitation",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "accept-invitation"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}"
+                }
+              ]
+            },
+            "description": "Accept an invitation to join a class"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Invitations",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/invitations/pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", "invitations", "pending"]
+            },
+            "description": "Get all pending class invitations for the current user"
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Member",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:classId/members/:memberId",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":classId", "members", ":memberId"],
+              "variable": [
+                {
+                  "key": "classId",
+                  "value": "{{classId}}"
+                },
+                {
+                  "key": "memberId",
+                  "value": "{{classMemberId}}"
+                }
+              ]
+            },
+            "description": "Remove a member from a class (admin only or self-removal)"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Quiz to Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:classId/quizzes/:quizId",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":classId", "quizzes", ":quizId"],
+              "variable": [
+                {
+                  "key": "classId",
+                  "value": "{{classId}}"
+                },
+                {
+                  "key": "quizId",
+                  "value": "{{quizId}}"
+                }
+              ]
+            },
+            "description": "Add a quiz to a class (admin or collaborator only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Class Quizzes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/quizzes",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "quizzes"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}"
+                }
+              ]
+            },
+            "description": "Get all quizzes associated with a class"
+          },
+          "response": []
+        },
+        {
+          "name": "Invite New User to Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"newstudent@example.com\",\n    \"role\": \"member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "members"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}"
+                }
+              ]
+            },
+            "description": "Add a new user to a class (will send invitation email)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Class management endpoints"
+    },
+    {
+      "name": "Emails",
+      "item": [
+        {
+          "name": "Send Class Invitation",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"newuser@example.com\",\n    \"className\": \"Test Class\",\n    \"role\": \"member\",\n    \"sendRegistrationLink\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/emails/send-invitation",
+              "host": ["{{baseUrl}}"],
+              "path": ["emails", "send-invitation"]
+            },
+            "description": "Send a class invitation email (for testing purposes)"
+          },
+          "response": []
+        },
+        {
+          "name": "Send Class Notification",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\",\n    \"className\": \"Test Class\",\n    \"event\": \"added\",\n    \"role\": \"member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/emails/send-notification",
+              "host": ["{{baseUrl}}"],
+              "path": ["emails", "send-notification"]
+            },
+            "description": "Send a class notification email (for testing purposes)"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Email Service",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"recipient@example.com\",\n    \"subject\": \"Test Email\",\n    \"content\": \"This is a test email from the Revisela API\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/emails/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["emails", "test"]
+            },
+            "description": "Send a basic test email to verify email service functionality"
+          },
+          "response": []
+        }
+      ],
+      "description": "Email testing endpoints"
+    }
+  ]
+}

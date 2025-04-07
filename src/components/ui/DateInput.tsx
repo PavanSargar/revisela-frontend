@@ -1,12 +1,21 @@
+"use client";
+
 import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+interface DateValues {
+  month: string;
+  day: string;
+  year: string;
+}
 
 interface DateInputProps {
   label?: string;
   name?: string;
   className?: string;
-  onChange?: (date: { month: string; day: string; year: string }) => void;
+  onChange?: (values: DateValues) => void;
+  error?: string;
+  value?: DateValues;
 }
 
 export const DateInput: React.FC<DateInputProps> = ({
@@ -14,6 +23,8 @@ export const DateInput: React.FC<DateInputProps> = ({
   name,
   className,
   onChange,
+  error,
+  value,
 }) => {
   const [selectedValues, setSelectedValues] = useState({
     month: "",
@@ -59,43 +70,35 @@ export const DateInput: React.FC<DateInputProps> = ({
     setSelectedValues(newValues);
 
     if (onChange) {
-      onChange({
-        month: field === "month" ? value : selectedValues.month,
-        day: field === "day" ? value : selectedValues.day,
-        year: field === "year" ? value : selectedValues.year,
-      });
+      onChange(newValues);
     }
   };
 
   const selectWrapperClass = "relative w-full";
   const selectClass = cn(
-    "appearance-none w-full px-3 py-2 border border-[#ACACAC] rounded-[10px] focus:outline-none focus:ring bg-white",
+    "appearance-none w-full px-3 py-2 border rounded-[10px] focus:outline-none focus:ring bg-white",
     "pr-10", // Add padding for the icon
+    error ? "border-red-500" : "border-[#ACACAC]",
     className
   );
 
   return (
-    <div className="relative">
+    <div className="space-y-1">
       {label && (
-        <label
-          htmlFor={name}
-          className="block mb-[5px] text-[18px] text-[#444444]"
-        >
+        <label className="block mb-[5px] text-[18px] text-[#444444]">
           {label}
         </label>
       )}
-      <div className="flex gap-3">
+      <div className="grid grid-cols-3 gap-2">
         <div className={selectWrapperClass}>
           <select
-            className={cn(
-              selectClass,
-              selectedValues.month ? "text-black" : "text-[#ACACAC]"
-            )}
-            onChange={(e) => handleChange("month", e.target.value)}
+            name={`${name}-month`}
             value={selectedValues.month}
+            onChange={(e) => handleChange("month", e.target.value)}
+            className={selectClass}
           >
             <option value="" disabled>
-              MMM
+              Month
             </option>
             {months.map((month) => (
               <option key={month.value} value={month.value}>
@@ -103,22 +106,33 @@ export const DateInput: React.FC<DateInputProps> = ({
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#ACACAC]">
-            <ChevronDown size={18} />
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg
+              className="w-5 h-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
           </div>
         </div>
 
         <div className={selectWrapperClass}>
           <select
-            className={cn(
-              selectClass,
-              selectedValues.day ? "text-black" : "text-[#ACACAC]"
-            )}
-            onChange={(e) => handleChange("day", e.target.value)}
+            name={`${name}-day`}
             value={selectedValues.day}
+            onChange={(e) => handleChange("day", e.target.value)}
+            className={selectClass}
           >
             <option value="" disabled>
-              DD
+              Day
             </option>
             {days.map((day) => (
               <option key={day.value} value={day.value}>
@@ -126,22 +140,33 @@ export const DateInput: React.FC<DateInputProps> = ({
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#ACACAC]">
-            <ChevronDown size={18} />
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg
+              className="w-5 h-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
           </div>
         </div>
 
         <div className={selectWrapperClass}>
           <select
-            className={cn(
-              selectClass,
-              selectedValues.year ? "text-black" : "text-[#ACACAC]"
-            )}
-            onChange={(e) => handleChange("year", e.target.value)}
+            name={`${name}-year`}
             value={selectedValues.year}
+            onChange={(e) => handleChange("year", e.target.value)}
+            className={selectClass}
           >
             <option value="" disabled>
-              YYYY
+              Year
             </option>
             {years.map((year) => (
               <option key={year.value} value={year.value}>
@@ -149,11 +174,25 @@ export const DateInput: React.FC<DateInputProps> = ({
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#ACACAC]">
-            <ChevronDown size={18} />
+          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg
+              className="w-5 h-5 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
           </div>
         </div>
       </div>
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
 };

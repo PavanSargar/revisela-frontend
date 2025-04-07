@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
@@ -5,6 +7,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   name?: string;
   rightElement?: React.ReactNode;
+  error?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -12,6 +15,7 @@ export const Input: React.FC<InputProps> = ({
   name,
   label,
   rightElement,
+  error,
   ...props
 }) => {
   const rightElementRef = useRef<HTMLDivElement>(null);
@@ -41,6 +45,7 @@ export const Input: React.FC<InputProps> = ({
         <input
           className={cn(
             "w-full px-3 py-2 border rounded focus:outline-none focus:ring placeholder:text-[#ACACAC]",
+            error ? "border-red-500" : "border-[#ACACAC]",
             className
           )}
           name={name}
@@ -60,6 +65,7 @@ export const Input: React.FC<InputProps> = ({
           </div>
         )}
       </div>
+      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
 };
