@@ -14,13 +14,16 @@ const LayoutWrapper = ({ children }: Props) => {
 
   // Simple check if we're on an auth page
   const isOnAuthPage = pathname.startsWith("/auth");
+  const isOnDashboardPage = pathname.startsWith("/dashboard");
 
   return (
     <>
-      {!isOnAuthPage && <RootNavbar />}
+      {!isOnAuthPage && isOnDashboardPage && <RootNavbar />}
       <div className="flex bg-[#FAFAFA]">
-        {!isOnAuthPage && <Sidebar />}
-        <div className={cn("", !isOnAuthPage && "ml-5")}>{children}</div>
+        {!isOnAuthPage && isOnDashboardPage && <Sidebar />}
+        <div className={cn("", !isOnAuthPage && isOnDashboardPage && "ml-5")}>
+          {children}
+        </div>
       </div>
     </>
   );
