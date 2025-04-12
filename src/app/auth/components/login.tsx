@@ -23,6 +23,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 const Login = () => {
   const router = useRouter();
   const { mutate: login, isPending, error: apiError } = useLogin();
+  console.log(apiError);
 
   const {
     register,

@@ -16,7 +16,7 @@ type Props = {};
 
 const Sidebar = (props: Props) => {
   const pathname = usePathname();
-  const [activeTab, setActiveTab] = useState("/");
+  const [activeTab, setActiveTab] = useState("/dashboard");
   const [showClasses, setShowClasses] = useState(false);
 
   useEffect(() => {
@@ -37,13 +37,13 @@ const Sidebar = (props: Props) => {
         <nav className="space-y-2">
           {/* Main Navigation */}
           <Link
-            href="/"
+            href="/dashboard"
             className={`flex items-center gap-3 p-2 rounded-md ${
-              isActive("/") ? activeItemStyle : inactiveItemStyle
+              isActive("/dashboard") ? activeItemStyle : inactiveItemStyle
             }`}
           >
             <Home size={20} />
-            <span className="text-[16px]">Home</span>
+            <span className="text-[16px]">Dashboard</span>
           </Link>
 
           <Link

@@ -39,17 +39,19 @@ interface UserData {
 }
 
 interface LoginResponse {
-  result: {
+  statusCode: number;
+  data: {
     user: {
       _id: string;
       name: string;
       email: string;
       username?: string;
+      role: string;
+      birthday: string;
       // Add other user properties if needed
     };
     access_token: string;
   };
-  totalCount: number;
 }
 
 // API functions
@@ -72,24 +74,23 @@ const loginApi = async (
 export const useLogin = () => {
   const dispatch = useAppDispatch();
 
-  return useMutation({
+  return useMutation<LoginResponse, Error, LoginCredentials>({
     mutationFn: loginApi,
     onMutate: () => {
       dispatch(loginStart());
     },
-    onSuccess: (data) => {
-      // Adapt the response to match the expected structure in your Redux store
+    onSuccess: ({ data }) => {
       const user = {
-        id: data.result.user._id,
-        name: data.result.user.name,
-        email: data.result.user.email,
-        username: data.result.user.username,
+        id: data?.user._id,
+        name: data?.user.name,
+        email: data?.user.email,
+        username: data?.user.username,
       };
 
-      dispatch(loginSuccess({ user, token: data.result.access_token }));
+      dispatch(loginSuccess({ user, token: data?.access_token }));
 
       // Store token in localStorage with the correct name
-      localStorage.setItem("authToken", data.result.access_token);
+      localStorage.setItem("authToken", data?.access_token);
     },
     onError: (error) => {
       dispatch(loginFailure(error.message));
