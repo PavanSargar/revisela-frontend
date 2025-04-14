@@ -49,7 +49,7 @@ const AccountSettings = () => {
   };
 
   return (
-    <div className="p-6 ml-64 max-w-4xl">
+    <div className="max-w-4xl">
       <h1 className="text-[18px] font-semibold text-[#0890A8] mb-6">
         Account Settings
       </h1>

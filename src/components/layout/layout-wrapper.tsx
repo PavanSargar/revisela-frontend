@@ -16,6 +16,8 @@ const LayoutWrapper = ({ children }: Props) => {
   const isOnAuthPage = pathname.startsWith("/auth");
   const isOnDashboardPage = pathname.startsWith("/dashboard");
 
+  console.log("isdashboard:", isOnDashboardPage);
+
   return (
     <>
       {!isOnAuthPage && isOnDashboardPage && <RootNavbar />}

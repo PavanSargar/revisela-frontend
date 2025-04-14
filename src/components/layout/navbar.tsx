@@ -12,7 +12,7 @@ const RootNavbar = (props: Props) => {
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
   const handleAccountSettingsClick = () => {
-    router.push("/account-settings");
+    router.push("/dashboard/account-settings");
   };
 
   const handleLogout = () => {

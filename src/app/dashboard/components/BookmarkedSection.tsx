@@ -1,10 +1,12 @@
 "use client";
 import React from "react";
-import { QuizSetItem } from "../library/components";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+import { QuizSetItem } from "../../dashboard/library/components";
+import ChevronRightIcon from "@/components/icons/ChevronRightIcon";
 
-export default function RecentPage() {
-  // Mock quiz sets data - use the same data as in RecentSection or fetch from API
-  const recentQuizSets = [
+const BookmarkedSection = () => {
+  const bookmarkedQuizSets = [
     {
       id: "1",
       title: "IB Calculus",
@@ -13,7 +15,7 @@ export default function RecentPage() {
       tags: ["Maths", "IB", "Calculus"],
       creator: { name: "Sam Smith", isCurrentUser: false },
       rating: 2,
-      isBookmarked: false,
+      isBookmarked: true,
     },
     {
       id: "2",
@@ -21,9 +23,8 @@ export default function RecentPage() {
       description:
         "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
       tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "Sam Smith", isCurrentUser: false },
-      rating: 2,
-      isBookmarked: false,
+      creator: { name: "You", isCurrentUser: true, shared: false },
+      isBookmarked: true,
     },
     {
       id: "3",
@@ -31,19 +32,28 @@ export default function RecentPage() {
       description:
         "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
       tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "John Doe", isCurrentUser: false },
-      rating: 2,
-      isBookmarked: false,
+      creator: { name: "You", isCurrentUser: true, shared: false },
+      isBookmarked: true,
     },
-    // Add more items to match your image
   ];
 
   return (
-    <div className="">
-      <h1 className="text-2xl font-semibold mb-6">Recent</h1>
+    <section>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-semibold text-[#444444]">Bookmarked</h2>
+          <ChevronRightIcon className="w-5 h-5" />
+        </div>
+        <Link
+          href="/dashboard/bookmarks"
+          className="flex items-center text-[#0890A8]"
+        >
+          View all <ChevronRight size={20} />
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {recentQuizSets.map((quizSet) => (
+        {bookmarkedQuizSets.map((quizSet) => (
           <QuizSetItem
             key={quizSet.id}
             title={quizSet.title}
@@ -55,6 +65,8 @@ export default function RecentPage() {
           />
         ))}
       </div>
-    </div>
+    </section>
   );
-}
+};
+
+export default BookmarkedSection;

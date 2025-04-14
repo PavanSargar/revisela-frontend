@@ -14,6 +14,13 @@ import { usePathname } from "next/navigation";
 
 type Props = {};
 
+// Define menu item type
+type MenuItem = {
+  path: string;
+  label: string;
+  icon: React.ReactNode;
+};
+
 const Sidebar = (props: Props) => {
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState("/dashboard");
@@ -31,70 +38,71 @@ const Sidebar = (props: Props) => {
   const inactiveItemStyle =
     "text-secondary-black hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer";
 
+  // Main navigation menu items
+  const mainMenuItems: MenuItem[] = [
+    {
+      path: "/dashboard",
+      label: "Dashboard",
+      icon: <Home size={20} />,
+    },
+    {
+      path: "/dashboard/library",
+      label: "My Library",
+      icon: <Library size={20} />,
+    },
+    {
+      path: "/dashboard/shared",
+      label: "Shared With Me",
+      icon: <Users size={20} />,
+    },
+    {
+      path: "/dashboard/bookmarks",
+      label: "Bookmarked",
+      icon: <Bookmark size={20} />,
+    },
+    {
+      path: "/dashboard/recent",
+      label: "Recent",
+      icon: <Clock size={20} />,
+    },
+    {
+      path: "/dashboard/trash",
+      label: "Trash",
+      icon: <Trash size={20} />,
+    },
+  ];
+
+  // Class menu items
+  const classMenuItems: MenuItem[] = [
+    {
+      path: "/dashboard/classes/bio",
+      label: "Bio Class UCLA",
+      icon: <FolderOpen size={18} />,
+    },
+    {
+      path: "/dashboard/classes/maths",
+      label: "Maths Class UCLA",
+      icon: <FolderOpen size={18} />,
+    },
+  ];
+
   return (
-    <aside className="fixed top-[3.75rem] z-50 left-0 h-full w-64 bg-[#FAFAFA] overflow-y-auto hide-scrollbar">
+    <aside className="fixed top-[5rem] z-50 left-0 h-full w-64 bg-[#FAFAFA] overflow-y-auto hide-scrollbar">
       <div className="flex flex-col p-4">
         <nav className="space-y-2">
           {/* Main Navigation */}
-          <Link
-            href="/dashboard"
-            className={`flex items-center gap-3 p-2 rounded-md ${
-              isActive("/dashboard") ? activeItemStyle : inactiveItemStyle
-            }`}
-          >
-            <Home size={20} />
-            <span className="text-[16px]">Dashboard</span>
-          </Link>
-
-          <Link
-            href="/library"
-            className={`flex items-center gap-3 p-2 rounded-md ${
-              isActive("/library") ? activeItemStyle : inactiveItemStyle
-            }`}
-          >
-            <Library size={20} />
-            <span className="text-[16px]">My Library</span>
-          </Link>
-
-          <Link
-            href="/shared"
-            className={`flex items-center gap-3 p-2 rounded-md ${
-              isActive("/shared") ? activeItemStyle : inactiveItemStyle
-            }`}
-          >
-            <Users size={20} />
-            <span className="text-[16px]">Shared With Me</span>
-          </Link>
-
-          <Link
-            href="/bookmarks"
-            className={`flex items-center gap-3 p-2 rounded-md ${
-              isActive("/bookmarks") ? activeItemStyle : inactiveItemStyle
-            }`}
-          >
-            <Bookmark size={20} />
-            <span className="text-[16px]">Bookmarked</span>
-          </Link>
-
-          <Link
-            href="/recent"
-            className={`flex items-center gap-3 p-2 rounded-md ${
-              isActive("/recent") ? activeItemStyle : inactiveItemStyle
-            }`}
-          >
-            <Clock size={20} />
-            <span className="text-[16px]">Recent</span>
-          </Link>
-
-          <Link
-            href="/trash"
-            className={`flex items-center gap-3 p-2 rounded-md ${
-              isActive("/trash") ? activeItemStyle : inactiveItemStyle
-            }`}
-          >
-            <Trash size={20} />
-            <span className="text-[16px]">Trash</span>
-          </Link>
+          {mainMenuItems.map((item) => (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={`flex items-center gap-3 p-2 rounded-md ${
+                isActive(item.path) ? activeItemStyle : inactiveItemStyle
+              }`}
+            >
+              {item.icon}
+              <span className="text-[16px]">{item.label}</span>
+            </Link>
+          ))}
         </nav>
 
         <div className="my-4 border-t border-gray-200"></div>
@@ -117,71 +125,40 @@ const Sidebar = (props: Props) => {
           {/* Joined Classes */}
           {showClasses && (
             <div className="ml-5 space-y-2 mt-2">
-              <Link
-                href="/classes/bio"
-                className={`flex items-center gap-3 p-2 rounded-md ${
-                  isActive("/classes/bio")
-                    ? "bg-[#0890A8] text-white"
-                    : "hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer"
-                }`}
-              >
-                <div
-                  className={`p-1 rounded ${
-                    isActive("/classes/bio")
-                      ? "bg-[#0890A8]"
-                      : "bg-[#0890A8] bg-opacity-10"
+              {classMenuItems.map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={`flex items-center gap-3 p-2 rounded-md ${
+                    isActive(item.path)
+                      ? "bg-[#0890A8] text-white"
+                      : "hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer"
                   }`}
                 >
-                  <FolderOpen
-                    size={18}
-                    className={
-                      isActive("/classes/bio") ? "text-white" : "text-[#0890A8]"
-                    }
-                  />
-                </div>
-                <span
-                  className={`text-[16px] ${
-                    isActive("/classes/bio") ? "font-medium" : "text-[#0890A8]"
-                  }`}
-                >
-                  Bio Class UCLA
-                </span>
-              </Link>
-
-              <Link
-                href="/classes/maths"
-                className={`flex items-center gap-3 p-2 rounded-md ${
-                  isActive("/classes/maths")
-                    ? "bg-[#0890A8] text-white"
-                    : "hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer"
-                }`}
-              >
-                <div
-                  className={`p-1 rounded ${
-                    isActive("/classes/maths")
-                      ? "bg-[#0890A8]"
-                      : "bg-[#0890A8] bg-opacity-10"
-                  }`}
-                >
-                  <FolderOpen
-                    size={18}
-                    className={
-                      isActive("/classes/maths")
-                        ? "text-white"
-                        : "text-[#0890A8]"
-                    }
-                  />
-                </div>
-                <span
-                  className={`text-[16px] ${
-                    isActive("/classes/maths")
-                      ? "font-medium"
-                      : "text-[#0890A8]"
-                  }`}
-                >
-                  Maths Class UCLA
-                </span>
-              </Link>
+                  <div
+                    className={`p-1 rounded ${
+                      isActive(item.path)
+                        ? "bg-[#0890A8]"
+                        : "bg-[#0890A8] bg-opacity-10"
+                    }`}
+                  >
+                    <div
+                      className={
+                        isActive(item.path) ? "text-white" : "text-[#0890A8]"
+                      }
+                    >
+                      {item.icon}
+                    </div>
+                  </div>
+                  <span
+                    className={`text-[16px] ${
+                      isActive(item.path) ? "font-medium" : "text-[#0890A8]"
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                </Link>
+              ))}
             </div>
           )}
         </div>
