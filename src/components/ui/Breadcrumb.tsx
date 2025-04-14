@@ -56,7 +56,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="flex items-center hover:underline"
+                  className="flex items-center hover:underline cursor-pointer"
                   aria-current={item.isCurrent ? "page" : undefined}
                 >
                   {itemContent}

@@ -232,7 +232,7 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
             <p className="text-secondary-black">{value}</p>
           </div>
           <button
-            className="text-[#0890A8] flex items-center"
+            className="text-[#0890A8] flex items-center cursor-pointer"
             onClick={handleEdit}
           >
             <Pen size={18} />

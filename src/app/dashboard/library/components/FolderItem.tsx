@@ -8,7 +8,10 @@ interface FolderItemProps {
 
 const FolderItem: React.FC<FolderItemProps> = ({ name, onClick }) => {
   return (
-    <div className="p-4 border rounded-lg bg-white flex justify-between items-center">
+    <div
+      className="p-4 border rounded-lg bg-white flex justify-between items-center hover:bg-gray-50 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex items-center gap-2">
         <Folder size={20} className="text-[#0890A8]" />
         <span className="text-[#444444]">{name}</span>

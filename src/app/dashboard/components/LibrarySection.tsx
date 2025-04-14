@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { QuizSetItem } from "../../dashboard/library/components";
-import ChevronRightIcon from "@/components/icons/ChevronRightIcon";
+import ChevronRightIcon from "@/components/icons/chevron-right";
 
 const LibrarySection = () => {
   const libraryQuizSets = [
@@ -46,7 +46,7 @@ const LibrarySection = () => {
         </div>
         <Link
           href="/dashboard/library"
-          className="flex items-center text-[#0890A8]"
+          className="flex items-center text-[#0890A8] cursor-pointer"
         >
           View all <ChevronRight size={20} />
         </Link>

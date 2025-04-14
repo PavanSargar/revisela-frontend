@@ -23,7 +23,7 @@ const QuizSetItem: React.FC<QuizSetItemProps> = ({
   isBookmarked = false,
 }) => {
   return (
-    <div className="p-4 border rounded-lg bg-white">
+    <div className="p-4 border rounded-lg bg-white hover:shadow-md cursor-pointer">
       <div className="flex justify-between items-start mb-2">
         <div className="flex items-center gap-2">
           <span className="bg-yellow-100 text-yellow-800 rounded-sm px-1 text-sm">
@@ -41,7 +41,7 @@ const QuizSetItem: React.FC<QuizSetItemProps> = ({
           ) : (
             <Bookmark size={18} className="text-[#444444]" strokeWidth={1.5} />
           )}
-          <button className="text-[#444444]">
+          <button className="text-[#444444] cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"

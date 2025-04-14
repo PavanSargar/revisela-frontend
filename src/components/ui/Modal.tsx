@@ -58,7 +58,7 @@ export const Modal: React.FC<ModalProps> = ({
           {showCloseButton && (
             <Dialog.Close asChild>
               <button
-                className="absolute top-3 right-3 inline-flex items-center justify-center rounded-full h-8 w-8 text-gray-500 hover:text-gray-700 transition-colors"
+                className="absolute top-3 right-3 inline-flex items-center justify-center rounded-full h-8 w-8 text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
                 aria-label="Close"
               >
                 <X size={20} />
