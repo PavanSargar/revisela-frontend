@@ -106,3 +106,18 @@ body.dropdown-open {
     transform: translateX(0);
   }
 }
+
+/* Add cursor pointer to interactive elements */
+button:not([disabled]),
+[role="button"]:not([disabled]),
+a:not([disabled]),
+.clickable {
+  cursor: pointer;
+}
+
+button[disabled],
+[role="button"][disabled],
+a[disabled],
+.disabled {
+  cursor: not-allowed;
+}

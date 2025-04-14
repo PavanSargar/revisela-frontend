@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import LayoutWrapper from "@/components/layout/layout-wrapper";
-import AppProviders from "@/providers/AppProviders";
+import AppProviders from "@/providers/app-providers";
 
 import "./globals.css";
 
