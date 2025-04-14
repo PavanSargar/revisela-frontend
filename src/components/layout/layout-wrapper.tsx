@@ -20,10 +20,12 @@ const LayoutWrapper = ({ children }: Props) => {
 
   return (
     <>
-      {!isOnAuthPage && isOnDashboardPage && <RootNavbar />}
+      {!isOnAuthPage && isOnDashboardPage ? <RootNavbar /> : <></>}
       <div className="flex bg-[#FAFAFA]">
-        {!isOnAuthPage && isOnDashboardPage && <Sidebar />}
-        <div className={cn("", !isOnAuthPage && isOnDashboardPage && "ml-5")}>
+        {!isOnAuthPage && isOnDashboardPage ? <Sidebar /> : <></>}
+        <div
+          className={cn("w-full", !isOnAuthPage && isOnDashboardPage && "ml-5")}
+        >
           {children}
         </div>
       </div>

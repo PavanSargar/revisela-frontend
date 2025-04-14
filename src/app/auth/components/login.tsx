@@ -113,6 +113,13 @@ const Login = () => {
       >
         {isPending ? "Logging in..." : "Log In"}
       </Button>
+
+      <p className="text-center text-[14px] text-[#444444]">
+        Don't have an account?{" "}
+        <a href="?signup=true" className="text-[#0890A8]">
+          Sign up
+        </a>
+      </p>
     </form>
   );
 };
