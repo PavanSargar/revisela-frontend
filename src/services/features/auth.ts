@@ -35,6 +35,8 @@ interface UserData {
   name: string;
   email: string;
   username?: string;
+  birthday?: string;
+  role?: string;
   // Add other properties as needed
 }
 
@@ -236,10 +238,10 @@ export const useInitAuthUser = () => {
 
   return useQuery({
     queryKey: ["user", "me"],
-    queryFn: async () => {
+    queryFn: async (): Promise<UserData> => {
       const response = await apiRequest(USER_ENDPOINTS.GET_PROFILE);
       if (response.error) throw response.error;
-      return response.data;
+      return response.data?.data as UserData;
     },
     enabled: isAuthenticated && !!token && !user,
     meta: {

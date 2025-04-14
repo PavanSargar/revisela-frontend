@@ -7,7 +7,7 @@ import { Button, Input, Modal } from "@/components/ui";
 interface DeleteAccountModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onDelete: () => void;
+  onDelete: () => Promise<any>;
 }
 
 const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
@@ -18,15 +18,23 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const [reason, setReason] = useState("");
   const [password, setPassword] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleDelete = async () => {
+    if (!password) {
+      setError("Please enter your password to confirm deletion");
+      return;
+    }
+
     try {
+      setError("");
       setIsDeleting(true);
-      // In a real app, you would verify the password and send the delete request
+      // In a real implementation, we would pass the password to verify
+      // For now, we'll just call the delete function
       await onDelete();
       handleClose();
-    } catch (error) {
-      console.error("Error deleting account:", error);
+    } catch (error: any) {
+      setError(error.message || "Failed to delete account");
     } finally {
       setIsDeleting(false);
     }
@@ -35,6 +43,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const handleClose = () => {
     setReason("");
     setPassword("");
+    setError("");
     onOpenChange(false);
   };
 
@@ -69,6 +78,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
           placeholder="Enter your password to confirm"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={error}
         />
 
         <div className="flex gap-3 mt-2">

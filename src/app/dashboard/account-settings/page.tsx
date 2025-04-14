@@ -1,43 +1,131 @@
 "use client";
-import React, { useState } from "react";
-import { Input, Button, Switch } from "@/components/ui";
+import React, { useState, useEffect } from "react";
+import { Input, Button, Switch, Toast, Loader } from "@/components/ui";
 import { User, PenSquare, Trash2 } from "lucide-react";
-import { useAppSelector } from "@/store";
+import { useAppSelector, useAppDispatch } from "@/store";
+import { logout } from "@/store/slices/authSlice";
 import EditProfileDetail from "./components/edit-profile-detail";
 import DeleteAccountModal from "./components/delete-account-modal";
+import { useInitAuthUser } from "@/services/features/auth";
+import { useUpdateProfile, useDeleteAccount } from "@/services/features/users";
+import { toast, useToast } from "@/components/ui/toast";
 
 const AccountSettings = () => {
-  // In a real app, we would fetch this from the API or Redux store
+  const { toast } = useToast();
+  const dispatch = useAppDispatch();
+
+  // Fetch current user data
+  const {
+    data: userData,
+    isLoading: isLoadingUser,
+    isError,
+  } = useInitAuthUser();
+
+  // Setup mutations
+  const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
+  const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
+
+  // Setup state for user profile
   const [userProfile, setUserProfile] = useState({
-    fullName: "Harsh Fernandes",
-    username: "Harsh",
-    email: "Harsh1192@gmail.com",
-    birthday: "01-Jan-2001",
+    fullName: "",
+    username: "",
+    email: "",
+    birthday: "",
   });
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  // Update local state when user data is loaded
+  useEffect(() => {
+    if (userData) {
+      setUserProfile({
+        fullName: String(userData?.name || ""),
+        username: String(userData?.username || ""),
+        email: String(userData?.email || ""),
+        birthday: String(userData?.birthday || ""),
+      });
+    }
+  }, [userData]);
+
   const handleToggleNotifications = (checked: boolean) => {
     setNotificationsEnabled(checked);
+    // You could also save this preference to the API if there's an endpoint for it
   };
 
   const handleUpdateProfile = (
     field: keyof typeof userProfile,
     value: string
   ) => {
+    // Check if value has actually changed before proceeding
+    if (userProfile[field] === value) {
+      return; // No change, don't update
+    }
+
+    // Update local state first
     setUserProfile((prev) => ({
       ...prev,
       [field]: value,
     }));
-    // In a real app, you would also make an API call to update the user profile
+
+    // Map local field names to API field names
+    const fieldMap: Record<string, string> = {
+      fullName: "name",
+      username: "username",
+      email: "email",
+      birthday: "birthday",
+    };
+
+    console.log(fieldMap[field], value);
+
+    // Call API to update the profile
+    updateProfile(
+      { [fieldMap[field]]: value, _id: userData?._id },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Profile Updated",
+            description: `Your ${field} has been updated successfully.`,
+          });
+        },
+        onError: (error) => {
+          toast({
+            title: "Update Failed",
+            description: error.message || `Failed to update ${field}.`,
+          });
+        },
+      }
+    );
   };
 
   const handleDeleteAccount = async () => {
-    // In a real app, you would make an API call to delete the user's account
-    console.log("Deleting account...");
-    // Simulate API call
-    return new Promise((resolve) => setTimeout(resolve, 1000));
+    return new Promise((resolve, reject) => {
+      deleteAccount(undefined, {
+        onSuccess: () => {
+          // Clear auth state
+          localStorage.removeItem("authToken");
+          dispatch(logout());
+
+          toast({
+            title: "Account Deleted",
+            description: "Your account has been deleted successfully.",
+            type: "success",
+          });
+
+          // Redirect to home page
+          window.location.href = "/";
+          resolve(true);
+        },
+        onError: (error) => {
+          toast({
+            title: "Delete Failed",
+            description: error.message || "Failed to delete your account.",
+            type: "error",
+          });
+          reject(error);
+        },
+      });
+    });
   };
 
   const handleOpenDeleteModal = () => {
@@ -47,6 +135,17 @@ const AccountSettings = () => {
   const handleCloseDeleteModal = (open: boolean) => {
     setIsDeleteModalOpen(open);
   };
+
+  if (isLoadingUser) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader size="large" />
+          <p className="text-lg text-[#444444]">Loading your profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl">
