@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Folder } from "lucide-react";
 import { FolderItem, QuizSetItem } from "./components";
 import { useQuizSets } from "@/services/features/library";
-import { useFolders } from "@/services/features/folders";
 import { Breadcrumb, BreadcrumbItem } from "@/components/ui/Breadcrumb";
 
 export default function LibraryPage() {
@@ -94,7 +93,7 @@ export default function LibraryPage() {
   ];
 
   return (
-    <div className="p-6 ml-64">
+    <div className="">
       <div className="flex items-center gap-2 mb-8">
         <Breadcrumb items={breadcrumbItems} />
         <div className="flex items-center justify-center bg-yellow-100 h-8 w-8 rounded-full ml-2">
