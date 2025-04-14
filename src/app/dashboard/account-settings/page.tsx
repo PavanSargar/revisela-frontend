@@ -1,14 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Input, Button, Switch, Toast, Loader } from "@/components/ui";
-import { User, PenSquare, Trash2 } from "lucide-react";
-import { useAppSelector, useAppDispatch } from "@/store";
+import { Switch, Loader } from "@/components/ui";
+import { User, Trash2 } from "lucide-react";
+import { useAppDispatch } from "@/store";
 import { logout } from "@/store/slices/authSlice";
 import EditProfileDetail from "./components/edit-profile-detail";
 import DeleteAccountModal from "./components/delete-account-modal";
+import ChangePasswordModal from "./components/change-password-modal";
 import { useInitAuthUser } from "@/services/features/auth";
 import { useUpdateProfile, useDeleteAccount } from "@/services/features/users";
-import { toast, useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/toast";
+import { formatToDDMMMYYYY } from "@/lib/utils";
 
 const AccountSettings = () => {
   const { toast } = useToast();
@@ -25,6 +27,11 @@ const AccountSettings = () => {
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
 
+  // Add state to track if fields have been changed already
+  const [fieldEditHistory, setFieldEditHistory] = useState<
+    Record<string, boolean>
+  >({});
+
   // Setup state for user profile
   const [userProfile, setUserProfile] = useState({
     fullName: "",
@@ -35,6 +42,7 @@ const AccountSettings = () => {
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   // Update local state when user data is loaded
   useEffect(() => {
@@ -43,8 +51,14 @@ const AccountSettings = () => {
         fullName: String(userData?.name || ""),
         username: String(userData?.username || ""),
         email: String(userData?.email || ""),
-        birthday: String(userData?.birthday || ""),
+        birthday: formatToDDMMMYYYY(String(userData?.birthday || "")),
       });
+
+      // Load edit history from localStorage
+      const storedHistory = localStorage.getItem(`editHistory_${userData._id}`);
+      if (storedHistory) {
+        setFieldEditHistory(JSON.parse(storedHistory));
+      }
     }
   }, [userData]);
 
@@ -62,6 +76,68 @@ const AccountSettings = () => {
       return; // No change, don't update
     }
 
+    // Check if restricted fields (fullName, birthday) have already been changed once
+    if (
+      (field === "fullName" || field === "birthday") &&
+      fieldEditHistory[field]
+    ) {
+      toast({
+        title: "Edit Restricted",
+        description: `Your ${
+          field === "fullName" ? "full name" : "birthday"
+        } can only be changed once.`,
+        type: "error",
+      });
+      return;
+    }
+
+    // Validate fields based on their type
+    if (value.trim() === "") {
+      toast({
+        title: "Validation Error",
+        description: `${field} cannot be empty.`,
+        type: "error",
+      });
+      return;
+    }
+
+    // Field-specific validation
+    if (field === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a valid email address.",
+        type: "error",
+      });
+      return;
+    }
+
+    if (field === "username" && !/^[a-zA-Z0-9_]+$/.test(value)) {
+      toast({
+        title: "Validation Error",
+        description:
+          "Username can only contain letters, numbers, and underscores.",
+        type: "error",
+      });
+      return;
+    }
+
+    // Birthday validation (assuming DD-MMM-YYYY format)
+    if (field === "birthday") {
+      try {
+        // Simple format check for DD-MMM-YYYY
+        if (!/^\d{2}-[A-Za-z]{3}-\d{4}$/.test(value)) {
+          throw new Error("Invalid date format");
+        }
+      } catch (error) {
+        toast({
+          title: "Validation Error",
+          description: "Invalid date format. Please use DD-MMM-YYYY format.",
+          type: "error",
+        });
+        return;
+      }
+    }
+
     // Update local state first
     setUserProfile((prev) => ({
       ...prev,
@@ -76,19 +152,42 @@ const AccountSettings = () => {
       birthday: "birthday",
     };
 
-    console.log(fieldMap[field], value);
-
     // Call API to update the profile
     updateProfile(
       { [fieldMap[field]]: value, _id: userData?._id },
       {
         onSuccess: () => {
-          toast({
-            title: "Profile Updated",
-            description: `Your ${field} has been updated successfully.`,
-          });
+          // If this is a restricted field, mark it as changed in history
+          if (field === "fullName" || field === "birthday") {
+            const updatedHistory = { ...fieldEditHistory, [field]: true };
+            setFieldEditHistory(updatedHistory);
+
+            // Store in localStorage to persist across sessions
+            if (userData?._id) {
+              localStorage.setItem(
+                `editHistory_${userData._id}`,
+                JSON.stringify(updatedHistory)
+              );
+            }
+
+            toast({
+              title: "Profile Updated",
+              description: `Your ${field} has been updated. Note that this field can only be changed once.`,
+            });
+          } else {
+            toast({
+              title: "Profile Updated",
+              description: `Your ${field} has been updated successfully.`,
+            });
+          }
         },
         onError: (error) => {
+          // Revert local state on error
+          setUserProfile((prev) => ({
+            ...prev,
+            [field]: userProfile[field], // Revert to previous value
+          }));
+
           toast({
             title: "Update Failed",
             description: error.message || `Failed to update ${field}.`,
@@ -136,6 +235,14 @@ const AccountSettings = () => {
     setIsDeleteModalOpen(open);
   };
 
+  const handleOpenPasswordModal = () => {
+    setIsPasswordModalOpen(true);
+  };
+
+  const handleClosePasswordModal = (open: boolean) => {
+    setIsPasswordModalOpen(open);
+  };
+
   if (isLoadingUser) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -176,6 +283,10 @@ const AccountSettings = () => {
             label="Full Name"
             value={userProfile.fullName}
             accentLabel={true}
+            disabled={fieldEditHistory.fullName}
+            editHint={
+              fieldEditHistory.fullName ? "Can only be changed once" : undefined
+            }
             onSave={(value) => handleUpdateProfile("fullName", value)}
           />
 
@@ -196,6 +307,10 @@ const AccountSettings = () => {
             label="Birthday"
             value={userProfile.birthday}
             fieldType="date"
+            disabled={fieldEditHistory.birthday}
+            editHint={
+              fieldEditHistory.birthday ? "Can only be changed once" : undefined
+            }
             onSave={(value) => handleUpdateProfile("birthday", value)}
           />
         </div>
@@ -208,7 +323,10 @@ const AccountSettings = () => {
         </h2>
 
         <div className="space-y-4">
-          <button className="text-[#0890A8] font-medium text-[18px]">
+          <button
+            className="text-[#0890A8] font-medium text-[18px]"
+            onClick={handleOpenPasswordModal}
+          >
             Change/Create Password
           </button>
 
@@ -252,6 +370,13 @@ const AccountSettings = () => {
         isOpen={isDeleteModalOpen}
         onOpenChange={handleCloseDeleteModal}
         onDelete={handleDeleteAccount}
+      />
+
+      {/* Change Password Modal */}
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onOpenChange={handleClosePasswordModal}
+        userId={userData?._id as string}
       />
     </div>
   );
