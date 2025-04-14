@@ -9,6 +9,8 @@ interface EditProfileDetailProps {
   value: string;
   fieldType?: "text" | "email" | "date";
   accentLabel?: boolean;
+  disabled?: boolean;
+  editHint?: string;
   onSave: (newValue: string) => void;
 }
 
@@ -16,6 +18,9 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
   label,
   value,
   fieldType = "text",
+  accentLabel,
+  disabled = false,
+  editHint,
   onSave,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -155,8 +160,32 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
         "Dec",
       ];
       const monthStr = months[parseInt(dateValues.month) - 1] || "";
+
+      // Don't save if any date part is missing
+      if (!dateValues.day || !dateValues.month || !dateValues.year) {
+        // Show error or handle incomplete date
+        setIsEditing(false);
+        return;
+      }
+
       newValue = `${dateValues.day}-${monthStr}-${dateValues.year}`;
     } else {
+      // For non-date fields, check if value is empty
+      if (editValue.trim() === "") {
+        setIsEditing(false);
+        return;
+      }
+
+      // Email validation
+      if (
+        fieldType === "email" &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editValue)
+      ) {
+        // Handle invalid email
+        setIsEditing(false);
+        return;
+      }
+
       newValue = editValue;
     }
 
@@ -179,7 +208,11 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
   return (
     <div
       className={`p-4 rounded-md flex justify-between items-center ${
-        isHovered || isEditing ? "bg-gray-100" : "bg-transparent"
+        isHovered || isEditing
+          ? disabled
+            ? "bg-gray-50"
+            : "bg-gray-100"
+          : "bg-transparent"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -222,7 +255,7 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
           <div>
             <p
               className={`${
-                Boolean(isHovered || isEditing)
+                Boolean(isHovered || isEditing) && !disabled
                   ? "text-[#0890A8]"
                   : "text-secondary-black"
               } text-sm`}
@@ -231,13 +264,19 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
             </p>
             <p className="text-secondary-black">{value}</p>
           </div>
-          <button
-            className="text-[#0890A8] flex items-center cursor-pointer"
-            onClick={handleEdit}
-          >
-            <Pen size={18} />
-            <span className="ml-1 text-sm">Edit</span>
-          </button>
+          {disabled ? (
+            <div className="text-gray-400 text-sm italic">
+              {editHint || "Cannot be edited"}
+            </div>
+          ) : (
+            <button
+              className="text-[#0890A8] flex items-center cursor-pointer"
+              onClick={handleEdit}
+            >
+              <Pen size={18} />
+              <span className="ml-1 text-sm">Edit</span>
+            </button>
+          )}
         </>
       )}
     </div>
