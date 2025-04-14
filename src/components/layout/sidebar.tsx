@@ -87,7 +87,7 @@ const Sidebar = (props: Props) => {
   ];
 
   return (
-    <aside className="fixed top-[3.75rem] z-50 left-0 h-full w-64 bg-[#FAFAFA] overflow-y-auto hide-scrollbar">
+    <aside className="fixed top-[5rem] z-50 left-0 h-full w-64 bg-[#FAFAFA] overflow-y-auto hide-scrollbar">
       <div className="flex flex-col p-4">
         <nav className="space-y-2">
           {/* Main Navigation */}

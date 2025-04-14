@@ -1,15 +1,19 @@
+"use client";
 import React from "react";
+import {
+  RecentSection,
+  LibrarySection,
+  SharedSection,
+  BookmarkedSection,
+} from "./components";
 
-type Props = {};
-
-const Dashboard = (props: Props) => {
+const Dashboard = () => {
   return (
-    <div>
-      <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
-      <p>
-        Welcome to your dashboard. Here's an overview of your recent activity
-        and content.
-      </p>
+    <div className="space-y-10">
+      <RecentSection />
+      <LibrarySection />
+      <SharedSection />
+      <BookmarkedSection />
     </div>
   );
 };
