@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { USER_ENDPOINTS } from "../endpoints";
 import { apiRequest } from "../apiClient";
+import { useAppSelector } from "@/store";
 
 // Add these types if not already defined
 interface User {
@@ -8,6 +9,7 @@ interface User {
   name: string;
   username?: string;
   email: string;
+  birthday?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -126,6 +128,65 @@ export const useDeleteUser = () => {
     onSuccess: (userId) => {
       queryClient.invalidateQueries({ queryKey: ["user", userId] });
       queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+};
+
+// Update current user's profile
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAppSelector((state) => state.auth);
+
+  return useMutation({
+    mutationFn: async (data: Partial<User>) => {
+      const { _id, ...rest } = data;
+      if (!data?._id) {
+        throw new Error("User ID is required to update profile");
+      }
+
+      const response = await apiRequest<User>(
+        USER_ENDPOINTS.UPDATE_PROFILE(String(_id)),
+        {
+          body: rest,
+        }
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data!;
+    },
+    onSuccess: ({ _id }) => {
+      queryClient.invalidateQueries({ queryKey: ["user", "me"] });
+      queryClient.invalidateQueries({ queryKey: ["user", String(_id)] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+};
+
+// Delete user's own account
+export const useDeleteAccount = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAppSelector((state) => state.auth);
+
+  return useMutation({
+    mutationFn: async () => {
+      if (!user?.id) {
+        throw new Error("User ID is required to delete account");
+      }
+
+      const response = await apiRequest(USER_ENDPOINTS.DELETE_ACCOUNT(user.id));
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return true;
+    },
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["user", "me"] });
+      queryClient.removeQueries({ queryKey: ["user", user?.id] });
     },
   });
 };

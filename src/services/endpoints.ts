@@ -59,10 +59,11 @@ export const USER_ENDPOINTS = {
     method: "GET",
   } as EndpointConfig,
 
-  UPDATE_PROFILE: {
-    url: `${API_BASE_URL}/users/profile`,
-    method: "PUT",
-  } as EndpointConfig,
+  UPDATE_PROFILE: (userId: string) =>
+    ({
+      url: `${API_BASE_URL}/users/${userId}`,
+      method: "PATCH",
+    } as EndpointConfig),
 
   GET_USER: (userId: string) =>
     ({
@@ -70,10 +71,11 @@ export const USER_ENDPOINTS = {
       method: "GET",
     } as EndpointConfig),
 
-  DELETE_ACCOUNT: {
-    url: `${API_BASE_URL}/users/account`,
-    method: "DELETE",
-  } as EndpointConfig,
+  DELETE_ACCOUNT: (userId: string) =>
+    ({
+      url: `${API_BASE_URL}/users/${userId}`,
+      method: "DELETE",
+    } as EndpointConfig),
 
   GET_ALL_USERS: {
     url: `${API_BASE_URL}/users`,

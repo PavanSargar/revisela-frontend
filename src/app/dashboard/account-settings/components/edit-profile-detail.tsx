@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Pen, Check, X } from "lucide-react";
 import { Input } from "@/components/ui";
 import { DateInput } from "@/components/ui/DateInput";
@@ -59,6 +59,42 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
     return { month: "", day: "", year: "" };
   });
 
+  // Update edit value when prop value changes
+  useEffect(() => {
+    setEditValue(value);
+
+    // Also update date values if this is a date field
+    if (fieldType === "date" && value) {
+      try {
+        const dateParts = value.split("-");
+        if (dateParts.length === 3) {
+          const months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+          const monthIndex = months.findIndex((m) => m === dateParts[1]) + 1;
+          setDateValues({
+            day: dateParts[0],
+            month: monthIndex < 10 ? `0${monthIndex}` : `${monthIndex}`,
+            year: dateParts[2],
+          });
+        }
+      } catch (error) {
+        console.error("Error parsing date:", error);
+      }
+    }
+  }, [value, fieldType]);
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -66,9 +102,42 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
   const handleCancel = () => {
     setIsEditing(false);
     setEditValue(value); // Reset to original value
+
+    // Reset date values if this is a date field
+    if (fieldType === "date" && value) {
+      try {
+        const dateParts = value.split("-");
+        if (dateParts.length === 3) {
+          const months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+          const monthIndex = months.findIndex((m) => m === dateParts[1]) + 1;
+          setDateValues({
+            day: dateParts[0],
+            month: monthIndex < 10 ? `0${monthIndex}` : `${monthIndex}`,
+            year: dateParts[2],
+          });
+        }
+      } catch (error) {
+        console.error("Error parsing date:", error);
+      }
+    }
   };
 
   const handleSave = () => {
+    let newValue;
+
     if (fieldType === "date") {
       // Convert date values to the format "DD-MMM-YYYY"
       const months = [
@@ -86,11 +155,16 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
         "Dec",
       ];
       const monthStr = months[parseInt(dateValues.month) - 1] || "";
-      const formattedDate = `${dateValues.day}-${monthStr}-${dateValues.year}`;
-      onSave(formattedDate);
+      newValue = `${dateValues.day}-${monthStr}-${dateValues.year}`;
     } else {
-      onSave(editValue);
+      newValue = editValue;
     }
+
+    // Only save if the value has actually changed
+    if (newValue !== value) {
+      onSave(newValue);
+    }
+
     setIsEditing(false);
   };
 
