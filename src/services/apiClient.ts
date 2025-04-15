@@ -107,3 +107,106 @@ export async function apiRequest<T = ApiData>(
     };
   }
 }
+
+// Type for file upload request options
+export interface FileUploadOptions {
+  file: File;
+  additionalFields?: Record<string, string>;
+  fileFieldName?: string;
+  headers?: Record<string, string>;
+  withAuth?: boolean;
+}
+
+/**
+ * Makes a file upload request using the endpoint configuration
+ *
+ * @param endpoint The endpoint configuration
+ * @param options Upload options including file and additional fields
+ * @returns Promise with typed response
+ */
+export async function uploadFile<T = ApiData>(
+  endpoint: EndpointConfig,
+  options: FileUploadOptions
+): Promise<ApiResponse<T>> {
+  try {
+    const {
+      file,
+      additionalFields = {},
+      fileFieldName,
+      headers = {},
+      withAuth = true,
+    } = options;
+
+    // Create FormData
+    const formData = new FormData();
+
+    // Add the file with the appropriate field name
+    const fieldName =
+      fileFieldName || endpoint.url.includes("profile")
+        ? "profileImage"
+        : endpoint.url.includes("question")
+        ? "questionImage"
+        : endpoint.url.includes("document")
+        ? "document"
+        : "image";
+
+    formData.append(fieldName, file);
+
+    // Add any additional fields
+    Object.entries(additionalFields).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    // Setup headers with auth token if required
+    const requestHeaders: HeadersInit = {
+      // Don't set Content-Type for FormData, browser will set it with boundary
+      ...headers,
+    };
+
+    if (withAuth) {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        requestHeaders["Authorization"] = `Bearer ${token}`;
+      }
+    }
+
+    // Make the request
+    const response = await fetch(endpoint.url, {
+      method: endpoint.method,
+      headers: requestHeaders,
+      body: formData,
+    });
+
+    // Parse the response
+    let data = null;
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json();
+    }
+
+    if (!response.ok) {
+      // Handle API error responses
+      const error = new Error(
+        data?.message || `Request failed with status ${response.status}`
+      );
+      return {
+        data: null,
+        error,
+        status: response.status,
+      };
+    }
+
+    return {
+      data,
+      error: null,
+      status: response.status,
+    };
+  } catch (error) {
+    // Handle network or other errors
+    return {
+      data: null,
+      error: error instanceof Error ? error : new Error(String(error)),
+      status: 0, // Network error or other client-side error
+    };
+  }
+}

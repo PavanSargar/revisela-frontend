@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Switch, Loader } from "@/components/ui";
-import { User, Trash2 } from "lucide-react";
+import { User, Trash2, Upload } from "lucide-react";
 import { useAppDispatch } from "@/store";
 import { logout } from "@/store/slices/authSlice";
 import EditProfileDetail from "./components/edit-profile-detail";
@@ -11,6 +11,7 @@ import { useInitAuthUser } from "@/services/features/auth";
 import { useUpdateProfile, useDeleteAccount } from "@/services/features/users";
 import { useToast } from "@/components/ui/toast";
 import { formatToDDMMMYYYY } from "@/lib/utils";
+import { useUploadProfileImageAlt } from "@/services/features/uploads";
 
 const AccountSettings = () => {
   const { toast } = useToast();
@@ -26,6 +27,8 @@ const AccountSettings = () => {
   // Setup mutations
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount();
+  const { mutate: uploadProfileImage, isPending: isUploadingProfileImage } =
+    useUploadProfileImageAlt();
 
   // Add state to track if fields have been changed already
   const [fieldEditHistory, setFieldEditHistory] = useState<
@@ -38,7 +41,13 @@ const AccountSettings = () => {
     username: "",
     email: "",
     birthday: "",
+    profileImage: "",
   });
+
+  // Add state for profile image
+  const [profileImage, setProfileImage] = useState("");
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -52,7 +61,13 @@ const AccountSettings = () => {
         username: String(userData?.username || ""),
         email: String(userData?.email || ""),
         birthday: formatToDDMMMYYYY(String(userData?.birthday || "")),
+        profileImage: String(userData?.profileImage || ""),
       });
+
+      // Set profile image if it exists
+      if (userData?.profileImage) {
+        setProfileImage(userData.profileImage);
+      }
 
       // Load edit history from localStorage
       const storedHistory = localStorage.getItem(`editHistory_${userData._id}`);
@@ -243,6 +258,54 @@ const AccountSettings = () => {
     setIsPasswordModalOpen(open);
   };
 
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingImage(true);
+
+    try {
+      // Use the uploadProfileImage mutation
+      uploadProfileImage(
+        { file },
+        {
+          onSuccess: (data) => {
+            // Only update local state with the new image URL
+            setProfileImage(data.url);
+
+            toast({
+              title: "Profile Updated",
+              description: "Your profile image has been updated successfully.",
+            });
+          },
+          onError: (error) => {
+            toast({
+              title: "Upload Failed",
+              description: error.message || "Failed to upload image.",
+              type: "error",
+            });
+          },
+          onSettled: () => {
+            setIsUploadingImage(false);
+          },
+        }
+      );
+    } catch (error: any) {
+      toast({
+        title: "Upload Failed",
+        description: error.message || "Failed to upload image.",
+        type: "error",
+      });
+      setIsUploadingImage(false);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   if (isLoadingUser) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -268,11 +331,51 @@ const AccountSettings = () => {
 
         <div className="flex items-center mb-6">
           <div className="">
-            <div className="relative h-[96px] w-[96px] bg-gray-200 rounded-full flex flex-col items-center justify-center">
-              <User height={57} width={57} className="text-gray-500" />
-              <div className="h-[2px] w-9/12 bg-[#444]" />
-              <button className="absolute cursor-pointer z-10 bottom-0 text-[14px] text-[#444444]">
-                Edit
+            <div className="relative h-[96px] w-[96px] bg-gray-200 rounded-full flex flex-col items-center justify-center overflow-hidden">
+              {profileImage ? (
+                <div className="relative h-full w-full">
+                  <img
+                    src={profileImage}
+                    alt="Profile"
+                    className={`h-full w-full object-cover ${
+                      isUploadingImage ? "blur-sm" : ""
+                    }`}
+                  />
+                  {isUploadingImage && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                      <Loader size="small" color="#FFFFFF" />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <User height={57} width={57} className="text-gray-500" />
+                  <div className="h-[2px] w-9/12 bg-[#444]" />
+                </>
+              )}
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/png,image/jpeg,image/gif"
+                className="hidden"
+              />
+              <button
+                className="absolute cursor-pointer z-10 bottom-0 left-0 right-0 text-[14px] text-white bg-black bg-opacity-50 py-1 rounded-b-full"
+                onClick={triggerFileInput}
+                disabled={isUploadingImage}
+              >
+                {isUploadingImage ? (
+                  <div className="flex items-center justify-center text-[12px]">
+                    <span className="mr-1">Uploading</span>
+                    <span className="animate-pulse">...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center text-[12px]">
+                    <Upload size={14} className="mr-1" />
+                    {profileImage ? "Change" : "Upload"}
+                  </div>
+                )}
               </button>
             </div>
           </div>

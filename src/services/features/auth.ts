@@ -37,6 +37,7 @@ interface UserData {
   username?: string;
   birthday?: string;
   role?: string;
+  profileImage?: string;
   // Add other properties as needed
 }
 
