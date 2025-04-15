@@ -8,40 +8,15 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:3000/api/v1",
-      "type": "string"
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          "// Global pre-request script that runs before every request",
-          "console.log('Making request to: ' + pm.request.url.toString());"
-        ]
-      }
+      "value": "https://api.revisela.com",
+      "type": "string",
+      "description": "API base URL"
     },
     {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          "// Global test script that runs after every request",
-          "console.log('Response status: ' + pm.response.code);",
-          "",
-          "// Log any errors",
-          "if (pm.response.code >= 400) {",
-          "    console.error('Request failed with status: ' + pm.response.code);",
-          "    try {",
-          "        console.error(JSON.stringify(pm.response.json(), null, 2));",
-          "    } catch (e) {",
-          "        console.error(pm.response.text());",
-          "    }",
-          "}"
-        ]
-      }
+      "key": "authToken",
+      "value": "",
+      "type": "string",
+      "description": "Authentication token"
     }
   ],
   "item": [
@@ -55,31 +30,10 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "// Check if we got a valid response first",
-                  "if (pm.response.code === 200 || pm.response.code === 201) {",
-                  "    try {",
-                  "        const jsonData = pm.response.json();",
-                  "        ",
-                  "        // Check if access_token exists and save it",
-                  "        if (jsonData.access_token) {",
-                  "            pm.environment.set(\"authToken\", jsonData.access_token);",
-                  "            console.log(\"✅ Auth token saved successfully from registration\");",
-                  "        } else {",
-                  "            console.error(\"❌ No access_token found in the response\");",
-                  "            console.log(\"Response body:\", JSON.stringify(jsonData));",
-                  "        }",
-                  "        ",
-                  "        // Save user ID if available",
-                  "        if (jsonData.user && jsonData.user._id) {",
-                  "            pm.environment.set(\"userId\", jsonData.user._id);",
-                  "            console.log(\"✅ User ID saved: \" + jsonData.user._id);",
-                  "        }",
-                  "    } catch (error) {",
-                  "        console.error(\"❌ Error parsing response JSON: \" + error);",
-                  "        console.log(\"Response body: \" + pm.response.text());",
-                  "    }",
-                  "} else {",
-                  "    console.error(\"❌ Request failed with status: \" + pm.response.code);",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access_token) {",
+                  "    pm.globals.set(\"authToken\", jsonData.access_token);",
+                  "    console.log(\"Auth token saved from registration\");",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -114,31 +68,10 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "// Check if we got a valid response first",
-                  "if (pm.response.code === 200 || pm.response.code === 201) {",
-                  "    try {",
-                  "        const jsonData = pm.response.json();",
-                  "        ",
-                  "        // Check if access_token exists and save it",
-                  "        if (jsonData.access_token) {",
-                  "            pm.environment.set(\"authToken\", jsonData.access_token);",
-                  "            console.log(\"✅ Auth token saved successfully from login\");",
-                  "        } else {",
-                  "            console.error(\"❌ No access_token found in the response\");",
-                  "            console.log(\"Response body:\", JSON.stringify(jsonData));",
-                  "        }",
-                  "        ",
-                  "        // Save user ID if available",
-                  "        if (jsonData.user && jsonData.user._id) {",
-                  "            pm.environment.set(\"userId\", jsonData.user._id);",
-                  "            console.log(\"✅ User ID saved: \" + jsonData.user._id);",
-                  "        }",
-                  "    } catch (error) {",
-                  "        console.error(\"❌ Error parsing response JSON: \" + error);",
-                  "        console.log(\"Response body: \" + pm.response.text());",
-                  "    }",
-                  "} else {",
-                  "    console.error(\"❌ Request failed with status: \" + pm.response.code);",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access_token) {",
+                  "    pm.globals.set(\"authToken\", jsonData.access_token);",
+                  "    console.log(\"Auth token saved from login\");",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -163,29 +96,6 @@
               "path": ["auth", "login"]
             },
             "description": "Login with email and password"
-          },
-          "response": []
-        },
-        {
-          "name": "Admin Login",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password123\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
-            },
-            "description": "Login as a system admin user"
           },
           "response": []
         }
@@ -224,7 +134,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["users"]
             },
-            "description": "Create a new user"
+            "description": "Create a new user (requires admin)"
           },
           "response": []
         },
@@ -274,7 +184,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "{{userId}}",
+                  "value": "userId",
                   "description": "User ID to fetch"
                 }
               ]
@@ -345,7 +255,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "{{userId}}",
+                  "value": "userId",
                   "description": "User ID to update"
                 }
               ]
@@ -376,7 +286,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "{{userId}}",
+                  "value": "userId",
                   "description": "User ID to delete"
                 }
               ]
@@ -408,6 +318,41 @@
             "description": "Get the current user's profile"
           },
           "response": []
+        },
+        {
+          "name": "Upload Profile Image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "profileImage",
+                  "type": "file",
+                  "src": "/path/to/your/profile.jpg",
+                  "description": "Image file to use as profile picture"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/profile/image",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "profile", "image"]
+            },
+            "description": "Upload a profile image for the current user"
+          },
+          "response": []
         }
       ],
       "description": "User management endpoints"
@@ -417,21 +362,6 @@
       "item": [
         {
           "name": "Create Quiz",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData && jsonData._id) {",
-                  "    pm.environment.set(\"quizId\", jsonData._id);",
-                  "    console.log(\"Quiz ID saved: \" + jsonData._id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
           "request": {
             "auth": {
               "type": "bearer",
@@ -499,7 +429,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "{{quizId}}",
+                  "value": "quizId",
                   "description": "Quiz ID to fetch"
                 }
               ]
@@ -633,7 +563,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "{{quizId}}",
+                  "value": "quizId",
                   "description": "Quiz ID to update"
                 }
               ]
@@ -664,7 +594,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "{{quizId}}",
+                  "value": "quizId",
                   "description": "Quiz ID to delete"
                 }
               ]
@@ -677,25 +607,10 @@
       "description": "Quiz management endpoints"
     },
     {
-      "name": "Classes",
+      "name": "File Uploads",
       "item": [
         {
-          "name": "Create Class",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData && jsonData._id) {",
-                  "    pm.environment.set(\"classId\", jsonData._id);",
-                  "    console.log(\"Class ID saved: \" + jsonData._id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
+          "name": "Upload Generic Image",
           "request": {
             "auth": {
               "type": "bearer",
@@ -710,40 +625,27 @@
             "method": "POST",
             "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Advanced Physics\",\n    \"description\": \"A class for advanced physics studies\",\n    \"subject\": \"Physics\",\n    \"isPublic\": false\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/path/to/your/image.jpg",
+                  "description": "Image file (JPEG, PNG, GIF, WEBP, JPG)"
                 }
-              }
+              ]
             },
             "url": {
-              "raw": "{{baseUrl}}/classes",
+              "raw": "{{baseUrl}}/uploads/image",
               "host": ["{{baseUrl}}"],
-              "path": ["classes"]
+              "path": ["uploads", "image"]
             },
-            "description": "Create a new class"
+            "description": "Upload a generic image file (max 5MB)"
           },
           "response": []
         },
         {
-          "name": "Add Member",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = pm.response.json();",
-                  "if (jsonData && jsonData._id) {",
-                  "    pm.environment.set(\"classMemberId\", jsonData._id);",
-                  "    console.log(\"Class Member ID saved: \" + jsonData._id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
+          "name": "Upload Document",
           "request": {
             "auth": {
               "type": "bearer",
@@ -758,31 +660,27 @@
             "method": "POST",
             "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"student@example.com\",\n    \"role\": \"member\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/classes/:id/members",
-              "host": ["{{baseUrl}}"],
-              "path": ["classes", ":id", "members"],
-              "variable": [
+              "mode": "formdata",
+              "formdata": [
                 {
-                  "key": "id",
-                  "value": "{{classId}}"
+                  "key": "document",
+                  "type": "file",
+                  "src": "/path/to/your/document.pdf",
+                  "description": "Document file (PDF or Word)"
                 }
               ]
             },
-            "description": "Add a member to a class"
+            "url": {
+              "raw": "{{baseUrl}}/uploads/document",
+              "host": ["{{baseUrl}}"],
+              "path": ["uploads", "document"]
+            },
+            "description": "Upload a document file (PDF, Word) (max 10MB)"
           },
           "response": []
         },
         {
-          "name": "Get My Classes",
+          "name": "Get Presigned URL",
           "request": {
             "auth": {
               "type": "bearer",
@@ -797,85 +695,23 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/classes/my-classes",
+              "raw": "{{baseUrl}}/uploads/:key",
               "host": ["{{baseUrl}}"],
-              "path": ["classes", "my-classes"]
-            },
-            "description": "Get all classes the current user is a member of"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Class by ID",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/classes/:id",
-              "host": ["{{baseUrl}}"],
-              "path": ["classes", ":id"],
+              "path": ["uploads", ":key"],
               "variable": [
                 {
-                  "key": "id",
-                  "value": "{{classId}}"
+                  "key": "key",
+                  "value": "images/12345.jpg",
+                  "description": "S3 object key"
                 }
               ]
             },
-            "description": "Get a class by ID"
+            "description": "Get a presigned URL for accessing a file"
           },
           "response": []
         },
         {
-          "name": "Update Class",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Updated Physics Class\",\n    \"description\": \"Updated description for the physics class\",\n    \"subject\": \"Physics Advanced\",\n    \"isPublic\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/classes/:id",
-              "host": ["{{baseUrl}}"],
-              "path": ["classes", ":id"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{classId}}"
-                }
-              ]
-            },
-            "description": "Update a class (admin only)"
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Class",
+          "name": "Delete File",
           "request": {
             "auth": {
               "type": "bearer",
@@ -890,52 +726,23 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/classes/:id",
+              "raw": "{{baseUrl}}/uploads/:key",
               "host": ["{{baseUrl}}"],
-              "path": ["classes", ":id"],
+              "path": ["uploads", ":key"],
               "variable": [
                 {
-                  "key": "id",
-                  "value": "{{classId}}"
+                  "key": "key",
+                  "value": "images/12345.jpg",
+                  "description": "S3 object key to delete"
                 }
               ]
             },
-            "description": "Delete a class (admin only)"
+            "description": "Delete a file from S3"
           },
           "response": []
         },
         {
-          "name": "Get Class Members",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/classes/:id/members",
-              "host": ["{{baseUrl}}"],
-              "path": ["classes", ":id", "members"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{classId}}"
-                }
-              ]
-            },
-            "description": "Get all members of a class"
-          },
-          "response": []
-        },
-        {
-          "name": "Accept Invitation",
+          "name": "Upload Profile Image (Alternative)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -949,81 +756,28 @@
             },
             "method": "POST",
             "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/classes/:id/accept-invitation",
-              "host": ["{{baseUrl}}"],
-              "path": ["classes", ":id", "accept-invitation"],
-              "variable": [
+            "body": {
+              "mode": "formdata",
+              "formdata": [
                 {
-                  "key": "id",
-                  "value": "{{classId}}"
+                  "key": "profileImage",
+                  "type": "file",
+                  "src": "/path/to/your/profile.jpg",
+                  "description": "Profile image file"
                 }
               ]
             },
-            "description": "Accept an invitation to join a class"
+            "url": {
+              "raw": "{{baseUrl}}/uploads/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["uploads", "profile"]
+            },
+            "description": "Alternative endpoint to upload a profile image via the uploads controller"
           },
           "response": []
         },
         {
-          "name": "Get Pending Invitations",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/classes/invitations/pending",
-              "host": ["{{baseUrl}}"],
-              "path": ["classes", "invitations", "pending"]
-            },
-            "description": "Get all pending class invitations for the current user"
-          },
-          "response": []
-        },
-        {
-          "name": "Remove Member",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/classes/:classId/members/:memberId",
-              "host": ["{{baseUrl}}"],
-              "path": ["classes", ":classId", "members", ":memberId"],
-              "variable": [
-                {
-                  "key": "classId",
-                  "value": "{{classId}}"
-                },
-                {
-                  "key": "memberId",
-                  "value": "{{classMemberId}}"
-                }
-              ]
-            },
-            "description": "Remove a member from a class (admin only or self-removal)"
-          },
-          "response": []
-        },
-        {
-          "name": "Add Quiz to Class",
+          "name": "Upload Quiz Question Image",
           "request": {
             "auth": {
               "type": "bearer",
@@ -1037,201 +791,32 @@
             },
             "method": "POST",
             "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/classes/:classId/quizzes/:quizId",
-              "host": ["{{baseUrl}}"],
-              "path": ["classes", ":classId", "quizzes", ":quizId"],
-              "variable": [
+            "body": {
+              "mode": "formdata",
+              "formdata": [
                 {
-                  "key": "classId",
-                  "value": "{{classId}}"
+                  "key": "questionImage",
+                  "type": "file",
+                  "src": "/path/to/your/question-image.jpg"
                 },
                 {
                   "key": "quizId",
-                  "value": "{{quizId}}"
+                  "value": "64f3a1b2c3d4e5f6a7b8c9d0",
+                  "type": "text"
                 }
               ]
-            },
-            "description": "Add a quiz to a class (admin or collaborator only)"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Class Quizzes",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/classes/:id/quizzes",
-              "host": ["{{baseUrl}}"],
-              "path": ["classes", ":id", "quizzes"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{classId}}"
-                }
-              ]
-            },
-            "description": "Get all quizzes associated with a class"
-          },
-          "response": []
-        },
-        {
-          "name": "Invite New User to Class",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"newstudent@example.com\",\n    \"role\": \"member\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             },
             "url": {
-              "raw": "{{baseUrl}}/classes/:id/members",
+              "raw": "{{baseUrl}}/uploads/quiz-question",
               "host": ["{{baseUrl}}"],
-              "path": ["classes", ":id", "members"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{classId}}"
-                }
-              ]
+              "path": ["uploads", "quiz-question"]
             },
-            "description": "Add a new user to a class (will send invitation email)"
+            "description": "Upload an image for a quiz question"
           },
           "response": []
         }
       ],
-      "description": "Class management endpoints"
-    },
-    {
-      "name": "Emails",
-      "item": [
-        {
-          "name": "Send Class Invitation",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"newuser@example.com\",\n    \"className\": \"Test Class\",\n    \"role\": \"member\",\n    \"sendRegistrationLink\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/emails/send-invitation",
-              "host": ["{{baseUrl}}"],
-              "path": ["emails", "send-invitation"]
-            },
-            "description": "Send a class invitation email (for testing purposes)"
-          },
-          "response": []
-        },
-        {
-          "name": "Send Class Notification",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"user@example.com\",\n    \"className\": \"Test Class\",\n    \"event\": \"added\",\n    \"role\": \"member\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/emails/send-notification",
-              "host": ["{{baseUrl}}"],
-              "path": ["emails", "send-notification"]
-            },
-            "description": "Send a class notification email (for testing purposes)"
-          },
-          "response": []
-        },
-        {
-          "name": "Test Email Service",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{authToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"email\": \"recipient@example.com\",\n    \"subject\": \"Test Email\",\n    \"content\": \"This is a test email from the Revisela API\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/emails/test",
-              "host": ["{{baseUrl}}"],
-              "path": ["emails", "test"]
-            },
-            "description": "Send a basic test email to verify email service functionality"
-          },
-          "response": []
-        }
-      ],
-      "description": "Email testing endpoints"
+      "description": "File upload endpoints"
     }
   ]
 }

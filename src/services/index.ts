@@ -1,9 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
 
-// Export endpoints and API client
-export * from "./endpoints";
-export * from "./apiClient";
-
 // Create a client with default settings
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,3 +10,16 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+// Export endpoints and API client
+export * from "./endpoints";
+export * from "./apiClient";
+
+// Export all feature services
+export * from "./features/auth";
+export * from "./features/users";
+export * from "./features/folders";
+export * from "./features/quizzes";
+export * from "./features/classes";
+export * from "./features/emails";
+export * from "./features/uploads";

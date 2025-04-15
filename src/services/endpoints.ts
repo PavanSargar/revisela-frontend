@@ -316,3 +316,43 @@ export const EMAIL_ENDPOINTS = {
     method: "POST",
   } as EndpointConfig,
 };
+
+// Upload endpoints
+export const UPLOAD_ENDPOINTS = {
+  UPLOAD_IMAGE: {
+    url: `${API_BASE_URL}/uploads/image`,
+    method: "POST",
+  } as EndpointConfig,
+
+  UPLOAD_DOCUMENT: {
+    url: `${API_BASE_URL}/uploads/document`,
+    method: "POST",
+  } as EndpointConfig,
+
+  UPLOAD_PROFILE_IMAGE: {
+    url: `${API_BASE_URL}/users/profile/image`,
+    method: "POST",
+  } as EndpointConfig,
+
+  UPLOAD_PROFILE_IMAGE_ALT: {
+    url: `${API_BASE_URL}/uploads/profile`,
+    method: "POST",
+  } as EndpointConfig,
+
+  UPLOAD_QUIZ_QUESTION_IMAGE: {
+    url: `${API_BASE_URL}/uploads/quiz-question`,
+    method: "POST",
+  } as EndpointConfig,
+
+  GET_PRESIGNED_URL: (key: string) =>
+    ({
+      url: `${API_BASE_URL}/uploads/${key}`,
+      method: "GET",
+    } as EndpointConfig),
+
+  DELETE_FILE: (key: string) =>
+    ({
+      url: `${API_BASE_URL}/uploads/${key}`,
+      method: "DELETE",
+    } as EndpointConfig),
+};

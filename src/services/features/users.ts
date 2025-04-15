@@ -10,6 +10,7 @@ interface User {
   username?: string;
   email: string;
   birthday?: string;
+  profileImage?: string;
   createdAt: string;
   updatedAt: string;
 }
