@@ -2,11 +2,11 @@
 import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { QuizSetItem } from "../../dashboard/library/components";
+import { QuizSetItem } from "../library/components";
 import ChevronRightIcon from "@/components/icons/chevron-right";
 
-const LibrarySection = () => {
-  const libraryQuizSets = [
+const BookmarkedSection = () => {
+  const bookmarkedQuizSets = [
     {
       id: "1",
       title: "IB Calculus",
@@ -24,7 +24,7 @@ const LibrarySection = () => {
         "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
       tags: ["Maths", "IB", "Calculus"],
       creator: { name: "You", isCurrentUser: true, shared: false },
-      isBookmarked: false,
+      isBookmarked: true,
     },
     {
       id: "3",
@@ -33,7 +33,7 @@ const LibrarySection = () => {
         "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
       tags: ["Maths", "IB", "Calculus"],
       creator: { name: "You", isCurrentUser: true, shared: false },
-      isBookmarked: false,
+      isBookmarked: true,
     },
   ];
 
@@ -41,19 +41,19 @@ const LibrarySection = () => {
     <section>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-[#444444]">My Library</h2>
+          <h2 className="text-xl font-semibold text-[#444444]">Bookmarked</h2>
           <ChevronRightIcon className="w-5 h-5" />
         </div>
         <Link
-          href="/dashboard/library"
-          className="flex items-center text-[#0890A8] cursor-pointer"
+          href="/dashboard/bookmarks"
+          className="flex items-center text-[#0890A8]"
         >
           View all <ChevronRight size={20} />
         </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {libraryQuizSets.map((quizSet) => (
+        {bookmarkedQuizSets.map((quizSet) => (
           <QuizSetItem
             key={quizSet.id}
             title={quizSet.title}
@@ -69,4 +69,4 @@ const LibrarySection = () => {
   );
 };
 
-export default LibrarySection;
+export default BookmarkedSection;

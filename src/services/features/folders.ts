@@ -3,11 +3,28 @@ import { FOLDER_ENDPOINTS } from "../endpoints";
 import { apiRequest } from "../apiClient";
 
 interface Folder {
-  id: string;
+  _id: string;
   name: string;
-  parentId?: string;
+  description?: string;
+  parentFolder?: string;
+  owner: string;
+  subFolders?: string[];
+  quizzes?: string[];
+  sharedWith?: string[];
+  publicAccess?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+interface CreateFolderRequest {
+  name: string;
+  parentId?: string;
+  description?: string;
+  publicAccess?: string;
+}
+
+interface FolderResponse {
+  data: Folder[];
 }
 
 // Fetch user's folders
@@ -15,7 +32,7 @@ export const useFolders = (parentId?: string) => {
   return useQuery({
     queryKey: ["folders", parentId],
     queryFn: async () => {
-      const response = await apiRequest<Folder[]>(
+      const response = await apiRequest<FolderResponse>(
         FOLDER_ENDPOINTS.GET_FOLDERS,
         {
           params: parentId ? { parentId } : undefined,
@@ -26,7 +43,7 @@ export const useFolders = (parentId?: string) => {
         throw response.error;
       }
 
-      return response.data!;
+      return response.data?.data || [];
     },
   });
 };
@@ -36,8 +53,8 @@ export const useCreateFolder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { name: string; parentId?: string }) => {
-      const response = await apiRequest<Folder>(
+    mutationFn: async (data: CreateFolderRequest) => {
+      const response = await apiRequest<FolderResponse>(
         FOLDER_ENDPOINTS.CREATE_FOLDER,
         {
           body: data,
@@ -48,12 +65,12 @@ export const useCreateFolder = () => {
         throw response.error;
       }
 
-      return response.data!;
+      return { data: response.data?.data || [] };
     },
-    onSuccess: (data) => {
+    onSuccess: (data: FolderResponse) => {
       // Invalidate the folders query to refetch the list
       queryClient.invalidateQueries({
-        queryKey: ["folders", data.parentId],
+        queryKey: ["folders", data?.data?.[0]?.owner],
       });
     },
   });
@@ -64,27 +81,34 @@ export const useUpdateFolder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<Folder> }) => {
-      const response = await apiRequest<Folder>(
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Pick<Folder, "name" | "description">;
+    }) => {
+      const response = await apiRequest<FolderResponse>(
         FOLDER_ENDPOINTS.UPDATE_FOLDER(id),
         {
           body: data,
         }
       );
 
-      if (response.error) {
-        throw response.error;
+      if (response.error || !response.data) {
+        throw new Error("Failed to update folder");
       }
 
-      return response.data!;
+      // Return the response directly as a FolderResponse
+      return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: FolderResponse) => {
       // Invalidate the folders query to refetch the list
       queryClient.invalidateQueries({
-        queryKey: ["folders", data.parentId],
+        queryKey: ["folders", data.data[0]?.owner],
       });
       queryClient.invalidateQueries({
-        queryKey: ["folders", data.id],
+        queryKey: ["folders", data.data[0]?.parentFolder],
       });
     },
   });

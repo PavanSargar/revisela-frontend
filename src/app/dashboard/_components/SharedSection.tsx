@@ -2,11 +2,11 @@
 import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { QuizSetItem } from "../../dashboard/library/components";
+import { QuizSetItem } from "../library/components";
 import ChevronRightIcon from "@/components/icons/chevron-right";
 
-const BookmarkedSection = () => {
-  const bookmarkedQuizSets = [
+const SharedSection = () => {
+  const sharedQuizSets = [
     {
       id: "1",
       title: "IB Calculus",
@@ -15,7 +15,7 @@ const BookmarkedSection = () => {
       tags: ["Maths", "IB", "Calculus"],
       creator: { name: "Sam Smith", isCurrentUser: false },
       rating: 2,
-      isBookmarked: true,
+      isBookmarked: false,
     },
     {
       id: "2",
@@ -23,8 +23,9 @@ const BookmarkedSection = () => {
       description:
         "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
       tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "You", isCurrentUser: true, shared: false },
-      isBookmarked: true,
+      creator: { name: "Sam Smith", isCurrentUser: false },
+      rating: 2,
+      isBookmarked: false,
     },
     {
       id: "3",
@@ -32,8 +33,9 @@ const BookmarkedSection = () => {
       description:
         "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
       tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "You", isCurrentUser: true, shared: false },
-      isBookmarked: true,
+      creator: { name: "Sam Smith", isCurrentUser: false },
+      rating: 2,
+      isBookmarked: false,
     },
   ];
 
@@ -41,11 +43,13 @@ const BookmarkedSection = () => {
     <section>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-[#444444]">Bookmarked</h2>
+          <h2 className="text-xl font-semibold text-[#444444]">
+            Shared With Me
+          </h2>
           <ChevronRightIcon className="w-5 h-5" />
         </div>
         <Link
-          href="/dashboard/bookmarks"
+          href="/dashboard/shared"
           className="flex items-center text-[#0890A8]"
         >
           View all <ChevronRight size={20} />
@@ -53,7 +57,7 @@ const BookmarkedSection = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {bookmarkedQuizSets.map((quizSet) => (
+        {sharedQuizSets.map((quizSet) => (
           <QuizSetItem
             key={quizSet.id}
             title={quizSet.title}
@@ -69,4 +73,4 @@ const BookmarkedSection = () => {
   );
 };
 
-export default BookmarkedSection;
+export default SharedSection;
