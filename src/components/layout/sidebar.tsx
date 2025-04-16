@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { ROUTES } from "@/constants/routes";
 
 type Props = {};
 
@@ -43,32 +44,32 @@ const Sidebar = (props: Props) => {
   // Main navigation menu items
   const mainMenuItems: MenuItem[] = [
     {
-      path: "/dashboard",
+      path: ROUTES.DASHBOARD.HOME,
       label: "Dashboard",
       icon: <Home size={20} />,
     },
     {
-      path: "/dashboard/library",
+      path: ROUTES.DASHBOARD.LIBRARY,
       label: "My Library",
       icon: <Library size={20} />,
     },
     {
-      path: "/dashboard/shared",
+      path: ROUTES.DASHBOARD.SHARED,
       label: "Shared With Me",
       icon: <Users size={20} />,
     },
     {
-      path: "/dashboard/bookmarks",
+      path: ROUTES.DASHBOARD.BOOKMARKS,
       label: "Bookmarked",
       icon: <Bookmark size={20} />,
     },
     {
-      path: "/dashboard/recent",
+      path: ROUTES.DASHBOARD.RECENT,
       label: "Recent",
       icon: <Clock size={20} />,
     },
     {
-      path: "/dashboard/trash",
+      path: ROUTES.DASHBOARD.TRASH,
       label: "Trash",
       icon: <Trash size={20} />,
     },

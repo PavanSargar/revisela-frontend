@@ -3,7 +3,7 @@ import { QUIZ_ENDPOINTS } from "../endpoints";
 import { apiRequest } from "../apiClient";
 
 interface QuizSet {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   createdAt: string;
@@ -11,20 +11,35 @@ interface QuizSet {
   questionCount: number;
   tags?: string[];
   isPublic?: boolean;
+  creator: {
+    name: string;
+    isCurrentUser: boolean;
+    shared?: boolean;
+  };
+  rating?: number;
+  isBookmarked: boolean;
 }
 
-// Fetch all public quizzes
-export const useQuizSets = () => {
+interface QuizSetResponse {
+  data: {
+    results: QuizSet[];
+    totalCount: number;
+  };
+}
+// Fetch quiz sets, optionally by folder
+export const useQuizSets = (folderId?: string) => {
   return useQuery({
-    queryKey: ["quizzes"],
+    queryKey: ["quizSets", folderId],
     queryFn: async () => {
-      const response = await apiRequest<QuizSet[]>(QUIZ_ENDPOINTS.GET_QUIZZES);
+      const endpoint = folderId
+        ? QUIZ_ENDPOINTS.GET_FOLDER_QUIZZES(folderId)
+        : QUIZ_ENDPOINTS.GET_MY_QUIZZES;
 
+      const response = await apiRequest<QuizSetResponse>(endpoint);
       if (response.error) {
         throw response.error;
       }
-
-      return response.data!;
+      return response.data?.data;
     },
   });
 };

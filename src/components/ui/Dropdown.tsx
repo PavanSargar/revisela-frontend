@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 export interface DropdownItem {
   label: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   className?: string;
   disabled?: boolean;
   type?: "separator";

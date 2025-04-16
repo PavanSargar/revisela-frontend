@@ -189,6 +189,12 @@ export const QUIZ_ENDPOINTS = {
       url: `${API_BASE_URL}/quizzes/tags/${tag}`,
       method: "GET",
     } as EndpointConfig),
+
+  GET_FOLDER_QUIZZES: (folderId: string) =>
+    ({
+      url: `${API_BASE_URL}/folders/${folderId}/quizzes`,
+      method: "GET",
+    } as EndpointConfig),
 };
 
 // Keep the original QUIZ_SET_ENDPOINTS for backward compatibility if needed

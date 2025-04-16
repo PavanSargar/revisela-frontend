@@ -5,7 +5,7 @@ import {
   LibrarySection,
   SharedSection,
   BookmarkedSection,
-} from "./components";
+} from "./_components";
 
 const Dashboard = () => {
   return (

@@ -1,38 +1,62 @@
 import React from "react";
-import { Folder } from "lucide-react";
+import { Folder, MoreVertical } from "lucide-react";
+import { Dropdown } from "@/components/ui";
 
 interface FolderItemProps {
   name: string;
   onClick?: () => void;
+  onDelete?: () => void;
+  onRename?: () => void;
 }
 
-const FolderItem: React.FC<FolderItemProps> = ({ name, onClick }) => {
+const FolderItem: React.FC<FolderItemProps> = ({
+  name,
+  onClick,
+  onDelete,
+  onRename,
+}) => {
+  // Add double-click handler
+  const handleDoubleClick = () => {
+    if (onClick) onClick();
+  };
+
   return (
     <div
       className="p-4 border rounded-lg bg-white flex justify-between items-center hover:bg-gray-50 cursor-pointer"
-      onClick={onClick}
+      onClick={() => {}} // Single click does nothing
+      onDoubleClick={handleDoubleClick}
     >
       <div className="flex items-center gap-2">
         <Folder size={20} className="text-[#0890A8]" />
         <span className="text-[#444444]">{name}</span>
       </div>
-      <button className="text-[#444444]">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="6" r="1" />
-          <circle cx="12" cy="12" r="1" />
-          <circle cx="12" cy="18" r="1" />
-        </svg>
-      </button>
+      <Dropdown
+        trigger={
+          <button
+            className="text-[#444444] p-1 rounded-full hover:bg-gray-100"
+            onClick={(e) => e.stopPropagation()} // Prevent folder click when clicking menu
+          >
+            <MoreVertical size={18} />
+          </button>
+        }
+        items={[
+          {
+            label: "Rename",
+            onClick: (e) => {
+              e.stopPropagation();
+              if (onRename) onRename();
+            },
+          },
+          {
+            label: "Delete",
+            onClick: (e) => {
+              e.stopPropagation();
+              if (onDelete) onDelete();
+            },
+            className: "text-red-500",
+          },
+        ]}
+      />
     </div>
   );
 };

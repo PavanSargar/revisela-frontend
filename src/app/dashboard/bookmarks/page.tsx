@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Folder } from "lucide-react";
 import { FolderItem, QuizSetItem } from "../library/components";
 import { Breadcrumb, BreadcrumbItem } from "@/components/ui/Breadcrumb";
+import { ROUTES } from "@/constants/routes";
 
 export default function BookmarksPage() {
   const [currentFolder, setCurrentFolder] = useState("Bookmarked Folder 1");
@@ -65,7 +66,7 @@ export default function BookmarksPage() {
   const breadcrumbItems: BreadcrumbItem[] = [
     {
       label: "Bookmarked",
-      href: "/dashboard/bookmarked",
+      href: ROUTES.DASHBOARD.BOOKMARKS,
     },
     {
       label: currentFolder,

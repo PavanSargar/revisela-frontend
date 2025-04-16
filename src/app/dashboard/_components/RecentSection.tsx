@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { QuizSetItem } from "../../dashboard/library/components";
+import { QuizSetItem } from "../library/components";
 import ChevronRightIcon from "@/components/icons/chevron-right";
 
 const RecentSection = () => {
