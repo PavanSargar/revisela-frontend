@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { QuizSetItem, FolderItem } from "../library/components";
+import { QuizSetItem } from "../library/components";
 import { Button } from "@/components/ui";
-
+import { FolderItem } from "@/components/ui/folder";
 export default function TrashPage() {
   const [isEmptyingTrash, setIsEmptyingTrash] = useState(false);
 
@@ -113,7 +113,12 @@ export default function TrashPage() {
         <h2 className="text-xl font-medium text-[#444444] mb-4">Folders</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {trashFolders.map((folder) => (
-            <FolderItem key={folder.id} name={folder.name} onClick={() => {}} />
+            <FolderItem
+              key={folder.id}
+              id={folder.id}
+              name={folder.name}
+              onClick={() => {}}
+            />
           ))}
         </div>
       </section>

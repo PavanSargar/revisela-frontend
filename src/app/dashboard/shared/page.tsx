@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { Folder } from "lucide-react";
-import { FolderItem, QuizSetItem } from "../library/components";
+import { QuizSetItem } from "../library/components";
+import { FolderItem } from "@/components/ui/folder";
 import { Breadcrumb, BreadcrumbItem } from "@/components/ui/Breadcrumb";
 
 export default function SharedPage() {
@@ -111,9 +112,10 @@ export default function SharedPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {folders.map((folder) => (
             <FolderItem
-              key={folder.id}
-              name={folder.name}
-              onClick={() => setCurrentFolder(folder.name)}
+              key={folder?.id}
+              id={folder?.id}
+              name={folder?.name}
+              onClick={() => setCurrentFolder(folder?.name)}
             />
           ))}
         </div>
