@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Folder, MoreVertical } from "lucide-react";
 import { Dropdown, Modal, Button } from "@/components/ui";
 import { ConfirmationModal } from "@/components/modals";
+import { useDeleteFolder } from "@/services/features/folders";
+import { useToast } from "@/components/ui/toast";
 
 export interface FolderItemProps {
   id: string;
@@ -25,6 +27,9 @@ const FolderItem: React.FC<FolderItemProps> = ({
   const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
   const [moveModalOpen, setMoveModalOpen] = useState(false);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
+  const { toast } = useToast();
+  // Use the delete folder hook
+  const deleteFolder = useDeleteFolder();
 
   const handleClick = () => {
     if (onClick) onClick(id, name);
@@ -48,8 +53,25 @@ const FolderItem: React.FC<FolderItemProps> = ({
   };
 
   const handleRemove = () => {
-    setRemoveModalOpen(false);
-    if (onDelete) onDelete(id);
+    // Call the API to delete the folder
+    deleteFolder.mutate(id, {
+      onSuccess: () => {
+        setRemoveModalOpen(false);
+        toast({
+          title: "Folder removed successfully",
+          description: "The folder has been removed successfully",
+        });
+        if (onDelete) onDelete(id);
+      },
+      onError: (error) => {
+        setRemoveModalOpen(false);
+        toast({
+          title: "Failed to remove folder",
+          description: "The folder could not be removed",
+        });
+        console.error("Failed to delete folder:", error);
+      },
+    });
   };
 
   return (
@@ -144,6 +166,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
         confirmText="Remove"
         confirmButtonClass="bg-red-500 hover:bg-red-600 text-white"
         onConfirm={handleRemove}
+        isLoading={deleteFolder.isPending}
       />
     </>
   );
