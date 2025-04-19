@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUIZ_ENDPOINTS } from "../endpoints";
 import { apiRequest } from "../api-client";
+import { QUERY_KEYS } from "../query-keys";
 
 // Define the QuizSet interface
 interface QuizSet {
@@ -88,6 +89,69 @@ export const useDeleteQuiz = () => {
       queryClient.invalidateQueries({ queryKey: ["quiz", quizId] });
       queryClient.invalidateQueries({ queryKey: ["quizzes"] });
       queryClient.invalidateQueries({ queryKey: ["myQuizzes"] });
+    },
+  });
+};
+
+// Get quizzes in trash
+export const useTrashQuizzes = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.QUIZZES.trash,
+    queryFn: async () => {
+      const response = await apiRequest<QuizSet[]>(
+        QUIZ_ENDPOINTS.GET_QUIZZES_TRASH
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data!;
+    },
+  });
+};
+
+// Restore quiz from trash
+export const useRestoreQuiz = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (quizId: string) => {
+      const response = await apiRequest(QUIZ_ENDPOINTS.RESTORE_QUIZ(quizId));
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return quizId;
+    },
+    onSuccess: (quizId) => {
+      // Invalidate both trash and regular quizzes queries
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZZES.trash });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZZES.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZZES.myQuizzes });
+    },
+  });
+};
+
+// Permanently delete quiz
+export const usePermanentlyDeleteQuiz = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (quizId: string) => {
+      const response = await apiRequest(
+        QUIZ_ENDPOINTS.PERMANENTLY_DELETE_QUIZ(quizId)
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return quizId;
+    },
+    onSuccess: (quizId) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZZES.trash });
     },
   });
 };

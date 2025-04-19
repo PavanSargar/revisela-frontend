@@ -12,6 +12,7 @@ import { useUpdateProfile, useDeleteAccount } from "@/services/features/users";
 import { useToast } from "@/components/ui/toast";
 import { formatToDDMMMYYYY } from "@/lib/utils";
 import { useUploadProfileImageAlt } from "@/services/features/uploads";
+import Image from "next/image";
 
 const AccountSettings = () => {
   const { toast } = useToast();
@@ -334,12 +335,14 @@ const AccountSettings = () => {
             <div className="relative h-[96px] w-[96px] bg-gray-200 rounded-full flex flex-col items-center justify-center overflow-hidden">
               {profileImage ? (
                 <div className="relative h-full w-full">
-                  <img
+                  <Image
                     src={profileImage}
                     alt="Profile"
                     className={`h-full w-full object-cover ${
                       isUploadingImage ? "blur-sm" : ""
                     }`}
+                    width={96}
+                    height={96}
                   />
                   {isUploadingImage && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">

@@ -171,3 +171,73 @@ export const useFolderDetails = (folderId?: string, enabled = true) => {
     enabled: enabled && !!folderId,
   });
 };
+
+// Get folders in trash
+export const useTrashFolders = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.FOLDERS.trash,
+    queryFn: async () => {
+      const response = await apiRequest<FolderResponse>(
+        FOLDER_ENDPOINTS.GET_FOLDERS_TRASH
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data?.data || [];
+    },
+  });
+};
+
+// Restore folder from trash
+export const useRestoreFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (folderId: string) => {
+      const response = await apiRequest(
+        FOLDER_ENDPOINTS.RESTORE_FOLDER(folderId)
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return folderId;
+    },
+    onSuccess: (folderId) => {
+      // Invalidate both trash and regular folders queries
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.FOLDERS.trash,
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.FOLDERS.all,
+      });
+    },
+  });
+};
+
+// Permanently delete folder
+export const usePermanentlyDeleteFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (folderId: string) => {
+      const response = await apiRequest(
+        FOLDER_ENDPOINTS.PERMANENTLY_DELETE_FOLDER(folderId)
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return folderId;
+    },
+    onSuccess: (folderId) => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.FOLDERS.trash,
+      });
+    },
+  });
+};

@@ -26,6 +26,7 @@ export const QUERY_KEYS = {
     myQuizzes: ["myQuizzes"] as const,
     byTag: (tag: string) => ["quizzes", "tag", tag] as const,
     search: (query: string) => ["quizSearch", query] as const,
+    trash: ["quizzes", "trash"] as const,
   },
 
   // Folder related keys
@@ -33,6 +34,7 @@ export const QUERY_KEYS = {
     all: ["folders"] as const,
     byParent: (parentId?: string) => ["folders", parentId] as const,
     details: (folderId: string) => ["folder", folderId] as const,
+    trash: ["folders", "trash"] as const,
   },
 
   // Class related keys

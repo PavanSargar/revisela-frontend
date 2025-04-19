@@ -135,6 +135,23 @@ export const FOLDER_ENDPOINTS = {
       url: `${API_BASE_URL}/folders/${folderId}`,
       method: "DELETE",
     } as EndpointConfig),
+
+  GET_FOLDERS_TRASH: {
+    url: `${API_BASE_URL}/folders/trash`,
+    method: "GET",
+  } as EndpointConfig,
+
+  RESTORE_FOLDER: (folderId: string) =>
+    ({
+      url: `${API_BASE_URL}/folders/trash/${folderId}/restore`,
+      method: "PATCH",
+    } as EndpointConfig),
+
+  PERMANENTLY_DELETE_FOLDER: (folderId: string) =>
+    ({
+      url: `${API_BASE_URL}/folders/trash/${folderId}`,
+      method: "DELETE",
+    } as EndpointConfig),
 };
 
 // Quiz set endpoints - renamed to QUIZ_ENDPOINTS to match Postman collection
@@ -194,6 +211,23 @@ export const QUIZ_ENDPOINTS = {
     ({
       url: `${API_BASE_URL}/folders/${folderId}/quizzes`,
       method: "GET",
+    } as EndpointConfig),
+
+  GET_QUIZZES_TRASH: {
+    url: `${API_BASE_URL}/quizzes/trash`,
+    method: "GET",
+  } as EndpointConfig,
+
+  RESTORE_QUIZ: (quizId: string) =>
+    ({
+      url: `${API_BASE_URL}/quizzes/trash/${quizId}/restore`,
+      method: "PATCH",
+    } as EndpointConfig),
+
+  PERMANENTLY_DELETE_QUIZ: (quizId: string) =>
+    ({
+      url: `${API_BASE_URL}/quizzes/trash/${quizId}`,
+      method: "DELETE",
     } as EndpointConfig),
 };
 

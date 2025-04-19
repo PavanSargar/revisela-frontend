@@ -1,7 +1,8 @@
 import React from "react";
-import { Bookmark } from "lucide-react";
+import { Bookmark, RefreshCw, Trash2 } from "lucide-react";
 
 interface QuizSetItemProps {
+  id?: string;
   title: string;
   description: string;
   tags: string[];
@@ -12,15 +13,22 @@ interface QuizSetItemProps {
   };
   rating?: number;
   isBookmarked?: boolean;
+  isInTrash?: boolean;
+  onRestore?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 const QuizSetItem: React.FC<QuizSetItemProps> = ({
+  id = "",
   title,
   description,
   tags,
   creator,
   rating = 0,
   isBookmarked = false,
+  isInTrash = false,
+  onRestore,
+  onDelete,
 }) => {
   return (
     <div className="p-4 border rounded-lg bg-white hover:shadow-md cursor-pointer">
@@ -32,32 +40,69 @@ const QuizSetItem: React.FC<QuizSetItemProps> = ({
           <h3 className="font-medium text-[#444444]">{title}</h3>
         </div>
         <div className="flex items-center gap-2">
-          {isBookmarked ? (
-            <Bookmark
-              size={18}
-              className="text-[#0890A8] fill-[#0890A8]"
-              strokeWidth={1.5}
-            />
-          ) : (
-            <Bookmark size={18} className="text-[#444444]" strokeWidth={1.5} />
+          {!isInTrash && (
+            <>
+              {isBookmarked ? (
+                <Bookmark
+                  size={18}
+                  className="text-[#0890A8] fill-[#0890A8]"
+                  strokeWidth={1.5}
+                />
+              ) : (
+                <Bookmark
+                  size={18}
+                  className="text-[#444444]"
+                  strokeWidth={1.5}
+                />
+              )}
+            </>
           )}
-          <button className="text-[#444444] cursor-pointer">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="6" r="1" />
-              <circle cx="12" cy="12" r="1" />
-              <circle cx="12" cy="18" r="1" />
-            </svg>
-          </button>
+          {isInTrash ? (
+            <div className="flex items-center gap-1">
+              {onRestore && (
+                <button
+                  className="text-green-500 p-1 hover:bg-gray-100 rounded"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRestore(id);
+                  }}
+                  title="Restore"
+                >
+                  <RefreshCw size={16} />
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  className="text-red-500 p-1 hover:bg-gray-100 rounded"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(id);
+                  }}
+                  title="Delete permanently"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
+            </div>
+          ) : (
+            <button className="text-[#444444] cursor-pointer">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="6" r="1" />
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="18" r="1" />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
 

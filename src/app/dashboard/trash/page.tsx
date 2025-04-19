@@ -1,94 +1,97 @@
 "use client";
 import React, { useState } from "react";
 import { QuizSetItem } from "../library/components";
-import { Button } from "@/components/ui";
+import { Button, Loader } from "@/components/ui";
 import { FolderItem } from "@/components/ui/folder";
+import {
+  useTrashFolders,
+  usePermanentlyDeleteFolder,
+  useRestoreFolder,
+} from "@/services/features/folders";
+import {
+  useTrashQuizzes,
+  usePermanentlyDeleteQuiz,
+  useRestoreQuiz,
+} from "@/services/features/quizzes";
+import { useToast } from "@/components/ui/toast";
+
 export default function TrashPage() {
   const [isEmptyingTrash, setIsEmptyingTrash] = useState(false);
 
-  // Mock folders data
-  const trashFolders = [
-    { id: "1", name: "Folder 1" },
-    { id: "2", name: "Folder 1" },
-    { id: "3", name: "Folder 1" },
-    { id: "4", name: "Folder 1" },
-    { id: "5", name: "Folder 1" },
-    { id: "6", name: "Folder 1" },
-  ];
+  // Fetch trash data
+  const { data: trashFolders, isLoading: loadingFolders } = useTrashFolders();
+  const { data: trashQuizSets, isLoading: loadingQuizzes } = useTrashQuizzes();
+  const { toast } = useToast();
 
-  // Mock quiz sets data
-  const trashQuizSets = [
-    {
-      id: "1",
-      title: "IB Calculus",
-      description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "Sam Smith", isCurrentUser: false },
-      rating: 2,
-      isBookmarked: false,
-    },
-    {
-      id: "2",
-      title: "IB Calculus",
-      description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "Sam Smith", isCurrentUser: false },
-      rating: 2,
-      isBookmarked: false,
-    },
-    {
-      id: "3",
-      title: "IB Calculus",
-      description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "John Doe", isCurrentUser: false },
-      rating: 2,
-      isBookmarked: false,
-    },
-    {
-      id: "4",
-      title: "IB Calculus",
-      description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "Sam Smith", isCurrentUser: false },
-      rating: 2,
-      isBookmarked: false,
-    },
-    {
-      id: "5",
-      title: "IB Calculus",
-      description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "John Doe", isCurrentUser: false },
-      rating: 2,
-      isBookmarked: false,
-    },
-    {
-      id: "6",
-      title: "IB Calculus",
-      description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "Sam Smith", isCurrentUser: false },
-      rating: 2,
-      isBookmarked: false,
-    },
-  ];
+  // Mutations
+  const restoreFolder = useRestoreFolder();
+  const restoreQuiz = useRestoreQuiz();
+  const deleteFolder = usePermanentlyDeleteFolder();
+  const deleteQuiz = usePermanentlyDeleteQuiz();
 
-  const handleEmptyTrash = () => {
+  const handleEmptyTrash = async () => {
     setIsEmptyingTrash(true);
-    // Here you would add the API call to empty the trash
-    // After successful API call:
-    setTimeout(() => {
+
+    try {
+      // Delete all folders in trash
+      if (trashFolders && trashFolders.length > 0) {
+        await Promise.all(
+          trashFolders.map((folder) => deleteFolder.mutateAsync(folder._id))
+        );
+      }
+
+      // Delete all quizzes in trash
+      if (trashQuizSets && trashQuizSets.length > 0) {
+        await Promise.all(
+          trashQuizSets.map((quiz) => deleteQuiz.mutateAsync(quiz.id))
+        );
+      }
+
+      toast({
+        title: "Trash emptied successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to empty trash",
+      });
+      console.error(error);
+    } finally {
       setIsEmptyingTrash(false);
-      // You might want to clear the arrays or refresh data
-    }, 1000);
+    }
   };
+
+  const handleRestoreFolder = (id: string) => {
+    restoreFolder.mutate(id, {
+      onSuccess: () => toast({ title: "Folder restored successfully" }),
+      onError: () => toast({ title: "Failed to restore folder" }),
+    });
+  };
+
+  const handleDeleteFolder = (id: string) => {
+    deleteFolder.mutate(id, {
+      onSuccess: () => toast({ title: "Folder permanently deleted" }),
+      onError: () => toast({ title: "Failed to delete folder" }),
+    });
+  };
+
+  const handleRestoreQuiz = (id: string) => {
+    restoreQuiz.mutate(id, {
+      onSuccess: () => toast({ title: "Quiz restored successfully" }),
+      onError: () => toast({ title: "Failed to restore quiz" }),
+    });
+  };
+
+  const handleDeleteQuiz = (id: string) => {
+    deleteQuiz.mutate(id, {
+      onSuccess: () => toast({ title: "Quiz permanently deleted" }),
+      onError: () => toast({ title: "Failed to delete quiz" }),
+    });
+  };
+
+  const isLoading = loadingFolders || loadingQuizzes;
+  const isEmpty =
+    (!trashFolders || trashFolders.length === 0) &&
+    (!trashQuizSets || trashQuizSets.length === 0);
 
   return (
     <div className="">
@@ -102,44 +105,69 @@ export default function TrashPage() {
         <Button
           className="bg-red-500 text-white"
           onClick={handleEmptyTrash}
-          disabled={isEmptyingTrash}
+          disabled={isEmptyingTrash || isEmpty}
         >
           {isEmptyingTrash ? "Emptying..." : "Empty Trash"}
         </Button>
       </div>
 
-      {/* Folders Section */}
-      <section className="mb-8">
-        <h2 className="text-xl font-medium text-[#444444] mb-4">Folders</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {trashFolders.map((folder) => (
-            <FolderItem
-              key={folder.id}
-              id={folder.id}
-              name={folder.name}
-              onClick={() => {}}
-            />
-          ))}
+      {isLoading ? (
+        <div className="flex justify-center items-center py-20">
+          <Loader size="large" />
         </div>
-      </section>
+      ) : isEmpty ? (
+        <div className="text-center py-20 text-[#444444]">
+          <p>No items in trash</p>
+        </div>
+      ) : (
+        <>
+          {/* Folders Section */}
+          {trashFolders && trashFolders.length > 0 && (
+            <section className="mb-8">
+              <h2 className="text-xl font-medium text-[#444444] mb-4">
+                Folders
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {trashFolders.map((folder) => (
+                  <FolderItem
+                    key={folder._id}
+                    id={folder._id}
+                    name={folder.name}
+                    onRename={() => handleRestoreFolder(folder._id)}
+                    onDelete={() => handleDeleteFolder(folder._id)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
 
-      {/* Quiz Sets Section */}
-      <section>
-        <h2 className="text-xl font-medium text-[#444444] mb-4">Quiz Sets</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {trashQuizSets.map((quizSet) => (
-            <QuizSetItem
-              key={quizSet.id}
-              title={quizSet.title}
-              description={quizSet.description}
-              tags={quizSet.tags}
-              creator={quizSet.creator}
-              rating={quizSet.rating}
-              isBookmarked={quizSet.isBookmarked}
-            />
-          ))}
-        </div>
-      </section>
+          {/* Quiz Sets Section */}
+          {trashQuizSets && trashQuizSets.length > 0 && (
+            <section>
+              <h2 className="text-xl font-medium text-[#444444] mb-4">
+                Quiz Sets
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {trashQuizSets.map((quizSet) => (
+                  <QuizSetItem
+                    key={quizSet.id}
+                    id={quizSet.id}
+                    title={quizSet.title}
+                    description={quizSet.description || ""}
+                    tags={[]}
+                    creator={{ name: "You", isCurrentUser: true }}
+                    rating={0}
+                    isBookmarked={false}
+                    onRestore={() => handleRestoreQuiz(quizSet.id)}
+                    onDelete={() => handleDeleteQuiz(quizSet.id)}
+                    isInTrash={true}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+        </>
+      )}
     </div>
   );
 }
