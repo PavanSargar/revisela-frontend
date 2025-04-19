@@ -13,7 +13,7 @@ import {
   usePermanentlyDeleteQuiz,
   useRestoreQuiz,
 } from "@/services/features/quizzes";
-import { toast, useToast } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/toast";
 
 export default function TrashPage() {
   const [isEmptyingTrash, setIsEmptyingTrash] = useState(false);
@@ -21,6 +21,7 @@ export default function TrashPage() {
   // Fetch trash data
   const { data: trashFolders, isLoading: loadingFolders } = useTrashFolders();
   const { data: trashQuizSets, isLoading: loadingQuizzes } = useTrashQuizzes();
+  const { toast } = useToast();
 
   // Mutations
   const restoreFolder = useRestoreFolder();
@@ -29,7 +30,6 @@ export default function TrashPage() {
   const deleteQuiz = usePermanentlyDeleteQuiz();
 
   const handleEmptyTrash = async () => {
-    const { toast } = useToast();
     setIsEmptyingTrash(true);
 
     try {
@@ -62,29 +62,29 @@ export default function TrashPage() {
 
   const handleRestoreFolder = (id: string) => {
     restoreFolder.mutate(id, {
-      onSuccess: () => toast.success({ title: "Folder restored successfully" }),
-      onError: () => toast.error({ title: "Failed to restore folder" }),
+      onSuccess: () => toast({ title: "Folder restored successfully" }),
+      onError: () => toast({ title: "Failed to restore folder" }),
     });
   };
 
   const handleDeleteFolder = (id: string) => {
     deleteFolder.mutate(id, {
-      onSuccess: () => toast.success({ title: "Folder permanently deleted" }),
-      onError: () => toast.error({ title: "Failed to delete folder" }),
+      onSuccess: () => toast({ title: "Folder permanently deleted" }),
+      onError: () => toast({ title: "Failed to delete folder" }),
     });
   };
 
   const handleRestoreQuiz = (id: string) => {
     restoreQuiz.mutate(id, {
-      onSuccess: () => toast.success({ title: "Quiz restored successfully" }),
-      onError: () => toast.error({ title: "Failed to restore quiz" }),
+      onSuccess: () => toast({ title: "Quiz restored successfully" }),
+      onError: () => toast({ title: "Failed to restore quiz" }),
     });
   };
 
   const handleDeleteQuiz = (id: string) => {
     deleteQuiz.mutate(id, {
-      onSuccess: () => toast.success({ title: "Quiz permanently deleted" }),
-      onError: () => toast.error({ title: "Failed to delete quiz" }),
+      onSuccess: () => toast({ title: "Quiz permanently deleted" }),
+      onError: () => toast({ title: "Failed to delete quiz" }),
     });
   };
 
