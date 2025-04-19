@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CLASS_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../apiClient";
+import { apiRequest } from "../api-client";
 
 // Types
 interface ClassMember {

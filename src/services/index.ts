@@ -13,7 +13,7 @@ export const queryClient = new QueryClient({
 
 // Export endpoints and API client
 export * from "./endpoints";
-export * from "./apiClient";
+export * from "./api-client";
 
 // Export all feature services
 export * from "./features/auth";

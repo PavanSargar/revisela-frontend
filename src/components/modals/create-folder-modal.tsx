@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Modal, Input, Button, Dropdown } from "@/components/ui";
 import { useCreateFolder } from "@/services/features/folders";
 import { useToast } from "@/components/ui/toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/services/query-keys";
 
 interface CreateFolderModalProps {
   isOpen: boolean;
@@ -28,6 +30,7 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
   const [accessLabel, setAccessLabel] = useState("Private");
 
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { mutate: createFolder, isPending } = useCreateFolder();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -46,11 +49,21 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
       {
         name,
         description,
-        parentId,
+        parentFolder: parentId,
         publicAccess,
       },
       {
         onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: QUERY_KEYS.FOLDERS.all,
+          });
+
+          if (parentId) {
+            queryClient.invalidateQueries({
+              queryKey: QUERY_KEYS.FOLDERS.details(parentId),
+            });
+          }
+
           toast({
             title: "Success",
             description: "Folder created successfully",

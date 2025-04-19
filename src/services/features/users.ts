@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { USER_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../apiClient";
+import { apiRequest } from "../api-client";
 import { useAppSelector } from "@/store";
 
 // Add these types if not already defined

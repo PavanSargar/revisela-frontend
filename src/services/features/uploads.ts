@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UPLOAD_ENDPOINTS } from "../endpoints";
-import { apiRequest, uploadFile } from "../apiClient";
+import { apiRequest, uploadFile } from "../api-client";
 
 // Types
 interface UploadResponse {

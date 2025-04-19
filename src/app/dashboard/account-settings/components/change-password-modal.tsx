@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
-import { apiRequest } from "@/services/apiClient";
+import { apiRequest } from "@/services/api-client";
 import { AUTH_ENDPOINTS } from "@/services/endpoints";
 
 // Password schema with validation rules

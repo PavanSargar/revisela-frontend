@@ -1,6 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FOLDER_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../apiClient";
+import { apiRequest } from "../api-client";
+import { QUERY_KEYS } from "@/services/query-keys";
+
+interface SubFolder {
+  _id: string;
+  name: string;
+}
 
 interface Folder {
   _id: string;
@@ -8,7 +14,7 @@ interface Folder {
   description?: string;
   parentFolder?: string;
   owner: string;
-  subFolders?: string[];
+  subFolders?: SubFolder[];
   quizzes?: string[];
   sharedWith?: string[];
   publicAccess?: string;
@@ -18,7 +24,7 @@ interface Folder {
 
 interface CreateFolderRequest {
   name: string;
-  parentId?: string;
+  parentFolder?: string;
   description?: string;
   publicAccess?: string;
 }
@@ -30,7 +36,7 @@ interface FolderResponse {
 // Fetch user's folders
 export const useFolders = (parentId?: string) => {
   return useQuery({
-    queryKey: ["folders", parentId],
+    queryKey: QUERY_KEYS.FOLDERS.byParent(parentId),
     queryFn: async () => {
       const response = await apiRequest<FolderResponse>(
         FOLDER_ENDPOINTS.GET_FOLDERS,
@@ -70,8 +76,14 @@ export const useCreateFolder = () => {
     onSuccess: (data: FolderResponse) => {
       // Invalidate the folders query to refetch the list
       queryClient.invalidateQueries({
-        queryKey: ["folders", data?.data?.[0]?.owner],
+        queryKey: QUERY_KEYS.FOLDERS.all,
       });
+
+      if (data?.data?.[0]?.parentFolder) {
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.FOLDERS.byParent(data.data[0].parentFolder),
+        });
+      }
     },
   });
 };
@@ -136,5 +148,26 @@ export const useDeleteFolder = () => {
         queryKey: ["folders"],
       });
     },
+  });
+};
+
+// Get details for a single folder
+export const useFolderDetails = (folderId?: string, enabled = true) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.FOLDERS.details(folderId || ""),
+    queryFn: async () => {
+      if (!folderId) return null;
+
+      const response = await apiRequest<{ data: Folder }>(
+        FOLDER_ENDPOINTS.GET_FOLDER(folderId)
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data?.data;
+    },
+    enabled: enabled && !!folderId,
   });
 };

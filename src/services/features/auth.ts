@@ -8,7 +8,7 @@ import {
 } from "@/store/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { AUTH_ENDPOINTS, USER_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../apiClient";
+import { apiRequest } from "../api-client";
 
 // Type definitions
 interface LoginCredentials {

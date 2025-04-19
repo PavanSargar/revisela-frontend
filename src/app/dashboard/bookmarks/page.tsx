@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { Folder } from "lucide-react";
-import { FolderItem, QuizSetItem } from "../library/components";
+import { QuizSetItem } from "../library/components";
+import { FolderItem } from "@/components/ui/folder";
 import { Breadcrumb, BreadcrumbItem } from "@/components/ui/Breadcrumb";
 import { ROUTES } from "@/constants/routes";
 
@@ -93,6 +94,7 @@ export default function BookmarksPage() {
           {folders.map((folder) => (
             <FolderItem
               key={folder.id}
+              id={folder.id}
               name={folder.name}
               onClick={() => setCurrentFolder(folder.name)}
             />

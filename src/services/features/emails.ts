@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { EMAIL_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../apiClient";
+import { apiRequest } from "../api-client";
 
 // Types
 interface EmailInvitationData {
