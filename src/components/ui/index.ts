@@ -9,3 +9,4 @@ export * from "./Modal";
 export * from "./Breadcrumb";
 export * from "./Toast";
 export * from "./Dropdown";
+export * from "./TabSwitch";
