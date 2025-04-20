@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Modal, Input, Button, OtpInput } from "@/components/ui";
+import { Modal, Input, Button, OtpInput, TabSwitch } from "@/components/ui";
 import { useCreateClass } from "@/services/features/classes";
 import { useToast } from "@/components/ui/toast";
 
@@ -110,29 +110,15 @@ export const ClassModal: React.FC<ClassModalProps> = ({
       title="Class"
       contentClassName="max-w-md"
     >
-      {/* Tab Switch Component styled as per image */}
-      <div className="flex mb-8 bg-gray-100 p-1 rounded-lg w-full">
-        <button
-          className={`flex-1 py-2 px-4 font-medium rounded-md transition-colors ${
-            activeTab === "create"
-              ? "bg-[#0890A8] text-white"
-              : "text-gray-700 hover:bg-gray-200"
-          }`}
-          onClick={() => setActiveTab("create")}
-        >
-          Create A Class
-        </button>
-        <button
-          className={`flex-1 py-2 px-4 font-medium rounded-md transition-colors ${
-            activeTab === "join"
-              ? "bg-[#058F3A] text-white"
-              : "text-gray-700 hover:bg-gray-200"
-          }`}
-          onClick={() => setActiveTab("join")}
-        >
-          Join A Class
-        </button>
-      </div>
+      <TabSwitch
+        options={[
+          { value: "create", label: "Create A Class", color: "#0890A8" },
+          { value: "join", label: "Join A Class", color: "#058F3A" },
+        ]}
+        value={activeTab}
+        onChange={(value) => setActiveTab(value as "create" | "join")}
+        className="mb-8"
+      />
 
       {activeTab === "create" ? (
         <form
