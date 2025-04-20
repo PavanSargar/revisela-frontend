@@ -14,7 +14,6 @@ interface FolderGridProps {
   emptyMessage?: string;
   onFolderClick?: (id: string, name: string) => void;
   onFolderDelete?: (id: string) => void;
-  onFolderRename?: (id: string) => void;
   folderIcon?: React.ReactNode;
   className?: string;
   gridClassName?: string;
@@ -26,7 +25,6 @@ const FolderGrid: React.FC<FolderGridProps> = ({
   emptyMessage = "No folders found",
   onFolderClick,
   onFolderDelete,
-  onFolderRename,
   folderIcon,
   className = "",
   gridClassName = "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4",
@@ -44,7 +42,6 @@ const FolderGrid: React.FC<FolderGridProps> = ({
               name={folder.name}
               onClick={onFolderClick}
               onDelete={onFolderDelete}
-              onRename={onFolderRename}
               customIcon={folderIcon}
             />
           ))}
