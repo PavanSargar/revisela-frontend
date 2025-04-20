@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button, Dropdown } from "../ui";
@@ -16,13 +17,17 @@ import {
 } from "@/components/icons";
 import { CreateFolderModal } from "@/components/modals";
 import { ROUTES } from "@/constants/routes";
+import { useAppSelector } from "@/store";
+import { selectProfileImage, selectUser } from "@/store/slices/authSlice";
 
-type Props = {};
-
-const RootNavbar = (props: Props) => {
+const RootNavbar = () => {
   const router = useRouter();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
+
+  // Get user data from Redux store
+  const user = useAppSelector(selectUser);
+  const profileImage = useAppSelector(selectProfileImage);
 
   const handleAccountSettingsClick = () => {
     router.push(ROUTES.DASHBOARD.ACCOUNT_SETTINGS);
@@ -122,10 +127,20 @@ const RootNavbar = (props: Props) => {
           <Dropdown
             trigger={
               <Button
-                className="h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 p-0 focus:outline-none"
+                className="h-10 w-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 p-0 focus:outline-none overflow-hidden"
                 aria-label="User options"
               >
-                <UserIcon size={24} />
+                {profileImage ? (
+                  <Image
+                    src={profileImage}
+                    alt="Profile"
+                    width={40}
+                    height={40}
+                    className="object-cover w-full h-full"
+                  />
+                ) : (
+                  <UserIcon size={24} />
+                )}
               </Button>
             }
             items={[
