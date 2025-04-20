@@ -133,8 +133,10 @@ export default function TrashPage() {
                     key={folder._id}
                     id={folder._id}
                     name={folder.name}
-                    onRename={() => handleRestoreFolder(folder._id)}
+                    onRestore={() => handleRestoreFolder(folder._id)}
                     onDelete={() => handleDeleteFolder(folder._id)}
+                    isInTrash
+                    handleDeleteInParent
                   />
                 ))}
               </div>
