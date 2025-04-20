@@ -153,7 +153,9 @@ export const useUserProfile = () => {
   return useQuery({
     queryKey: ["user", user?.id],
     queryFn: async () => {
-      const response = await apiRequest(USER_ENDPOINTS.GET_USER(user?.id!));
+      const response = await apiRequest(
+        USER_ENDPOINTS.GET_USER(user?.id || "")
+      );
 
       if (response.error) {
         throw response.error;

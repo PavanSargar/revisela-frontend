@@ -273,8 +273,8 @@ const AccountSettings = () => {
         { file },
         {
           onSuccess: (data) => {
-            setProfileImage(data?.url);
-            dispatch(updateProfileImage(data?.url));
+            setProfileImage(data?.url || "");
+            dispatch(updateProfileImage(data?.url || ""));
             toast({
               title: "Profile Updated",
               description: "Your profile image has been updated successfully.",

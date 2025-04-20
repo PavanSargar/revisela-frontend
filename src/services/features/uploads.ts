@@ -175,7 +175,7 @@ export const useUploadProfileImageAlt = () => {
       // Invalidate user profile cache to reflect the new profile image
       queryClient.invalidateQueries({ queryKey: ["user", "me"] });
 
-      return response.data?.data!;
+      return response.data?.data;
     },
   });
 };
