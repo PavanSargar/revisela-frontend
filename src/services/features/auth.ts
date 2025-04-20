@@ -51,6 +51,7 @@ interface LoginResponse {
       username?: string;
       role: string;
       birthday: string;
+      profileImage?: string;
       // Add other user properties if needed
     };
     access_token: string;
@@ -88,12 +89,15 @@ export const useLogin = () => {
         name: data?.user.name,
         email: data?.user.email,
         username: data?.user.username,
+        profileImage: data?.user.profileImage,
       };
 
       dispatch(loginSuccess({ user, token: data?.access_token }));
 
       // Store token in localStorage with the correct name
       localStorage.setItem("authToken", data?.access_token);
+
+      localStorage.setItem("userDetails", JSON.stringify(user));
     },
     onError: (error) => {
       dispatch(loginFailure(error.message));
@@ -127,10 +131,13 @@ export const useSignup = () => {
           name: data?.result.user.name,
           email: data?.result.user.email,
           username: data?.result.user.username,
+          profileImage: data?.result.user.profileImage,
         };
 
         // Store token in localStorage
         localStorage.setItem("authToken", data?.result.access_token);
+
+        localStorage.setItem("userDetails", JSON.stringify(user));
 
         // Update Redux state
         dispatch(loginSuccess({ user, token: data?.result.access_token }));
@@ -140,11 +147,15 @@ export const useSignup = () => {
 };
 
 // Hook for user profile query
-export const useUserProfile = (userId: string) => {
+export const useUserProfile = () => {
+  const { user } = useAppSelector((state) => state.auth);
+
   return useQuery({
-    queryKey: ["user", userId],
+    queryKey: ["user", user?.id],
     queryFn: async () => {
-      const response = await apiRequest(USER_ENDPOINTS.GET_USER(userId));
+      const response = await apiRequest(
+        USER_ENDPOINTS.GET_USER(user?.id || "")
+      );
 
       if (response.error) {
         throw response.error;
@@ -152,7 +163,7 @@ export const useUserProfile = (userId: string) => {
 
       return response.data;
     },
-    enabled: !!userId, // Only run when userId is available
+    enabled: !!user?.id, // Only run when userId is available
   });
 };
 
@@ -184,6 +195,7 @@ export const useLogout = () => {
 
       // Even if the API call fails, we still want to clear the local state
       localStorage.removeItem("authToken");
+      localStorage.removeItem("userDetails");
 
       return response.status === 200;
     },
@@ -230,12 +242,9 @@ export const useVerifyOtp = () => {
   });
 };
 
-// In src/services/features/auth.ts
 export const useInitAuthUser = () => {
   const dispatch = useAppDispatch();
-  const { isAuthenticated, token, user } = useAppSelector(
-    (state) => state.auth
-  );
+  const { isAuthenticated, token } = useAppSelector((state) => state.auth);
 
   return useQuery({
     queryKey: ["user", "me"],
@@ -244,7 +253,7 @@ export const useInitAuthUser = () => {
       if (response.error) throw response.error;
       return response.data?.data as UserData;
     },
-    enabled: isAuthenticated && !!token && !user,
+    enabled: isAuthenticated && !!token,
     meta: {
       onSuccess: (data: UserData) => {
         dispatch(updateUser(data));

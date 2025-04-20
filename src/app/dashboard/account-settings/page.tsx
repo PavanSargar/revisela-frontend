@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Switch, Loader } from "@/components/ui";
 import { User, Trash2, Upload } from "lucide-react";
 import { useAppDispatch } from "@/store";
-import { logout } from "@/store/slices/authSlice";
+import { logout, updateProfileImage } from "@/store/slices/authSlice";
 import EditProfileDetail from "./components/edit-profile-detail";
 import DeleteAccountModal from "./components/delete-account-modal";
 import ChangePasswordModal from "./components/change-password-modal";
@@ -273,9 +273,8 @@ const AccountSettings = () => {
         { file },
         {
           onSuccess: (data) => {
-            // Only update local state with the new image URL
-            setProfileImage(data.url);
-
+            setProfileImage(data?.url || "");
+            dispatch(updateProfileImage(data?.url || ""));
             toast({
               title: "Profile Updated",
               description: "Your profile image has been updated successfully.",

@@ -4,11 +4,13 @@ import { apiRequest, uploadFile } from "../api-client";
 
 // Types
 interface UploadResponse {
-  url: string;
-  key: string;
-  filename: string;
-  contentType: string;
-  size: number;
+  data: {
+    url: string;
+    key: string;
+    filename: string;
+    contentType: string;
+    size: number;
+  };
 }
 
 interface PresignedUrlResponse {
@@ -173,7 +175,7 @@ export const useUploadProfileImageAlt = () => {
       // Invalidate user profile cache to reflect the new profile image
       queryClient.invalidateQueries({ queryKey: ["user", "me"] });
 
-      return response.data!;
+      return response.data?.data;
     },
   });
 };
