@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { Switch, Loader } from "@/components/ui";
 import { User, Trash2, Upload } from "lucide-react";
@@ -10,9 +11,8 @@ import ChangePasswordModal from "./components/change-password-modal";
 import { useInitAuthUser } from "@/services/features/auth";
 import { useUpdateProfile, useDeleteAccount } from "@/services/features/users";
 import { useToast } from "@/components/ui/toast";
-import { formatToDDMMMYYYY } from "@/lib/utils";
+import { formatToDDMMMYYYY, safeLocalStorage } from "@/lib/utils";
 import { useUploadProfileImageAlt } from "@/services/features/uploads";
-import Image from "next/image";
 
 const AccountSettings = () => {
   const { toast } = useToast();
@@ -70,8 +70,10 @@ const AccountSettings = () => {
         setProfileImage(userData.profileImage);
       }
 
-      // Load edit history from localStorage
-      const storedHistory = localStorage.getItem(`editHistory_${userData._id}`);
+      // Load edit history from safeLocalStorage
+      const storedHistory = safeLocalStorage.getItem(
+        `editHistory_${userData._id}`
+      );
       if (storedHistory) {
         setFieldEditHistory(JSON.parse(storedHistory));
       }
@@ -178,9 +180,9 @@ const AccountSettings = () => {
             const updatedHistory = { ...fieldEditHistory, [field]: true };
             setFieldEditHistory(updatedHistory);
 
-            // Store in localStorage to persist across sessions
+            // Store in safeLocalStorage to persist across sessions
             if (userData?._id) {
-              localStorage.setItem(
+              safeLocalStorage.setItem(
                 `editHistory_${userData._id}`,
                 JSON.stringify(updatedHistory)
               );
@@ -218,7 +220,7 @@ const AccountSettings = () => {
       deleteAccount(undefined, {
         onSuccess: () => {
           // Clear auth state
-          localStorage.removeItem("authToken");
+          safeLocalStorage.removeItem("authToken");
           dispatch(logout());
 
           toast({

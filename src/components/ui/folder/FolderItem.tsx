@@ -13,10 +13,11 @@ export interface FolderItemProps {
   name: string;
   onClick?: (id: string, name: string) => void;
   onDelete?: (id: string) => void;
-  onRename?: (id: string) => void;
+  onRestore?: (id: string) => void;
   customIcon?: React.ReactNode;
   className?: string;
   isInTrash?: boolean;
+  handleDeleteInParent?: boolean;
 }
 
 const FolderItem: React.FC<FolderItemProps> = ({
@@ -24,10 +25,11 @@ const FolderItem: React.FC<FolderItemProps> = ({
   name,
   onClick,
   onDelete,
-  onRename,
+  onRestore,
   customIcon,
   className = "",
   isInTrash = false,
+  handleDeleteInParent = false,
 }) => {
   const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
   const [moveModalOpen, setMoveModalOpen] = useState(false);
@@ -56,6 +58,12 @@ const FolderItem: React.FC<FolderItemProps> = ({
   };
 
   const handleRemove = () => {
+    if (handleDeleteInParent && onDelete) {
+      setRemoveModalOpen(false);
+      onDelete(id);
+      return;
+    }
+
     if (isInTrash) {
       permanentlyDeleteFolder.mutate(id, {
         onSuccess: () => {
@@ -93,9 +101,9 @@ const FolderItem: React.FC<FolderItemProps> = ({
     }
   };
 
-  const isLoading = isInTrash
-    ? permanentlyDeleteFolder.isPending
-    : deleteFolder.isPending;
+  const isLoading =
+    !handleDeleteInParent &&
+    (isInTrash ? permanentlyDeleteFolder.isPending : deleteFolder.isPending);
 
   return (
     <>
@@ -118,7 +126,15 @@ const FolderItem: React.FC<FolderItemProps> = ({
           }
           items={[
             ...(isInTrash
-              ? []
+              ? [
+                  {
+                    label: "Restore",
+                    onClick: (e: React.MouseEvent<HTMLDivElement>) => {
+                      e.stopPropagation();
+                      if (onRestore) onRestore(id);
+                    },
+                  },
+                ]
               : [
                   {
                     label: "Duplicate",
