@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@/store";
+import { safeLocalStorage } from "@/lib/utils";
 
 // Add a utility function to get profile image
 export const getProfileImageFromStorage = (): string => {
   try {
-    const userDetailsStr = localStorage.getItem("userDetails");
+    const userDetailsStr = safeLocalStorage.getItem("userDetails");
     if (userDetailsStr) {
       const userDetails = JSON.parse(userDetailsStr);
       return userDetails.profileImage || "";
@@ -44,8 +45,8 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     initAuth: (state) => {
-      const token = localStorage.getItem("authToken");
-      const userDetailsStr = localStorage.getItem("userDetails");
+      const token = safeLocalStorage.getItem("authToken");
+      const userDetailsStr = safeLocalStorage.getItem("userDetails");
 
       if (token) {
         state.token = token;
@@ -96,11 +97,11 @@ const authSlice = createSlice({
       }
 
       try {
-        const userDetailsStr = localStorage.getItem("userDetails");
+        const userDetailsStr = safeLocalStorage.getItem("userDetails");
         if (userDetailsStr) {
           const userDetails = JSON.parse(userDetailsStr);
           userDetails.profileImage = action.payload;
-          localStorage.setItem("userDetails", JSON.stringify(userDetails));
+          safeLocalStorage.setItem("userDetails", JSON.stringify(userDetails));
         }
       } catch (error) {
         console.error("Failed to update profile image in storage", error);
