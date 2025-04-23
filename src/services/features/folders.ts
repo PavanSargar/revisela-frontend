@@ -241,3 +241,78 @@ export const usePermanentlyDeleteFolder = () => {
     },
   });
 };
+
+// Move folder to a target folder
+export const useMoveFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      folderId,
+      targetFolderId,
+    }: {
+      folderId: string;
+      targetFolderId: string;
+    }) => {
+      const response = await apiRequest(
+        FOLDER_ENDPOINTS.MOVE_FOLDER(folderId),
+        {
+          body: { targetFolderId },
+        }
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return { folderId, targetFolderId };
+    },
+    onSuccess: ({ folderId, targetFolderId }) => {
+      // Invalidate both the source and target folder queries
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.FOLDERS.details(folderId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.FOLDERS.details(targetFolderId),
+      });
+      // Invalidate all folders to refresh the list
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.FOLDERS.all,
+      });
+    },
+  });
+};
+
+// Duplicate a folder
+export const useDuplicateFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      folderId,
+      name,
+    }: {
+      folderId: string;
+      name: string;
+    }) => {
+      const response = await apiRequest(
+        FOLDER_ENDPOINTS.DUPLICATE_FOLDER(folderId),
+        {
+          body: { name },
+        }
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data;
+    },
+    onSuccess: () => {
+      // Invalidate folders query to refresh the list
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.FOLDERS.all,
+      });
+    },
+  });
+};

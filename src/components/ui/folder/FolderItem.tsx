@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { Folder, MoreVertical } from "lucide-react";
 import { Dropdown, Modal, Button } from "@/components/ui";
-import { ConfirmationModal } from "@/components/modals";
+import {
+  ConfirmationModal,
+  MoveFolderModal,
+  DuplicateFolderModal,
+} from "@/components/modals";
 import {
   useDeleteFolder,
   usePermanentlyDeleteFolder,
@@ -44,8 +48,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
   };
 
   const handleDuplicate = () => {
-    setDuplicateModalOpen(false);
-    console.log("Duplicate folder:", id);
+    setDuplicateModalOpen(true);
   };
 
   const handleBookmark = () => {
@@ -53,8 +56,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
   };
 
   const handleMove = () => {
-    setMoveModalOpen(false);
-    console.log("Move folder:", id);
+    setMoveModalOpen(true);
   };
 
   const handleRemove = () => {
@@ -171,35 +173,33 @@ const FolderItem: React.FC<FolderItemProps> = ({
       </div>
 
       {!isInTrash && (
-        <ConfirmationModal
+        <DuplicateFolderModal
           isOpen={duplicateModalOpen}
           onOpenChange={setDuplicateModalOpen}
-          title="Duplicate Folder"
-          description="Are you sure you want to duplicate this folder?"
-          confirmText="Duplicate"
-          onConfirm={handleDuplicate}
+          folderId={id}
+          originalName={name}
+          onSuccess={() => {
+            toast({
+              title: "Success",
+              description: "Folder duplicated successfully",
+            });
+          }}
         />
       )}
 
       {!isInTrash && (
-        <Modal
+        <MoveFolderModal
           isOpen={moveModalOpen}
           onOpenChange={setMoveModalOpen}
-          title="Move Folder"
-          description="Choose a destination for this folder."
-          footer={
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setMoveModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleMove}>Move</Button>
-            </div>
-          }
-        >
-          <div className="text-center text-gray-500">
-            Move destination interface will be implemented later.
-          </div>
-        </Modal>
+          folderId={id}
+          folderName={name}
+          onSuccess={() => {
+            toast({
+              title: "Success",
+              description: "Folder moved successfully",
+            });
+          }}
+        />
       )}
 
       <ConfirmationModal

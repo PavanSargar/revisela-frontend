@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 interface ModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  title?: string;
+  title?: string | React.ReactNode;
   description?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
@@ -66,10 +66,12 @@ export const Modal: React.FC<ModalProps> = ({
             </Dialog.Close>
           )}
 
-          {title && (
+          {typeof title === "string" ? (
             <Dialog.Title className="text-lg font-semibold text-secondary-black mb-2">
               {title}
             </Dialog.Title>
+          ) : (
+            title
           )}
 
           {description && (
