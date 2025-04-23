@@ -1,5 +1,14 @@
 import React from "react";
-import { Bookmark, RefreshCw, Trash2 } from "lucide-react";
+import {
+  Bookmark,
+  RefreshCw,
+  Trash2,
+  Copy,
+  Edit,
+  Share,
+  ExternalLink,
+} from "lucide-react";
+import { ActionDropdown } from "@/components/ui";
 
 interface QuizSetItemProps {
   id?: string;
@@ -85,23 +94,46 @@ const QuizSetItem: React.FC<QuizSetItemProps> = ({
               )}
             </div>
           ) : (
-            <button className="text-[#444444] cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="6" r="1" />
-                <circle cx="12" cy="12" r="1" />
-                <circle cx="12" cy="18" r="1" />
-              </svg>
-            </button>
+            <ActionDropdown
+              items={[
+                {
+                  label: "Edit",
+                  icon: <Edit size={16} />,
+                  onClick: (e) => {
+                    console.log("Edit quiz set:", id);
+                  },
+                },
+                {
+                  label: "Duplicate",
+                  icon: <Copy size={16} />,
+                  onClick: (e) => {
+                    console.log("Duplicate quiz set:", id);
+                  },
+                },
+                {
+                  label: "Share",
+                  icon: <Share size={16} />,
+                  onClick: (e) => {
+                    console.log("Share quiz set:", id);
+                  },
+                },
+                {
+                  label: "Open in new tab",
+                  icon: <ExternalLink size={16} />,
+                  onClick: (e) => {
+                    console.log("Open quiz set in new tab:", id);
+                  },
+                },
+                {
+                  label: "Move to trash",
+                  icon: <Trash2 size={16} />,
+                  onClick: (e) => {
+                    console.log("Move quiz set to trash:", id);
+                  },
+                  variant: "danger",
+                },
+              ]}
+            />
           )}
         </div>
       </div>
