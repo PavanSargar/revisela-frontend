@@ -4,6 +4,7 @@ import { QuizSetItem } from "./components";
 import { useQuizSets } from "@/services/features/library";
 import { ROUTES } from "@/constants/routes";
 import { FolderProvider, FolderExplorer } from "@/components/ui/folder";
+import { GridSkeletonLoader } from "@/components/ui/loaders";
 import { useSearchParams } from "next/navigation";
 
 export default function LibraryPage() {
@@ -41,7 +42,7 @@ export default function LibraryPage() {
               Quiz Sets
             </h2>
             {isQuizSetsLoading ? (
-              <div className="text-center py-4">Loading quiz sets...</div>
+              <GridSkeletonLoader type="quiz" count={6} columns={3} />
             ) : quizSets && quizSets.results.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {quizSets?.results?.map((quizSet) => (
