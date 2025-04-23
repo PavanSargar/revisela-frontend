@@ -1,5 +1,6 @@
 import React from "react";
 import FolderItem, { FolderItemProps } from "./FolderItem";
+import { GridSkeletonLoader } from "../loaders";
 
 export interface Folder {
   _id: string;
@@ -32,7 +33,12 @@ const FolderGrid: React.FC<FolderGridProps> = ({
   return (
     <div className={className}>
       {isLoading ? (
-        <div className="text-center py-4">Loading folders...</div>
+        <GridSkeletonLoader
+          type="folder"
+          count={6}
+          columns={3}
+          className={gridClassName}
+        />
       ) : folders && folders.length > 0 ? (
         <div className={`grid ${gridClassName}`}>
           {folders.map((folder) => (

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { QuizSetItem } from "../library/components";
-import { Button, Loader } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { FolderItem } from "@/components/ui/folder";
 import {
   useTrashFolders,
@@ -14,6 +14,7 @@ import {
   useRestoreQuiz,
 } from "@/services/features/quizzes";
 import { useToast } from "@/components/ui/toast";
+import { ContentLoader, GridSkeletonLoader } from "@/components/ui/loaders";
 
 export default function TrashPage() {
   const [isEmptyingTrash, setIsEmptyingTrash] = useState(false);
@@ -112,8 +113,14 @@ export default function TrashPage() {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center py-20">
-          <Loader size="large" />
+        <div className="py-4">
+          <GridSkeletonLoader
+            type="folder"
+            count={3}
+            columns={3}
+            className="mb-8"
+          />
+          <GridSkeletonLoader type="quiz" count={3} columns={3} />
         </div>
       ) : isEmpty ? (
         <div className="text-center py-20 text-[#444444]">

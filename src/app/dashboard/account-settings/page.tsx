@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
-import { Switch, Loader } from "@/components/ui";
+import { Switch } from "@/components/ui";
 import { User, Trash2, Upload } from "lucide-react";
 import { useAppDispatch } from "@/store";
 import { logout, updateProfileImage } from "@/store/slices/authSlice";
@@ -13,6 +13,7 @@ import { useUpdateProfile, useDeleteAccount } from "@/services/features/users";
 import { useToast } from "@/components/ui/toast";
 import { formatToDDMMMYYYY, safeLocalStorage } from "@/lib/utils";
 import { useUploadProfileImageAlt } from "@/services/features/uploads";
+import { ContentLoader, LoadingSpinner } from "@/components/ui/loaders";
 
 const AccountSettings = () => {
   const { toast } = useToast();
@@ -310,11 +311,13 @@ const AccountSettings = () => {
 
   if (isLoadingUser) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader size="large" />
-          <p className="text-lg text-[#444444]">Loading your profile...</p>
-        </div>
+      <div className="h-screen">
+        <ContentLoader
+          message="Loading your profile..."
+          size="lg"
+          variant="primary"
+          className="h-full"
+        />
       </div>
     );
   }
@@ -347,7 +350,7 @@ const AccountSettings = () => {
                   />
                   {isUploadingImage && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-                      <Loader size="small" color="#FFFFFF" />
+                      <LoadingSpinner size="sm" variant="light" />
                     </div>
                   )}
                 </div>

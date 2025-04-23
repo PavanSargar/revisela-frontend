@@ -1,13 +1,15 @@
 import React from "react";
-import { Loader } from "@/components/ui";
+import { ContentLoader } from "@/components/ui/loaders";
 
 export default function Loading() {
   return (
-    <div className="p-6 ml-64 h-screen flex items-center justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <Loader size="large" />
-        <p className="text-lg text-[#444444]">Loading content...</p>
-      </div>
+    <div className="p-6 ml-64 h-screen">
+      <ContentLoader
+        message="Loading content..."
+        size="lg"
+        variant="primary"
+        className="h-full"
+      />
     </div>
   );
 }
