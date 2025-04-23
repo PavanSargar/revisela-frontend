@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { Folder, MoreVertical } from "lucide-react";
-import { Dropdown, Modal, Button } from "@/components/ui";
+import {
+  Folder,
+  MoreVertical,
+  Copy,
+  BookmarkIcon,
+  FolderSymlink,
+  RefreshCw,
+  Trash2,
+} from "lucide-react";
+import { Modal, Button, ActionDropdown } from "@/components/ui";
 import {
   ConfirmationModal,
   MoveFolderModal,
@@ -117,59 +125,67 @@ const FolderItem: React.FC<FolderItemProps> = ({
           {customIcon || <Folder size={20} className="text-[#0890A8]" />}
           <span className="text-[#444444]">{name}</span>
         </div>
-        <Dropdown
-          trigger={
-            <button
-              className="text-[#444444] p-1 rounded-full hover:bg-gray-100"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <MoreVertical size={18} />
-            </button>
-          }
-          items={[
-            ...(isInTrash
-              ? [
-                  {
-                    label: "Restore",
-                    onClick: (e: React.MouseEvent<HTMLDivElement>) => {
-                      e.stopPropagation();
-                      if (onRestore) onRestore(id);
-                    },
-                  },
-                ]
-              : [
-                  {
-                    label: "Duplicate",
-                    onClick: (e: React.MouseEvent<HTMLDivElement>) => {
-                      e.stopPropagation();
-                      setDuplicateModalOpen(true);
-                    },
-                  },
-                  {
-                    label: "Bookmark",
-                    onClick: (e: React.MouseEvent<HTMLDivElement>) => {
-                      e.stopPropagation();
-                      handleBookmark();
-                    },
-                  },
-                  {
-                    label: "Move",
-                    onClick: (e: React.MouseEvent<HTMLDivElement>) => {
-                      e.stopPropagation();
-                      setMoveModalOpen(true);
-                    },
-                  },
-                ]),
-            {
-              label: isInTrash ? "Delete Permanently" : "Remove",
-              onClick: (e: React.MouseEvent<HTMLDivElement>) => {
-                e.stopPropagation();
-                setRemoveModalOpen(true);
+        {isInTrash ? (
+          <ActionDropdown
+            items={[
+              {
+                label: "Restore",
+                icon: <RefreshCw size={16} />,
+                onClick: (e) => {
+                  e.stopPropagation();
+                  if (onRestore) onRestore(id);
+                },
               },
-              className: "text-red-500",
-            },
-          ]}
-        />
+              {
+                label: "Delete Permanently",
+                icon: <Trash2 size={16} />,
+                onClick: (e) => {
+                  e.stopPropagation();
+                  setRemoveModalOpen(true);
+                },
+                variant: "danger",
+              },
+            ]}
+          />
+        ) : (
+          <ActionDropdown
+            items={[
+              {
+                label: "Duplicate",
+                icon: <Copy size={16} />,
+                onClick: (e) => {
+                  e.stopPropagation();
+                  setDuplicateModalOpen(true);
+                },
+              },
+              {
+                label: "Bookmark",
+                icon: <BookmarkIcon size={16} />,
+                onClick: (e) => {
+                  e.stopPropagation();
+                  handleBookmark();
+                },
+              },
+              {
+                label: "Move",
+                icon: <FolderSymlink size={16} />,
+                onClick: (e) => {
+                  e.stopPropagation();
+                  setMoveModalOpen(true);
+                },
+              },
+              {
+                label: "Remove",
+                icon: <Trash2 size={16} />,
+                onClick: (e) => {
+                  e.stopPropagation();
+                  setRemoveModalOpen(true);
+                },
+                variant: "danger",
+              },
+            ]}
+          />
+        )}
       </div>
 
       {!isInTrash && (
