@@ -612,12 +612,116 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "quizId",
+                  "value": "{{quizId}}",
                   "description": "Quiz ID to delete"
                 }
               ]
             },
-            "description": "Delete a quiz (only quiz creator can delete)"
+            "description": "Move a quiz to trash (soft delete)"
+          },
+          "response": []
+        },
+        {
+          "name": "Duplicate Quiz",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Duplicated Quiz\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quizzes/:id/duplicate",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes", ":id", "duplicate"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{quizId}}",
+                  "description": "Quiz ID to duplicate"
+                }
+              ]
+            },
+            "description": "Create a duplicate of a quiz with all its questions"
+          },
+          "response": []
+        },
+        {
+          "name": "Bookmark Quiz",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"bookmarked\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quizzes/:id/bookmark",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes", ":id", "bookmark"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{quizId}}",
+                  "description": "Quiz ID to bookmark"
+                }
+              ]
+            },
+            "description": "Bookmark or unbookmark a quiz"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Bookmarked Quizzes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/quizzes/bookmarked",
+              "host": ["{{baseUrl}}"],
+              "path": ["quizzes", "bookmarked"]
+            },
+            "description": "Get all quizzes bookmarked by the user"
           },
           "response": []
         },
@@ -1075,6 +1179,110 @@
           "response": []
         },
         {
+          "name": "Duplicate Folder",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Duplicated Folder\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/folders/:id/duplicate",
+              "host": ["{{baseUrl}}"],
+              "path": ["folders", ":id", "duplicate"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{folderId}}",
+                  "description": "Folder ID to duplicate"
+                }
+              ]
+            },
+            "description": "Duplicate a folder including all of its subfolders and quizzes"
+          },
+          "response": []
+        },
+        {
+          "name": "Bookmark Folder",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"bookmarked\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/folders/:id/bookmark",
+              "host": ["{{baseUrl}}"],
+              "path": ["folders", ":id", "bookmark"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{folderId}}",
+                  "description": "Folder ID to bookmark"
+                }
+              ]
+            },
+            "description": "Bookmark or unbookmark a folder"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Bookmarked Folders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/folders/bookmarked",
+              "host": ["{{baseUrl}}"],
+              "path": ["folders", "bookmarked"]
+            },
+            "description": "Get all folders bookmarked by the user"
+          },
+          "response": []
+        },
+        {
           "name": "Add Quiz to Folder",
           "request": {
             "auth": {
@@ -1107,6 +1315,86 @@
               ]
             },
             "description": "Add a quiz to a folder"
+          },
+          "response": []
+        },
+        {
+          "name": "Move Folder",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"targetFolderId\": \"{{targetFolderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/folders/:id/move",
+              "host": ["{{baseUrl}}"],
+              "path": ["folders", ":id", "move"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{folderId}}",
+                  "description": "ID of the folder to move"
+                }
+              ]
+            },
+            "description": "Move a folder to another folder. The folder being moved will become a subfolder of the target folder. This endpoint handles all necessary parent-child relationship updates and prevents cyclic dependencies."
+          },
+          "response": []
+        },
+        {
+          "name": "Move Quiz",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"targetFolderId\": \"{{targetFolderId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/folders/quizzes/:quizId/move",
+              "host": ["{{baseUrl}}"],
+              "path": ["folders", "quizzes", ":quizId", "move"],
+              "variable": [
+                {
+                  "key": "quizId",
+                  "value": "{{quizId}}",
+                  "description": "ID of the quiz to move"
+                }
+              ]
+            },
+            "description": "Move a quiz from its current folder(s) to a target folder. The quiz will be removed from all current folders and added to the target folder."
           },
           "response": []
         },

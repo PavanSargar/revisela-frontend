@@ -136,6 +136,18 @@ export const FOLDER_ENDPOINTS = {
       method: "DELETE",
     } as EndpointConfig),
 
+  MOVE_FOLDER: (folderId: string) =>
+    ({
+      url: `${API_BASE_URL}/folders/${folderId}/move`,
+      method: "POST",
+    } as EndpointConfig),
+
+  DUPLICATE_FOLDER: (folderId: string) =>
+    ({
+      url: `${API_BASE_URL}/folders/${folderId}/duplicate`,
+      method: "POST",
+    } as EndpointConfig),
+
   GET_FOLDERS_TRASH: {
     url: `${API_BASE_URL}/folders/trash`,
     method: "GET",
