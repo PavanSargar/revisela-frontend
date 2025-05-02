@@ -1,11 +1,13 @@
-"use client";
-import React from "react";
+'use client';
+
+import React from 'react';
+
 import {
-  RecentSection,
-  LibrarySection,
-  SharedSection,
   BookmarkedSection,
-} from "./_components";
+  LibrarySection,
+  RecentSection,
+  SharedSection,
+} from './_components';
 
 const Dashboard = () => {
   return (

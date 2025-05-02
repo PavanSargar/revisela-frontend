@@ -1,7 +1,9 @@
-import React, { PropsWithChildren } from "react";
-import Image from "next/image";
-import AuthVector from "@/assets/images/auth-screen-bg.svg";
-import Navbar from "./components/navbar";
+import Image from 'next/image';
+import React, { PropsWithChildren } from 'react';
+
+import AuthVector from '@/assets/images/auth-screen-bg.svg';
+
+import Navbar from './components/navbar';
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (

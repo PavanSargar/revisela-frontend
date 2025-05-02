@@ -1,24 +1,27 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+
 import {
-  Folder,
-  MoreVertical,
-  Copy,
   BookmarkIcon,
+  Copy,
+  Folder,
   FolderSymlink,
+  MoreVertical,
   RefreshCw,
   Trash2,
-} from "lucide-react";
-import { Modal, Button, ActionDropdown } from "@/components/ui";
-import {
-  ConfirmationModal,
-  MoveFolderModal,
-  DuplicateFolderModal,
-} from "@/components/modals";
+} from 'lucide-react';
+
 import {
   useDeleteFolder,
   usePermanentlyDeleteFolder,
-} from "@/services/features/folders";
-import { useToast } from "@/components/ui/toast";
+} from '@/services/features/folders';
+
+import {
+  ConfirmationModal,
+  DuplicateFolderModal,
+  MoveFolderModal,
+} from '@/components/modals';
+import { ActionDropdown, Button, Modal } from '@/components/ui';
+import { useToast } from '@/components/ui/toast';
 
 export interface FolderItemProps {
   id: string;
@@ -39,7 +42,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
   onDelete,
   onRestore,
   customIcon,
-  className = "",
+  className = '',
   isInTrash = false,
   handleDeleteInParent = false,
 }) => {
@@ -60,7 +63,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
   };
 
   const handleBookmark = () => {
-    console.log("Bookmark folder:", id);
+    console.log('Bookmark folder:', id);
   };
 
   const handleMove = () => {
@@ -79,16 +82,16 @@ const FolderItem: React.FC<FolderItemProps> = ({
         onSuccess: () => {
           setRemoveModalOpen(false);
           toast({
-            title: "Folder permanently deleted",
+            title: 'Folder permanently deleted',
           });
           if (onDelete) onDelete(id);
         },
         onError: (error) => {
           setRemoveModalOpen(false);
           toast({
-            title: "Failed to permanently delete folder",
+            title: 'Failed to permanently delete folder',
           });
-          console.error("Failed to permanently delete folder:", error);
+          console.error('Failed to permanently delete folder:', error);
         },
       });
     } else {
@@ -96,16 +99,16 @@ const FolderItem: React.FC<FolderItemProps> = ({
         onSuccess: () => {
           setRemoveModalOpen(false);
           toast({
-            title: "Folder moved to trash",
+            title: 'Folder moved to trash',
           });
           if (onDelete) onDelete(id);
         },
         onError: (error) => {
           setRemoveModalOpen(false);
           toast({
-            title: "Failed to remove folder",
+            title: 'Failed to remove folder',
           });
-          console.error("Failed to delete folder:", error);
+          console.error('Failed to delete folder:', error);
         },
       });
     }
@@ -129,7 +132,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
           <ActionDropdown
             items={[
               {
-                label: "Restore",
+                label: 'Restore',
                 icon: <RefreshCw size={16} />,
                 onClick: (e) => {
                   e.stopPropagation();
@@ -137,13 +140,13 @@ const FolderItem: React.FC<FolderItemProps> = ({
                 },
               },
               {
-                label: "Delete Permanently",
+                label: 'Delete Permanently',
                 icon: <Trash2 size={16} />,
                 onClick: (e) => {
                   e.stopPropagation();
                   setRemoveModalOpen(true);
                 },
-                variant: "danger",
+                variant: 'danger',
               },
             ]}
           />
@@ -151,7 +154,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
           <ActionDropdown
             items={[
               {
-                label: "Duplicate",
+                label: 'Duplicate',
                 icon: <Copy size={16} />,
                 onClick: (e) => {
                   e.stopPropagation();
@@ -159,7 +162,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
                 },
               },
               {
-                label: "Bookmark",
+                label: 'Bookmark',
                 icon: <BookmarkIcon size={16} />,
                 onClick: (e) => {
                   e.stopPropagation();
@@ -167,7 +170,7 @@ const FolderItem: React.FC<FolderItemProps> = ({
                 },
               },
               {
-                label: "Move",
+                label: 'Move',
                 icon: <FolderSymlink size={16} />,
                 onClick: (e) => {
                   e.stopPropagation();
@@ -175,13 +178,13 @@ const FolderItem: React.FC<FolderItemProps> = ({
                 },
               },
               {
-                label: "Remove",
+                label: 'Remove',
                 icon: <Trash2 size={16} />,
                 onClick: (e) => {
                   e.stopPropagation();
                   setRemoveModalOpen(true);
                 },
-                variant: "danger",
+                variant: 'danger',
               },
             ]}
           />
@@ -196,8 +199,8 @@ const FolderItem: React.FC<FolderItemProps> = ({
           originalName={name}
           onSuccess={() => {
             toast({
-              title: "Success",
-              description: "Folder duplicated successfully",
+              title: 'Success',
+              description: 'Folder duplicated successfully',
             });
           }}
         />
@@ -211,8 +214,8 @@ const FolderItem: React.FC<FolderItemProps> = ({
           folderName={name}
           onSuccess={() => {
             toast({
-              title: "Success",
-              description: "Folder moved successfully",
+              title: 'Success',
+              description: 'Folder moved successfully',
             });
           }}
         />
@@ -221,13 +224,13 @@ const FolderItem: React.FC<FolderItemProps> = ({
       <ConfirmationModal
         isOpen={removeModalOpen}
         onOpenChange={setRemoveModalOpen}
-        title={isInTrash ? "Delete Folder Permanently" : "Remove Folder"}
+        title={isInTrash ? 'Delete Folder Permanently' : 'Remove Folder'}
         description={
           isInTrash
-            ? "This action cannot be undone. Are you sure you want to permanently delete this folder?"
-            : "Are you sure you want to remove this folder?"
+            ? 'This action cannot be undone. Are you sure you want to permanently delete this folder?'
+            : 'Are you sure you want to remove this folder?'
         }
-        confirmText={isInTrash ? "Delete Permanently" : "Remove"}
+        confirmText={isInTrash ? 'Delete Permanently' : 'Remove'}
         confirmButtonClass="bg-red-500 hover:bg-red-600 text-white"
         onConfirm={handleRemove}
         isLoading={isLoading}

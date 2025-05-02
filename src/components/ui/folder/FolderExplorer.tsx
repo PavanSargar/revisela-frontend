@@ -1,10 +1,13 @@
-import React, { useState } from "react";
-import { Folder, Plus, ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui";
-import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { CreateFolderModal } from "@/components/modals";
-import { FolderGrid } from "./";
-import { useFolderSystem } from "./FolderContext";
+import React, { useState } from 'react';
+
+import { ChevronLeft, Folder, Plus } from 'lucide-react';
+
+import { CreateFolderModal } from '@/components/modals';
+import { Button } from '@/components/ui';
+import { Breadcrumb } from '@/components/ui/Breadcrumb';
+
+import { FolderGrid } from './';
+import { useFolderSystem } from './FolderContext';
 
 interface FolderExplorerProps {
   title?: string;
@@ -15,11 +18,11 @@ interface FolderExplorerProps {
 }
 
 const FolderExplorer: React.FC<FolderExplorerProps> = ({
-  title = "Folders",
+  title = 'Folders',
   allowCreateFolder = true,
   onFolderClick,
   renderContent,
-  className = "",
+  className = '',
 }) => {
   const {
     currentFolderId,
@@ -109,7 +112,7 @@ const FolderExplorer: React.FC<FolderExplorerProps> = ({
           onFolderClick={handleFolderClick}
           emptyMessage={
             currentFolderId
-              ? "This folder is empty"
+              ? 'This folder is empty'
               : "You don't have any folders yet"
           }
         />

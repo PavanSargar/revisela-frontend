@@ -1,39 +1,44 @@
-"use client";
-import React from "react";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import { QuizSetItem } from "../library/components";
-import ChevronRightIcon from "@/components/icons/chevron-right";
-import { ROUTES } from "@/constants/routes";
+'use client';
+
+import Link from 'next/link';
+import React from 'react';
+
+import { ChevronRight } from 'lucide-react';
+
+import ChevronRightIcon from '@/components/icons/chevron-right';
+
+import { ROUTES } from '@/constants/routes';
+
+import { QuizSetItem } from '../library/components';
 
 const LibrarySection = () => {
   const libraryQuizSets = [
     {
-      id: "1",
-      title: "IB Calculus",
+      id: '1',
+      title: 'IB Calculus',
       description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "Sam Smith", isCurrentUser: false },
+        'Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.',
+      tags: ['Maths', 'IB', 'Calculus'],
+      creator: { name: 'Sam Smith', isCurrentUser: false },
       rating: 2,
       isBookmarked: true,
     },
     {
-      id: "2",
-      title: "IB Calculus",
+      id: '2',
+      title: 'IB Calculus',
       description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "You", isCurrentUser: true, shared: false },
+        'Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.',
+      tags: ['Maths', 'IB', 'Calculus'],
+      creator: { name: 'You', isCurrentUser: true, shared: false },
       isBookmarked: false,
     },
     {
-      id: "3",
-      title: "IB Calculus",
+      id: '3',
+      title: 'IB Calculus',
       description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "You", isCurrentUser: true, shared: false },
+        'Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.',
+      tags: ['Maths', 'IB', 'Calculus'],
+      creator: { name: 'You', isCurrentUser: true, shared: false },
       isBookmarked: false,
     },
   ];

@@ -1,5 +1,5 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,31 +11,31 @@ export function cn(...inputs: ClassValue[]) {
  * @returns Formatted date string or empty string if invalid
  */
 export function formatToDDMMMYYYY(dateString: string): string {
-  if (!dateString) return "";
+  if (!dateString) return '';
 
   try {
     const date = new Date(dateString);
 
     // Check if date is valid
     if (isNaN(date.getTime())) {
-      return "";
+      return '';
     }
 
-    const day = date.getDate().toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, '0');
 
     const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     const month = months[date.getMonth()];
 
@@ -43,8 +43,8 @@ export function formatToDDMMMYYYY(dateString: string): string {
 
     return `${day}-${month}-${year}`;
   } catch (error) {
-    console.error("Error formatting date:", error);
-    return "";
+    console.error('Error formatting date:', error);
+    return '';
   }
 }
 
@@ -54,55 +54,55 @@ export function formatToDDMMMYYYY(dateString: string): string {
  * @returns ISO date string or empty string if invalid
  */
 export function parseDDMMMYYYYToISO(formattedDate: string): string {
-  if (!formattedDate) return "";
+  if (!formattedDate) return '';
 
   try {
-    const [day, monthStr, year] = formattedDate.split("-");
+    const [day, monthStr, year] = formattedDate.split('-');
 
     const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
 
     const monthIndex = months.findIndex((m) => m === monthStr);
-    if (monthIndex === -1) return "";
+    if (monthIndex === -1) return '';
 
     const date = new Date(Number(year), monthIndex, Number(day));
 
     // Check if date is valid
     if (isNaN(date.getTime())) {
-      return "";
+      return '';
     }
 
     return date.toISOString();
   } catch (error) {
-    console.error("Error parsing formatted date:", error);
-    return "";
+    console.error('Error parsing formatted date:', error);
+    return '';
   }
 }
 
 export const safeLocalStorage = {
   getItem: (key: string): string | null => {
-    if (typeof window === "undefined") return null;
+    if (typeof window === 'undefined') return null;
     return localStorage.getItem(key);
   },
   setItem: (key: string, value: string): void => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       localStorage.setItem(key, value);
     }
   },
   removeItem: (key: string): void => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       localStorage.removeItem(key);
     }
   },

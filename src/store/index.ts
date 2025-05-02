@@ -1,7 +1,9 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import authReducer from "./slices/authSlice";
-import uiReducer from "./slices/uiSlice";
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+
+import { configureStore } from '@reduxjs/toolkit';
+
+import authReducer from './slices/authSlice';
+import uiReducer from './slices/uiSlice';
 
 export const store = configureStore({
   reducer: {
@@ -9,7 +11,7 @@ export const store = configureStore({
     ui: uiReducer,
     // Add more reducers here as your app grows
   },
-  devTools: process.env.NODE_ENV !== "production",
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

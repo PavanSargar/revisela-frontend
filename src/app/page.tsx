@@ -1,5 +1,6 @@
-import React from "react";
-import Navbar from "./auth/components/navbar";
+import React from 'react';
+
+import Navbar from './auth/components/navbar';
 
 export default function HomePage() {
   return (

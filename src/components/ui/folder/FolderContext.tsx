@@ -1,17 +1,18 @@
 import React, {
+  ReactNode,
   createContext,
+  useCallback,
   useContext,
   useState,
-  ReactNode,
-  useCallback,
-} from "react";
+} from 'react';
+
 import {
   useFolders as useApiFolder,
   useCreateFolder,
-  useUpdateFolder,
   useDeleteFolder,
   useFolderDetails,
-} from "@/services/features/folders";
+  useUpdateFolder,
+} from '@/services/features/folders';
 
 export interface SubFolder {
   _id: string;
@@ -70,7 +71,7 @@ export interface FolderProviderProps {
 export const FolderProvider: React.FC<FolderProviderProps> = ({
   children,
   initialFolderId,
-  rootName = "Root",
+  rootName = 'Root',
   rootPath,
 }) => {
   const [currentFolderId, setCurrentFolderId] = useState<string | undefined>(
@@ -97,7 +98,7 @@ export const FolderProvider: React.FC<FolderProviderProps> = ({
 
   // Keep track of breadcrumb path
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>([
-    { id: "", name: rootName, path: rootPath },
+    { id: '', name: rootName, path: rootPath },
   ]);
 
   // Navigate to a specific folder and update history
@@ -155,14 +156,14 @@ export const FolderProvider: React.FC<FolderProviderProps> = ({
 
     // Add root
     updatedBreadcrumbs.push({
-      id: "",
+      id: '',
       name: folderPath[0],
       path: rootPath,
     });
 
     // Add path items
     for (let i = 1; i < folderPath.length; i++) {
-      const id = i < folderHistory.length ? folderHistory[i - 1] : "";
+      const id = i < folderHistory.length ? folderHistory[i - 1] : '';
       updatedBreadcrumbs.push({
         id,
         name: folderPath[i],
@@ -222,7 +223,7 @@ export const FolderProvider: React.FC<FolderProviderProps> = ({
 export const useFolderSystem = () => {
   const context = useContext(FolderContext);
   if (!context) {
-    throw new Error("useFolderSystem must be used within a FolderProvider");
+    throw new Error('useFolderSystem must be used within a FolderProvider');
   }
   return context;
 };

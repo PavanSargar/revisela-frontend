@@ -1,6 +1,7 @@
-import React from "react";
-import FolderItem, { FolderItemProps } from "./FolderItem";
-import { GridSkeletonLoader } from "../loaders";
+import React from 'react';
+
+import { GridSkeletonLoader } from '../loaders';
+import FolderItem, { FolderItemProps } from './FolderItem';
 
 export interface Folder {
   _id: string;
@@ -23,12 +24,12 @@ interface FolderGridProps {
 const FolderGrid: React.FC<FolderGridProps> = ({
   folders,
   isLoading,
-  emptyMessage = "No folders found",
+  emptyMessage = 'No folders found',
   onFolderClick,
   onFolderDelete,
   folderIcon,
-  className = "",
-  gridClassName = "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4",
+  className = '',
+  gridClassName = 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4',
 }) => {
   return (
     <div className={className}>

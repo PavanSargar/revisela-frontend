@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
 interface QuizIconProps {
   className?: string;
 }
 
-const QuizIcon: React.FC<QuizIconProps> = ({ className = "" }) => {
+const QuizIcon: React.FC<QuizIconProps> = ({ className = '' }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

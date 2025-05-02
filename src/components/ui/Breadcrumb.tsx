@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import Link from 'next/link';
+import React from 'react';
+
+import { ChevronRight } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 
 export interface BreadcrumbItem {
   label: string;
@@ -27,7 +29,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   if (!items.length) return null;
 
   return (
-    <nav className={cn("flex items-center", className)} aria-label="Breadcrumb">
+    <nav className={cn('flex items-center', className)} aria-label="Breadcrumb">
       <ol className="flex items-center">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -38,10 +40,10 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
               {item.icon}
               <span
                 className={cn(
-                  "text-lg",
+                  'text-lg',
                   isLast
-                    ? "font-medium text-[#444444]"
-                    : "text-[#0890A8] font-semibold"
+                    ? 'font-medium text-[#444444]'
+                    : 'text-[#0890A8] font-semibold'
                 )}
               >
                 {item.label}
@@ -57,18 +59,18 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
                 <Link
                   href={item.href}
                   className="flex items-center hover:underline cursor-pointer"
-                  aria-current={item.isCurrent ? "page" : undefined}
+                  aria-current={item.isCurrent ? 'page' : undefined}
                 >
                   {itemContent}
                 </Link>
               ) : (
                 <div
                   className={cn(
-                    "flex items-center",
-                    item.onClick && "cursor-pointer"
+                    'flex items-center',
+                    item.onClick && 'cursor-pointer'
                   )}
                   onClick={item.onClick}
-                  aria-current={item.isCurrent ? "page" : undefined}
+                  aria-current={item.isCurrent ? 'page' : undefined}
                 >
                   {itemContent}
                 </div>

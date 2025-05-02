@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { cn } from "@/lib/utils";
+import React, { useState } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface DateValues {
   month: string;
@@ -27,24 +28,24 @@ export const DateInput: React.FC<DateInputProps> = ({
   value,
 }) => {
   const [selectedValues, setSelectedValues] = useState({
-    month: "",
-    day: "",
-    year: "",
+    month: '',
+    day: '',
+    year: '',
   });
 
   const months = [
-    { value: "01", label: "Jan" },
-    { value: "02", label: "Feb" },
-    { value: "03", label: "Mar" },
-    { value: "04", label: "Apr" },
-    { value: "05", label: "May" },
-    { value: "06", label: "Jun" },
-    { value: "07", label: "Jul" },
-    { value: "08", label: "Aug" },
-    { value: "09", label: "Sep" },
-    { value: "10", label: "Oct" },
-    { value: "11", label: "Nov" },
-    { value: "12", label: "Dec" },
+    { value: '01', label: 'Jan' },
+    { value: '02', label: 'Feb' },
+    { value: '03', label: 'Mar' },
+    { value: '04', label: 'Apr' },
+    { value: '05', label: 'May' },
+    { value: '06', label: 'Jun' },
+    { value: '07', label: 'Jul' },
+    { value: '08', label: 'Aug' },
+    { value: '09', label: 'Sep' },
+    { value: '10', label: 'Oct' },
+    { value: '11', label: 'Nov' },
+    { value: '12', label: 'Dec' },
   ];
 
   const days = Array.from({ length: 31 }, (_, i) => {
@@ -61,7 +62,7 @@ export const DateInput: React.FC<DateInputProps> = ({
     return { value: `${year}`, label: `${year}` };
   });
 
-  const handleChange = (field: "month" | "day" | "year", value: string) => {
+  const handleChange = (field: 'month' | 'day' | 'year', value: string) => {
     const newValues = {
       ...selectedValues,
       [field]: value,
@@ -74,11 +75,11 @@ export const DateInput: React.FC<DateInputProps> = ({
     }
   };
 
-  const selectWrapperClass = "relative w-full";
+  const selectWrapperClass = 'relative w-full';
   const selectClass = cn(
-    "appearance-none w-full px-3 py-2 border rounded-[10px] focus:outline-none focus:ring bg-white",
-    "pr-10", // Add padding for the icon
-    error ? "border-red-500" : "border-[#ACACAC]",
+    'appearance-none w-full px-3 py-2 border rounded-[10px] focus:outline-none focus:ring bg-white',
+    'pr-10', // Add padding for the icon
+    error ? 'border-red-500' : 'border-[#ACACAC]',
     className
   );
 
@@ -94,7 +95,7 @@ export const DateInput: React.FC<DateInputProps> = ({
           <select
             name={`${name}-month`}
             value={selectedValues.month}
-            onChange={(e) => handleChange("month", e.target.value)}
+            onChange={(e) => handleChange('month', e.target.value)}
             className={selectClass}
           >
             <option value="" disabled>
@@ -128,7 +129,7 @@ export const DateInput: React.FC<DateInputProps> = ({
           <select
             name={`${name}-day`}
             value={selectedValues.day}
-            onChange={(e) => handleChange("day", e.target.value)}
+            onChange={(e) => handleChange('day', e.target.value)}
             className={selectClass}
           >
             <option value="" disabled>
@@ -162,7 +163,7 @@ export const DateInput: React.FC<DateInputProps> = ({
           <select
             name={`${name}-year`}
             value={selectedValues.year}
-            onChange={(e) => handleChange("year", e.target.value)}
+            onChange={(e) => handleChange('year', e.target.value)}
             className={selectClass}
           >
             <option value="" disabled>

@@ -1,21 +1,25 @@
-"use client";
-import { useEffect, useState, useCallback } from "react";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { useRouter } from "next/navigation";
-import { logout } from "@/store/slices/authSlice";
-import { Toast } from "@/components/ui";
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+
+import { Toast } from '@/components/ui';
+
+import { logout } from '@/store/slices/authSlice';
+
+import { useAppDispatch, useAppSelector } from '@/store';
 
 // Helper function to decode JWT and get expiration time
 const getTokenExpiration = (token: string): number | null => {
   try {
     // JWT payload is in the format header.payload.signature
-    const payload = token.split(".")[1];
+    const payload = token.split('.')[1];
     // Decode the base64 string
     const decodedPayload = JSON.parse(atob(payload));
     // Return the expiration time in milliseconds
     return decodedPayload.exp * 1000;
   } catch (error) {
-    console.error("Error decoding token:", error);
+    console.error('Error decoding token:', error);
     return null;
   }
 };
@@ -40,7 +44,7 @@ export const SessionTimeoutHandler = () => {
     dispatch(logout());
 
     // Redirect to login
-    router.push("/auth/login?session=expired");
+    router.push('/auth/login?session=expired');
   }, [dispatch, router]);
 
   const checkTokenExpiration = useCallback(() => {
@@ -80,9 +84,9 @@ export const SessionTimeoutHandler = () => {
 
   // Format remaining time into minutes
   const formatTimeRemaining = () => {
-    if (timeRemaining === null) return "";
+    if (timeRemaining === null) return '';
     const minutes = Math.floor(timeRemaining / (60 * 1000));
-    return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+    return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
   };
 
   return (

@@ -1,30 +1,33 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Modal, Input, Button } from "@/components/ui";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Eye, EyeOff } from "lucide-react";
-import { useToast } from "@/components/ui/toast";
-import { apiRequest } from "@/services/api-client";
-import { AUTH_ENDPOINTS } from "@/services/endpoints";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Eye, EyeOff } from 'lucide-react';
+import { z } from 'zod';
+
+import { apiRequest } from '@/services/api-client';
+import { AUTH_ENDPOINTS } from '@/services/endpoints';
+
+import { Button, Input, Modal } from '@/components/ui';
+import { useToast } from '@/components/ui/toast';
 
 // Password schema with validation rules
 const passwordSchema = z
   .object({
-    currentPassword: z.string().min(1, "Current password is required"),
+    currentPassword: z.string().min(1, 'Current password is required'),
     newPassword: z
       .string()
-      .min(8, "Password must be at least 8 characters")
-      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-      .regex(/[0-9]/, "Password must contain at least one number"),
-    confirmPassword: z.string().min(1, "Please confirm your new password"),
+      .min(8, 'Password must be at least 8 characters')
+      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .regex(/[0-9]/, 'Password must contain at least one number'),
+    confirmPassword: z.string().min(1, 'Please confirm your new password'),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
   });
 
 type PasswordFormData = z.infer<typeof passwordSchema>;
@@ -54,9 +57,9 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   } = useForm<PasswordFormData>({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
     },
   });
 
@@ -79,18 +82,18 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       }
 
       toast({
-        title: "Password Updated",
-        description: "Your password has been changed successfully.",
-        type: "success",
+        title: 'Password Updated',
+        description: 'Your password has been changed successfully.',
+        type: 'success',
       });
 
       handleClose();
     } catch (error: any) {
       toast({
-        title: "Password Update Failed",
+        title: 'Password Update Failed',
         description:
-          error.message || "Failed to update password. Please try again.",
-        type: "error",
+          error.message || 'Failed to update password. Please try again.',
+        type: 'error',
       });
     } finally {
       setIsPending(false);
@@ -115,9 +118,9 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       >
         <Input
           label="Current Password"
-          type={showCurrentPassword ? "text" : "password"}
+          type={showCurrentPassword ? 'text' : 'password'}
           placeholder="Enter your current password"
-          {...register("currentPassword")}
+          {...register('currentPassword')}
           error={errors.currentPassword?.message}
           rightElement={
             <button
@@ -132,9 +135,9 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 
         <Input
           label="New Password"
-          type={showNewPassword ? "text" : "password"}
+          type={showNewPassword ? 'text' : 'password'}
           placeholder="Enter new password"
-          {...register("newPassword")}
+          {...register('newPassword')}
           error={errors.newPassword?.message}
           rightElement={
             <button
@@ -149,9 +152,9 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 
         <Input
           label="Confirm New Password"
-          type={showConfirmPassword ? "text" : "password"}
+          type={showConfirmPassword ? 'text' : 'password'}
           placeholder="Confirm new password"
-          {...register("confirmPassword")}
+          {...register('confirmPassword')}
           error={errors.confirmPassword?.message}
           rightElement={
             <button
@@ -173,7 +176,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             className="bg-[#0890A8] text-white"
             disabled={!isDirty || !isValid || isPending}
           >
-            {isPending ? "Updating..." : "Update Password"}
+            {isPending ? 'Updating...' : 'Update Password'}
           </Button>
         </div>
       </form>

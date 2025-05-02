@@ -4,8 +4,7 @@
  * This file provides a unified way to make API requests using the endpoints defined in endpoints.ts.
  * It handles common API request needs like authentication, error handling, and response parsing.
  */
-
-import { EndpointConfig } from "./endpoints";
+import { EndpointConfig } from './endpoints';
 
 // Type for API request options
 export interface ApiRequestOptions {
@@ -50,20 +49,20 @@ export async function apiRequest<T = ApiData>(
       });
       const queryString = queryParams.toString();
       if (queryString) {
-        url = `${url}${url.includes("?") ? "&" : "?"}${queryString}`;
+        url = `${url}${url.includes('?') ? '&' : '?'}${queryString}`;
       }
     }
 
     // Setup headers with auth token if required
     const requestHeaders: HeadersInit = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...headers,
     };
 
     if (withAuth) {
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem('authToken');
       if (token) {
-        requestHeaders["Authorization"] = `Bearer ${token}`;
+        requestHeaders['Authorization'] = `Bearer ${token}`;
       }
     }
 
@@ -76,8 +75,8 @@ export async function apiRequest<T = ApiData>(
 
     // Parse the response
     let data = null;
-    const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
       data = await response.json();
     }
 
@@ -142,13 +141,13 @@ export async function uploadFile<T = ApiData>(
 
     // Add the file with the appropriate field name
     const fieldName =
-      fileFieldName || endpoint.url.includes("profile")
-        ? "profileImage"
-        : endpoint.url.includes("question")
-        ? "questionImage"
-        : endpoint.url.includes("document")
-        ? "document"
-        : "image";
+      fileFieldName || endpoint.url.includes('profile')
+        ? 'profileImage'
+        : endpoint.url.includes('question')
+          ? 'questionImage'
+          : endpoint.url.includes('document')
+            ? 'document'
+            : 'image';
 
     formData.append(fieldName, file);
 
@@ -164,9 +163,9 @@ export async function uploadFile<T = ApiData>(
     };
 
     if (withAuth) {
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem('authToken');
       if (token) {
-        requestHeaders["Authorization"] = `Bearer ${token}`;
+        requestHeaders['Authorization'] = `Bearer ${token}`;
       }
     }
 
@@ -179,8 +178,8 @@ export async function uploadFile<T = ApiData>(
 
     // Parse the response
     let data = null;
-    const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
       data = await response.json();
     }
 

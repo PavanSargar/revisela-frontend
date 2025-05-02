@@ -1,7 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { FOLDER_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../api-client";
-import { QUERY_KEYS } from "@/services/query-keys";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { QUERY_KEYS } from '@/services/query-keys';
+
+import { apiRequest } from '../api-client';
+import { FOLDER_ENDPOINTS } from '../endpoints';
 
 interface SubFolder {
   _id: string;
@@ -98,7 +100,7 @@ export const useUpdateFolder = () => {
       data,
     }: {
       id: string;
-      data: Pick<Folder, "name" | "description">;
+      data: Pick<Folder, 'name' | 'description'>;
     }) => {
       const response = await apiRequest<FolderResponse>(
         FOLDER_ENDPOINTS.UPDATE_FOLDER(id),
@@ -108,7 +110,7 @@ export const useUpdateFolder = () => {
       );
 
       if (response.error || !response.data) {
-        throw new Error("Failed to update folder");
+        throw new Error('Failed to update folder');
       }
 
       // Return the response directly as a FolderResponse
@@ -117,10 +119,10 @@ export const useUpdateFolder = () => {
     onSuccess: (data: FolderResponse) => {
       // Invalidate the folders query to refetch the list
       queryClient.invalidateQueries({
-        queryKey: ["folders", data.data[0]?.owner],
+        queryKey: ['folders', data.data[0]?.owner],
       });
       queryClient.invalidateQueries({
-        queryKey: ["folders", data.data[0]?.parentFolder],
+        queryKey: ['folders', data.data[0]?.parentFolder],
       });
     },
   });
@@ -145,7 +147,7 @@ export const useDeleteFolder = () => {
     onSuccess: (_, folderId) => {
       // Invalidate the folders query to refetch the list
       queryClient.invalidateQueries({
-        queryKey: ["folders"],
+        queryKey: ['folders'],
       });
     },
   });
@@ -154,7 +156,7 @@ export const useDeleteFolder = () => {
 // Get details for a single folder
 export const useFolderDetails = (folderId?: string, enabled = true) => {
   return useQuery({
-    queryKey: QUERY_KEYS.FOLDERS.details(folderId || ""),
+    queryKey: QUERY_KEYS.FOLDERS.details(folderId || ''),
     queryFn: async () => {
       if (!folderId) return null;
 

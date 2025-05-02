@@ -1,20 +1,24 @@
-"use client";
-import React, { useState } from "react";
-import { QuizSetItem } from "../library/components";
-import { Button } from "@/components/ui";
-import { FolderItem } from "@/components/ui/folder";
+'use client';
+
+import React, { useState } from 'react';
+
 import {
-  useTrashFolders,
   usePermanentlyDeleteFolder,
   useRestoreFolder,
-} from "@/services/features/folders";
+  useTrashFolders,
+} from '@/services/features/folders';
 import {
-  useTrashQuizzes,
   usePermanentlyDeleteQuiz,
   useRestoreQuiz,
-} from "@/services/features/quizzes";
-import { useToast } from "@/components/ui/toast";
-import { ContentLoader, GridSkeletonLoader } from "@/components/ui/loaders";
+  useTrashQuizzes,
+} from '@/services/features/quizzes';
+
+import { Button } from '@/components/ui';
+import { FolderItem } from '@/components/ui/folder';
+import { ContentLoader, GridSkeletonLoader } from '@/components/ui/loaders';
+import { useToast } from '@/components/ui/toast';
+
+import { QuizSetItem } from '../library/components';
 
 export default function TrashPage() {
   const [isEmptyingTrash, setIsEmptyingTrash] = useState(false);
@@ -49,11 +53,11 @@ export default function TrashPage() {
       }
 
       toast({
-        title: "Trash emptied successfully",
+        title: 'Trash emptied successfully',
       });
     } catch (error) {
       toast({
-        title: "Failed to empty trash",
+        title: 'Failed to empty trash',
       });
       console.error(error);
     } finally {
@@ -63,29 +67,29 @@ export default function TrashPage() {
 
   const handleRestoreFolder = (id: string) => {
     restoreFolder.mutate(id, {
-      onSuccess: () => toast({ title: "Folder restored successfully" }),
-      onError: () => toast({ title: "Failed to restore folder" }),
+      onSuccess: () => toast({ title: 'Folder restored successfully' }),
+      onError: () => toast({ title: 'Failed to restore folder' }),
     });
   };
 
   const handleDeleteFolder = (id: string) => {
     deleteFolder.mutate(id, {
-      onSuccess: () => toast({ title: "Folder permanently deleted" }),
-      onError: () => toast({ title: "Failed to delete folder" }),
+      onSuccess: () => toast({ title: 'Folder permanently deleted' }),
+      onError: () => toast({ title: 'Failed to delete folder' }),
     });
   };
 
   const handleRestoreQuiz = (id: string) => {
     restoreQuiz.mutate(id, {
-      onSuccess: () => toast({ title: "Quiz restored successfully" }),
-      onError: () => toast({ title: "Failed to restore quiz" }),
+      onSuccess: () => toast({ title: 'Quiz restored successfully' }),
+      onError: () => toast({ title: 'Failed to restore quiz' }),
     });
   };
 
   const handleDeleteQuiz = (id: string) => {
     deleteQuiz.mutate(id, {
-      onSuccess: () => toast({ title: "Quiz permanently deleted" }),
-      onError: () => toast({ title: "Failed to delete quiz" }),
+      onSuccess: () => toast({ title: 'Quiz permanently deleted' }),
+      onError: () => toast({ title: 'Failed to delete quiz' }),
     });
   };
 
@@ -108,7 +112,7 @@ export default function TrashPage() {
           onClick={handleEmptyTrash}
           disabled={isEmptyingTrash || isEmpty}
         >
-          {isEmptyingTrash ? "Emptying..." : "Empty Trash"}
+          {isEmptyingTrash ? 'Emptying...' : 'Empty Trash'}
         </Button>
       </div>
 
@@ -162,9 +166,9 @@ export default function TrashPage() {
                     key={quizSet.id}
                     id={quizSet.id}
                     title={quizSet.title}
-                    description={quizSet.description || ""}
+                    description={quizSet.description || ''}
                     tags={[]}
-                    creator={{ name: "You", isCurrentUser: true }}
+                    creator={{ name: 'You', isCurrentUser: true }}
                     rating={0}
                     isBookmarked={false}
                     onRestore={() => handleRestoreQuiz(quizSet.id)}

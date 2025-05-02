@@ -1,15 +1,20 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { QuizSetItem } from "./components";
-import { useQuizSets } from "@/services/features/library";
-import { ROUTES } from "@/constants/routes";
-import { FolderProvider, FolderExplorer } from "@/components/ui/folder";
-import { GridSkeletonLoader } from "@/components/ui/loaders";
-import { useSearchParams } from "next/navigation";
+'use client';
+
+import { useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
+import { useQuizSets } from '@/services/features/library';
+
+import { FolderExplorer, FolderProvider } from '@/components/ui/folder';
+import { GridSkeletonLoader } from '@/components/ui/loaders';
+
+import { ROUTES } from '@/constants/routes';
+
+import { QuizSetItem } from './components';
 
 export default function LibraryPage() {
   const searchParams = useSearchParams();
-  const folderId = searchParams.get("folderId") || undefined;
+  const folderId = searchParams.get('folderId') || undefined;
 
   const [currentFolderId, setCurrentFolderId] = useState<string | undefined>(
     folderId
@@ -52,7 +57,7 @@ export default function LibraryPage() {
                     description={quizSet?.description}
                     tags={quizSet?.tags || []}
                     creator={{
-                      name: "Pawan",
+                      name: 'Pawan',
                       isCurrentUser: true,
                       shared: false,
                     }}
@@ -63,7 +68,7 @@ export default function LibraryPage() {
               </div>
             ) : (
               <div className="text-center py-4 text-gray-500">
-                No quiz sets found in this {folderId ? "folder" : "library"}
+                No quiz sets found in this {folderId ? 'folder' : 'library'}
               </div>
             )}
           </section>

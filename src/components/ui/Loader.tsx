@@ -1,20 +1,20 @@
-import React from "react";
+import React from 'react';
 
 interface LoaderProps {
-  size?: "small" | "medium" | "large";
+  size?: 'small' | 'medium' | 'large';
   color?: string;
   className?: string;
 }
 
 export const Loader: React.FC<LoaderProps> = ({
-  size = "medium",
-  color = "#0890A8",
-  className = "",
+  size = 'medium',
+  color = '#0890A8',
+  className = '',
 }) => {
   const sizeMap = {
-    small: "w-5 h-5",
-    medium: "w-8 h-8",
-    large: "w-12 h-12",
+    small: 'w-5 h-5',
+    medium: 'w-8 h-8',
+    large: 'w-12 h-12',
   };
 
   return (

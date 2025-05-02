@@ -1,6 +1,7 @@
-"use client";
-import React, { useEffect, ReactNode } from "react";
-import { createPortal } from "react-dom";
+'use client';
+
+import React, { ReactNode, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface ToastProps {
   open: boolean;

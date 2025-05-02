@@ -1,9 +1,12 @@
-import React, { useState } from "react";
-import { Modal, Input, Button, Dropdown } from "@/components/ui";
-import { useCreateFolder } from "@/services/features/folders";
-import { useToast } from "@/components/ui/toast";
-import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/services/query-keys";
+import React, { useState } from 'react';
+
+import { useQueryClient } from '@tanstack/react-query';
+
+import { useCreateFolder } from '@/services/features/folders';
+import { QUERY_KEYS } from '@/services/query-keys';
+
+import { Button, Dropdown, Input, Modal } from '@/components/ui';
+import { useToast } from '@/components/ui/toast';
 
 interface CreateFolderModalProps {
   isOpen: boolean;
@@ -13,9 +16,9 @@ interface CreateFolderModalProps {
 }
 
 const accessOptions = [
-  { label: "Private", value: "none" },
-  { label: "View Only", value: "view_only" },
-  { label: "Can Edit", value: "edit" },
+  { label: 'Private', value: 'none' },
+  { label: 'View Only', value: 'view_only' },
+  { label: 'Can Edit', value: 'edit' },
 ];
 
 export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
@@ -24,10 +27,10 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
   parentId,
   onSuccess,
 }) => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [publicAccess, setPublicAccess] = useState("none");
-  const [accessLabel, setAccessLabel] = useState("Private");
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [publicAccess, setPublicAccess] = useState('none');
+  const [accessLabel, setAccessLabel] = useState('Private');
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -38,9 +41,9 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
 
     if (!name.trim()) {
       toast({
-        title: "Error",
-        description: "Folder name is required",
-        type: "error",
+        title: 'Error',
+        description: 'Folder name is required',
+        type: 'error',
       });
       return;
     }
@@ -65,18 +68,18 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
           }
 
           toast({
-            title: "Success",
-            description: "Folder created successfully",
-            type: "success",
+            title: 'Success',
+            description: 'Folder created successfully',
+            type: 'success',
           });
           handleClose();
           if (onSuccess) onSuccess();
         },
         onError: (error) => {
           toast({
-            title: "Error",
-            description: error.message || "Failed to create folder",
-            type: "error",
+            title: 'Error',
+            description: error.message || 'Failed to create folder',
+            type: 'error',
           });
         },
       }
@@ -84,10 +87,10 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
   };
 
   const handleClose = () => {
-    setName("");
-    setDescription("");
-    setPublicAccess("none");
-    setAccessLabel("Private");
+    setName('');
+    setDescription('');
+    setPublicAccess('none');
+    setAccessLabel('Private');
     onOpenChange(false);
   };
 
@@ -148,8 +151,8 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
               },
               className:
                 publicAccess === option.value
-                  ? "text-[#0890A8] font-medium"
-                  : "",
+                  ? 'text-[#0890A8] font-medium'
+                  : '',
             }))}
           />
         </div>
@@ -168,7 +171,7 @@ export const CreateFolderModal: React.FC<CreateFolderModalProps> = ({
             className="bg-[#0890A8] text-white"
             disabled={isPending || !name.trim()}
           >
-            {isPending ? "Creating..." : "Create Folder"}
+            {isPending ? 'Creating...' : 'Create Folder'}
           </Button>
         </div>
       </form>

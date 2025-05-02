@@ -1,5 +1,6 @@
-import React from "react";
-import { ContentLoader } from "@/components/ui/loaders";
+import React from 'react';
+
+import { ContentLoader } from '@/components/ui/loaders';
 
 export default function RecentLoading() {
   return (

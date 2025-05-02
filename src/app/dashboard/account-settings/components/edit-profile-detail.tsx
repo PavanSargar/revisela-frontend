@@ -1,13 +1,16 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { Pen, Check, X } from "lucide-react";
-import { Input } from "@/components/ui";
-import { DateInput } from "@/components/ui/DateInput";
+'use client';
+
+import React, { useEffect, useState } from 'react';
+
+import { Check, Pen, X } from 'lucide-react';
+
+import { Input } from '@/components/ui';
+import { DateInput } from '@/components/ui/DateInput';
 
 interface EditProfileDetailProps {
   label: string;
   value: string;
-  fieldType?: "text" | "email" | "date";
+  fieldType?: 'text' | 'email' | 'date';
   accentLabel?: boolean;
   disabled?: boolean;
   editHint?: string;
@@ -17,7 +20,7 @@ interface EditProfileDetailProps {
 const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
   label,
   value,
-  fieldType = "text",
+  fieldType = 'text',
   accentLabel,
   disabled = false,
   editHint,
@@ -32,23 +35,23 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
     year: string;
   }>(() => {
     // If the field is a date and has a value like "01-Jan-2001", parse it
-    if (fieldType === "date" && value) {
+    if (fieldType === 'date' && value) {
       try {
-        const dateParts = value.split("-");
+        const dateParts = value.split('-');
         if (dateParts.length === 3) {
           const months = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
           ];
           const monthIndex = months.findIndex((m) => m === dateParts[1]) + 1;
           return {
@@ -58,10 +61,10 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
           };
         }
       } catch (error) {
-        console.error("Error parsing date:", error);
+        console.error('Error parsing date:', error);
       }
     }
-    return { month: "", day: "", year: "" };
+    return { month: '', day: '', year: '' };
   });
 
   // Update edit value when prop value changes
@@ -69,23 +72,23 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
     setEditValue(value);
 
     // Also update date values if this is a date field
-    if (fieldType === "date" && value) {
+    if (fieldType === 'date' && value) {
       try {
-        const dateParts = value.split("-");
+        const dateParts = value.split('-');
         if (dateParts.length === 3) {
           const months = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
           ];
           const monthIndex = months.findIndex((m) => m === dateParts[1]) + 1;
           setDateValues({
@@ -95,7 +98,7 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
           });
         }
       } catch (error) {
-        console.error("Error parsing date:", error);
+        console.error('Error parsing date:', error);
       }
     }
   }, [value, fieldType]);
@@ -109,23 +112,23 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
     setEditValue(value); // Reset to original value
 
     // Reset date values if this is a date field
-    if (fieldType === "date" && value) {
+    if (fieldType === 'date' && value) {
       try {
-        const dateParts = value.split("-");
+        const dateParts = value.split('-');
         if (dateParts.length === 3) {
           const months = [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
           ];
           const monthIndex = months.findIndex((m) => m === dateParts[1]) + 1;
           setDateValues({
@@ -135,7 +138,7 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
           });
         }
       } catch (error) {
-        console.error("Error parsing date:", error);
+        console.error('Error parsing date:', error);
       }
     }
   };
@@ -143,23 +146,23 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
   const handleSave = () => {
     let newValue;
 
-    if (fieldType === "date") {
+    if (fieldType === 'date') {
       // Convert date values to the format "DD-MMM-YYYY"
       const months = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
       ];
-      const monthStr = months[parseInt(dateValues.month) - 1] || "";
+      const monthStr = months[parseInt(dateValues.month) - 1] || '';
 
       // Don't save if any date part is missing
       if (!dateValues.day || !dateValues.month || !dateValues.year) {
@@ -171,14 +174,14 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
       newValue = `${dateValues.day}-${monthStr}-${dateValues.year}`;
     } else {
       // For non-date fields, check if value is empty
-      if (editValue.trim() === "") {
+      if (editValue.trim() === '') {
         setIsEditing(false);
         return;
       }
 
       // Email validation
       if (
-        fieldType === "email" &&
+        fieldType === 'email' &&
         !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editValue)
       ) {
         // Handle invalid email
@@ -210,16 +213,16 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
       className={`p-4 rounded-md flex justify-between items-center ${
         isHovered || isEditing
           ? disabled
-            ? "bg-gray-50"
-            : "bg-gray-100"
-          : "bg-transparent"
+            ? 'bg-gray-50'
+            : 'bg-gray-100'
+          : 'bg-transparent'
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {isEditing ? (
         <div className="w-full">
-          {fieldType === "date" ? (
+          {fieldType === 'date' ? (
             <DateInput
               label={label}
               onChange={handleDateChange}
@@ -256,8 +259,8 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
             <p
               className={`${
                 Boolean(isHovered || isEditing) && !disabled
-                  ? "text-[#0890A8]"
-                  : "text-secondary-black"
+                  ? 'text-[#0890A8]'
+                  : 'text-secondary-black'
               } text-sm`}
             >
               {label}
@@ -266,7 +269,7 @@ const EditProfileDetail: React.FC<EditProfileDetailProps> = ({
           </div>
           {disabled ? (
             <div className="text-gray-400 text-sm italic">
-              {editHint || "Cannot be edited"}
+              {editHint || 'Cannot be edited'}
             </div>
           ) : (
             <button

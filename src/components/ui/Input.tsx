@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -44,8 +45,8 @@ export const Input: React.FC<InputProps> = ({
       <div className="relative">
         <input
           className={cn(
-            "w-full px-3 py-2 border rounded focus:outline-none focus:ring placeholder:text-[#ACACAC]",
-            error ? "border-red-500" : "border-[#ACACAC]",
+            'w-full px-3 py-2 border rounded focus:outline-none focus:ring placeholder:text-[#ACACAC]',
+            error ? 'border-red-500' : 'border-[#ACACAC]',
             className
           )}
           name={name}

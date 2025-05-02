@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 interface ChevronRightIconProps {
   className?: string;
 }
 
 const ChevronRightIcon: React.FC<ChevronRightIconProps> = ({
-  className = "",
+  className = '',
 }) => {
   return (
     <svg

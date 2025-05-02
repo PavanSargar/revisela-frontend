@@ -1,7 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { USER_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../api-client";
-import { useAppSelector } from "@/store";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { useAppSelector } from '@/store';
+
+import { apiRequest } from '../api-client';
+import { USER_ENDPOINTS } from '../endpoints';
 
 // Add these types if not already defined
 interface User {
@@ -18,7 +20,7 @@ interface User {
 // Get all users
 export const useUsers = () => {
   return useQuery({
-    queryKey: ["users"],
+    queryKey: ['users'],
     queryFn: async () => {
       const response = await apiRequest<User[]>(USER_ENDPOINTS.GET_ALL_USERS);
 
@@ -53,7 +55,7 @@ export const useCreateUser = () => {
       return response.data!;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 };
@@ -61,7 +63,7 @@ export const useCreateUser = () => {
 // Get user by email
 export const useUserByEmail = (email: string) => {
   return useQuery({
-    queryKey: ["user", "email", email],
+    queryKey: ['user', 'email', email],
     queryFn: async () => {
       const response = await apiRequest<User>(
         USER_ENDPOINTS.GET_USER_BY_EMAIL(email)
@@ -103,11 +105,11 @@ export const useUpdateUser = () => {
       return response.data!;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["user", data._id] });
+      queryClient.invalidateQueries({ queryKey: ['user', data._id] });
       queryClient.invalidateQueries({
-        queryKey: ["user", "email", data.email],
+        queryKey: ['user', 'email', data.email],
       });
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 };
@@ -127,8 +129,8 @@ export const useDeleteUser = () => {
       return userId;
     },
     onSuccess: (userId) => {
-      queryClient.invalidateQueries({ queryKey: ["user", userId] });
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ['user', userId] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 };
@@ -142,7 +144,7 @@ export const useUpdateProfile = () => {
     mutationFn: async (data: Partial<User>) => {
       const { _id, ...rest } = data;
       if (!data?._id) {
-        throw new Error("User ID is required to update profile");
+        throw new Error('User ID is required to update profile');
       }
 
       const response = await apiRequest<User>(
@@ -159,9 +161,9 @@ export const useUpdateProfile = () => {
       return response.data!;
     },
     onSuccess: ({ _id }) => {
-      queryClient.invalidateQueries({ queryKey: ["user", "me"] });
-      queryClient.invalidateQueries({ queryKey: ["user", String(_id)] });
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ['user', 'me'] });
+      queryClient.invalidateQueries({ queryKey: ['user', String(_id)] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 };
@@ -174,7 +176,7 @@ export const useDeleteAccount = () => {
   return useMutation({
     mutationFn: async () => {
       if (!user?.id) {
-        throw new Error("User ID is required to delete account");
+        throw new Error('User ID is required to delete account');
       }
 
       const response = await apiRequest(USER_ENDPOINTS.DELETE_ACCOUNT(user.id));
@@ -186,8 +188,8 @@ export const useDeleteAccount = () => {
       return true;
     },
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ["user", "me"] });
-      queryClient.removeQueries({ queryKey: ["user", user?.id] });
+      queryClient.removeQueries({ queryKey: ['user', 'me'] });
+      queryClient.removeQueries({ queryKey: ['user', user?.id] });
     },
   });
 };

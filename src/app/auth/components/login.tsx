@@ -1,20 +1,25 @@
-"use client";
-import React from "react";
-import Image from "next/image";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { Checkbox } from "@/components/ui/Checkbox";
-import GoogleIcon from "@/assets/icons/google.svg";
-import MicrosoftIcon from "@/assets/icons/microsoft.svg";
-import { useLogin } from "@/services/features/auth";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+'use client';
+
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+import { useLogin } from '@/services/features/auth';
+
+import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { Input } from '@/components/ui/Input';
+
+import GoogleIcon from '@/assets/icons/google.svg';
+import MicrosoftIcon from '@/assets/icons/microsoft.svg';
 
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
   rememberMe: z.boolean().optional(),
 });
 
@@ -33,8 +38,8 @@ const Login = () => {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       rememberMe: false,
     },
   });
@@ -47,7 +52,7 @@ const Login = () => {
       },
       {
         onSuccess: () => {
-          window.location.href = "/dashboard";
+          window.location.href = '/dashboard';
         },
       }
     );
@@ -82,7 +87,7 @@ const Login = () => {
 
       {apiError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {apiError instanceof Error ? apiError.message : "Login failed"}
+          {apiError instanceof Error ? apiError.message : 'Login failed'}
         </div>
       )}
 
@@ -90,18 +95,18 @@ const Login = () => {
         label="Email"
         placeholder="Enter your email"
         type="email"
-        {...register("email")}
+        {...register('email')}
         error={errors.email?.message}
       />
       <Input
         label="Password"
         placeholder="Enter your password"
         type="password"
-        {...register("password")}
+        {...register('password')}
         error={errors.password?.message}
       />
       <div className="flex items-center justify-between">
-        <Checkbox label="Remember me" {...register("rememberMe")} />
+        <Checkbox label="Remember me" {...register('rememberMe')} />
         <a href="?forget-password=true" className="text-[18px] text-[#0890A8]">
           Forgot Password?
         </a>
@@ -111,11 +116,11 @@ const Login = () => {
         className="bg-[#0890A8] text-white block w-full h-[3.0625rem]"
         disabled={isPending}
       >
-        {isPending ? "Logging in..." : "Log In"}
+        {isPending ? 'Logging in...' : 'Log In'}
       </Button>
 
       <p className="text-center text-[14px] text-[#444444]">
-        Don't have an account?{" "}
+        Don't have an account?{' '}
         <a href="?signup=true" className="text-[#0890A8]">
           Sign up
         </a>
