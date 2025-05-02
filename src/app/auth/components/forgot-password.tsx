@@ -1,41 +1,45 @@
-"use client";
-import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import { Input, Button, OtpInput } from "@/components/ui";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useResetPassword } from "@/services/features/auth";
-import { useRouter } from "next/navigation";
+'use client';
+
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Eye, EyeOff } from 'lucide-react';
+import { z } from 'zod';
+
+import { useResetPassword } from '@/services/features/auth';
+
+import { Button, Input, OtpInput } from '@/components/ui';
 
 const emailSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email('Please enter a valid email address'),
 });
 
 const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(8, "Password must be at least 8 characters")
-      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-      .regex(/[0-9]/, "Password must contain at least one number"),
+      .min(8, 'Password must be at least 8 characters')
+      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .regex(/[0-9]/, 'Password must contain at least one number'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
   });
 
 type EmailFormData = z.infer<typeof emailSchema>;
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
-type Step = "email" | "otp" | "reset";
+type Step = 'email' | 'otp' | 'reset';
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState<Step>("email");
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState<Step>('email');
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -54,7 +58,7 @@ const ForgotPassword = () => {
   } = useForm<EmailFormData>({
     resolver: zodResolver(emailSchema),
     defaultValues: {
-      email: "",
+      email: '',
     },
   });
 
@@ -66,23 +70,23 @@ const ForgotPassword = () => {
   } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      password: "",
-      confirmPassword: "",
+      password: '',
+      confirmPassword: '',
     },
   });
 
   const handleSendEmail = (data: EmailFormData) => {
     // Store email for later use
     setEmail(data.email);
-    console.log("Sending code to:", data.email);
-    setStep("otp");
+    console.log('Sending code to:', data.email);
+    setStep('otp');
   };
 
   const handleVerifyOtp = (code: string) => {
     setOtp(code);
     if (code.length === 6) {
       // Automatically move to reset step when OTP is complete
-      setStep("reset");
+      setStep('reset');
     }
   };
 
@@ -95,7 +99,7 @@ const ForgotPassword = () => {
       },
       {
         onSuccess: () => {
-          router.push("/");
+          router.push('/');
         },
       }
     );
@@ -111,18 +115,18 @@ const ForgotPassword = () => {
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           {apiError instanceof Error
             ? apiError.message
-            : "Password reset failed"}
+            : 'Password reset failed'}
         </div>
       )}
 
-      {step === "email" && (
+      {step === 'email' && (
         <form onSubmit={handleSubmitEmail(handleSendEmail)}>
           <Input
             className="w-[20rem]"
             label="Email"
             placeholder="Enter your email"
             type="email"
-            {...registerEmail("email")}
+            {...registerEmail('email')}
             error={emailErrors.email?.message}
             rightElement={
               <Button
@@ -136,7 +140,7 @@ const ForgotPassword = () => {
         </form>
       )}
 
-      {step === "otp" && (
+      {step === 'otp' && (
         <OtpInput
           length={6}
           onComplete={handleVerifyOtp}
@@ -144,14 +148,14 @@ const ForgotPassword = () => {
         />
       )}
 
-      {step === "reset" && (
+      {step === 'reset' && (
         <form onSubmit={handleSubmitPassword(handleResetPassword)}>
           <div className="flex flex-col gap-4">
             <Input
               label="Password"
               placeholder="Enter your password"
-              type={showPassword ? "text" : "password"}
-              {...registerPassword("password")}
+              type={showPassword ? 'text' : 'password'}
+              {...registerPassword('password')}
               error={passwordErrors.password?.message}
               rightElement={
                 <button
@@ -167,8 +171,8 @@ const ForgotPassword = () => {
             <Input
               label="Confirm Password"
               placeholder="Re-enter your password"
-              type={showConfirmPassword ? "text" : "password"}
-              {...registerPassword("confirmPassword")}
+              type={showConfirmPassword ? 'text' : 'password'}
+              {...registerPassword('confirmPassword')}
               error={passwordErrors.confirmPassword?.message}
               rightElement={
                 <button
@@ -190,7 +194,7 @@ const ForgotPassword = () => {
               className="bg-[#0890A8] text-white block w-full h-[3.0625rem] mt-4"
               disabled={isPending}
             >
-              {isPending ? "Updating..." : "Update Password"}
+              {isPending ? 'Updating...' : 'Update Password'}
             </Button>
           </div>
         </form>

@@ -1,6 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { QUIZ_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../api-client";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { apiRequest } from '../api-client';
+import { QUIZ_ENDPOINTS } from '../endpoints';
 
 interface QuizSet {
   _id: string;
@@ -29,7 +30,7 @@ interface QuizSetResponse {
 // Fetch quiz sets, optionally by folder
 export const useQuizSets = (folderId?: string) => {
   return useQuery({
-    queryKey: ["quizSets", folderId],
+    queryKey: ['quizSets', folderId],
     queryFn: async () => {
       const endpoint = folderId
         ? QUIZ_ENDPOINTS.GET_FOLDER_QUIZZES(folderId)
@@ -47,7 +48,7 @@ export const useQuizSets = (folderId?: string) => {
 // Fetch user's created quizzes
 export const useMyQuizzes = () => {
   return useQuery({
-    queryKey: ["myQuizzes"],
+    queryKey: ['myQuizzes'],
     queryFn: async () => {
       const response = await apiRequest<QuizSet[]>(
         QUIZ_ENDPOINTS.GET_MY_QUIZZES
@@ -65,7 +66,7 @@ export const useMyQuizzes = () => {
 // Search quizzes
 export const useSearchQuizzes = (query: string) => {
   return useQuery({
-    queryKey: ["quizSearch", query],
+    queryKey: ['quizSearch', query],
     queryFn: async () => {
       const response = await apiRequest<QuizSet[]>(
         QUIZ_ENDPOINTS.SEARCH_QUIZZES,
@@ -87,7 +88,7 @@ export const useSearchQuizzes = (query: string) => {
 // Get a specific quiz
 export const useQuizSet = (id: string) => {
   return useQuery({
-    queryKey: ["quiz", id],
+    queryKey: ['quiz', id],
     queryFn: async () => {
       const response = await apiRequest<QuizSet>(QUIZ_ENDPOINTS.GET_QUIZ(id));
 
@@ -107,7 +108,7 @@ export const useCreateQuiz = () => {
 
   return useMutation({
     mutationFn: async (
-      data: Omit<QuizSet, "id" | "createdAt" | "updatedAt">
+      data: Omit<QuizSet, 'id' | 'createdAt' | 'updatedAt'>
     ) => {
       const response = await apiRequest<QuizSet>(QUIZ_ENDPOINTS.CREATE_QUIZ, {
         body: data,
@@ -121,8 +122,8 @@ export const useCreateQuiz = () => {
     },
     onSuccess: () => {
       // Invalidate all related queries to refetch the lists
-      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
-      queryClient.invalidateQueries({ queryKey: ["myQuizzes"] });
+      queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+      queryClient.invalidateQueries({ queryKey: ['myQuizzes'] });
     },
   });
 };
@@ -154,9 +155,9 @@ export const useUpdateQuiz = () => {
     },
     onSuccess: (data, variables) => {
       // Invalidate specific quiz and lists
-      queryClient.invalidateQueries({ queryKey: ["quiz", variables.id] });
-      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
-      queryClient.invalidateQueries({ queryKey: ["myQuizzes"] });
+      queryClient.invalidateQueries({ queryKey: ['quiz', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+      queryClient.invalidateQueries({ queryKey: ['myQuizzes'] });
     },
   });
 };
@@ -177,9 +178,9 @@ export const useDeleteQuiz = () => {
     },
     onSuccess: (id) => {
       // Invalidate all related queries
-      queryClient.invalidateQueries({ queryKey: ["quiz", id] });
-      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
-      queryClient.invalidateQueries({ queryKey: ["myQuizzes"] });
+      queryClient.invalidateQueries({ queryKey: ['quiz', id] });
+      queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+      queryClient.invalidateQueries({ queryKey: ['myQuizzes'] });
     },
   });
 };

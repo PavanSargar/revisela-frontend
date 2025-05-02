@@ -1,42 +1,46 @@
-"use client";
-import React from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { Checkbox } from "@/components/ui/Checkbox";
-import { DateInput } from "@/components/ui/DateInput";
-import { useSignup } from "@/services/features/auth";
+'use client';
 
-import GoogleIcon from "@/assets/icons/google.svg";
-import MicrosoftIcon from "@/assets/icons/microsoft.svg";
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+import { useSignup } from '@/services/features/auth';
+
+import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { DateInput } from '@/components/ui/DateInput';
+import { Input } from '@/components/ui/Input';
+
+import GoogleIcon from '@/assets/icons/google.svg';
+import MicrosoftIcon from '@/assets/icons/microsoft.svg';
 
 const signupSchema = z.object({
-  name: z.string().min(2, "Full name must be at least 2 characters"),
+  name: z.string().min(2, 'Full name must be at least 2 characters'),
   username: z
     .string()
-    .min(3, "Username must be at least 3 characters")
+    .min(3, 'Username must be at least 3 characters')
     .regex(
       /^[a-zA-Z0-9_]+$/,
-      "Username can only contain letters, numbers, and underscores"
+      'Username can only contain letters, numbers, and underscores'
     ),
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string().email('Please enter a valid email address'),
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number'),
   birthday: z.object({
-    day: z.string().min(1, "Required"),
-    month: z.string().min(1, "Required"),
-    year: z.string().min(1, "Required"),
+    day: z.string().min(1, 'Required'),
+    month: z.string().min(1, 'Required'),
+    year: z.string().min(1, 'Required'),
   }),
   agreeToTerms: z.literal(true, {
-    errorMap: () => ({ message: "You must agree to the terms and conditions" }),
+    errorMap: () => ({ message: 'You must agree to the terms and conditions' }),
   }),
 });
 
@@ -55,14 +59,14 @@ const SignUp = () => {
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
-      username: "",
-      email: "",
-      password: "",
+      name: '',
+      username: '',
+      email: '',
+      password: '',
       birthday: {
-        day: "",
-        month: "",
-        year: "",
+        day: '',
+        month: '',
+        year: '',
       },
     },
   });
@@ -82,7 +86,7 @@ const SignUp = () => {
       {
         onSuccess: () => {
           // Direct navigation to dashboard
-          window.location.href = "/dashboard"; // Force a full page refresh
+          window.location.href = '/dashboard'; // Force a full page refresh
         },
       }
     );
@@ -120,7 +124,7 @@ const SignUp = () => {
 
       {apiError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {apiError instanceof Error ? apiError.message : "Signup failed"}
+          {apiError instanceof Error ? apiError.message : 'Signup failed'}
         </div>
       )}
 
@@ -128,14 +132,14 @@ const SignUp = () => {
         label="Full Name"
         placeholder="Enter your full name"
         type="text"
-        {...register("name")}
+        {...register('name')}
         error={errors.name?.message}
       />
       <Input
         label="Username"
         placeholder="Enter your username"
         type="text"
-        {...register("username")}
+        {...register('username')}
         error={errors.username?.message}
       />
       <Controller
@@ -157,21 +161,21 @@ const SignUp = () => {
         label="Email"
         placeholder="Enter your email"
         type="email"
-        {...register("email")}
+        {...register('email')}
         error={errors.email?.message}
       />
       <Input
         label="Password"
         placeholder="Create a password"
         type="password"
-        {...register("password")}
+        {...register('password')}
         error={errors.password?.message}
       />
 
       <div className="flex items-center">
         <Checkbox
           label="I agree to the Terms of Service and Privacy Policy"
-          {...register("agreeToTerms")}
+          {...register('agreeToTerms')}
           error={errors.agreeToTerms?.message}
         />
       </div>
@@ -181,11 +185,11 @@ const SignUp = () => {
         className="bg-[#0890A8] text-white block w-full h-[3.0625rem]"
         disabled={isPending}
       >
-        {isPending ? "Creating account..." : "Sign Up"}
+        {isPending ? 'Creating account...' : 'Sign Up'}
       </Button>
 
       <p className="text-center text-[14px] text-[#444444]">
-        Already have an account?{" "}
+        Already have an account?{' '}
         <a href="?signup=false" className="text-[#0890A8]">
           Log in
         </a>

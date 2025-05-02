@@ -1,20 +1,21 @@
-import { useMutation } from "@tanstack/react-query";
-import { EMAIL_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../api-client";
+import { useMutation } from '@tanstack/react-query';
+
+import { apiRequest } from '../api-client';
+import { EMAIL_ENDPOINTS } from '../endpoints';
 
 // Types
 interface EmailInvitationData {
   email: string;
   className: string;
-  role: "admin" | "member" | "collaborator";
+  role: 'admin' | 'member' | 'collaborator';
   sendRegistrationLink?: boolean;
 }
 
 interface EmailNotificationData {
   email: string;
   className: string;
-  event: "added" | "removed" | "updated";
-  role: "admin" | "member" | "collaborator";
+  event: 'added' | 'removed' | 'updated';
+  role: 'admin' | 'member' | 'collaborator';
 }
 
 interface TestEmailData {

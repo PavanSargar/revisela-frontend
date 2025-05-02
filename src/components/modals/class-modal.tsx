@@ -1,15 +1,18 @@
-import React, { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Modal, Input, Button, OtpInput, TabSwitch } from "@/components/ui";
-import { useCreateClass } from "@/services/features/classes";
-import { useToast } from "@/components/ui/toast";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
+import { z } from 'zod';
+
+import { useCreateClass } from '@/services/features/classes';
+
+import { Button, Input, Modal, OtpInput, TabSwitch } from '@/components/ui';
+import { useToast } from '@/components/ui/toast';
 
 const createClassSchema = z.object({
-  name: z.string().min(1, "Class name is required"),
-  schoolName: z.string().min(1, "School/University/Group name is required"),
+  name: z.string().min(1, 'Class name is required'),
+  schoolName: z.string().min(1, 'School/University/Group name is required'),
 });
 
 type CreateClassFormData = z.infer<typeof createClassSchema>;
@@ -17,18 +20,18 @@ type CreateClassFormData = z.infer<typeof createClassSchema>;
 interface ClassModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  type?: "create" | "join";
+  type?: 'create' | 'join';
   onSuccess?: () => void;
 }
 
 export const ClassModal: React.FC<ClassModalProps> = ({
   isOpen,
   onOpenChange,
-  type = "create",
+  type = 'create',
   onSuccess,
 }) => {
-  const [activeTab, setActiveTab] = useState<"create" | "join">(type);
-  const [classCode, setClassCode] = useState("");
+  const [activeTab, setActiveTab] = useState<'create' | 'join'>(type);
+  const [classCode, setClassCode] = useState('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { mutate: createClass, isPending: isCreating } = useCreateClass();
@@ -42,10 +45,10 @@ export const ClassModal: React.FC<ClassModalProps> = ({
   } = useForm<CreateClassFormData>({
     resolver: zodResolver(createClassSchema),
     defaultValues: {
-      name: "",
-      schoolName: "",
+      name: '',
+      schoolName: '',
     },
-    mode: "onChange",
+    mode: 'onChange',
   });
 
   const onCreateClass = (data: CreateClassFormData) => {
@@ -58,22 +61,22 @@ export const ClassModal: React.FC<ClassModalProps> = ({
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["classes"] });
-          queryClient.invalidateQueries({ queryKey: ["my-classes"] });
+          queryClient.invalidateQueries({ queryKey: ['classes'] });
+          queryClient.invalidateQueries({ queryKey: ['my-classes'] });
 
           toast({
-            title: "Success",
-            description: "Class created successfully",
-            type: "success",
+            title: 'Success',
+            description: 'Class created successfully',
+            type: 'success',
           });
           handleClose();
           if (onSuccess) onSuccess();
         },
         onError: (error) => {
           toast({
-            title: "Error",
-            description: error.message || "Failed to create class",
-            type: "error",
+            title: 'Error',
+            description: error.message || 'Failed to create class',
+            type: 'error',
           });
         },
       }
@@ -83,23 +86,23 @@ export const ClassModal: React.FC<ClassModalProps> = ({
   const handleJoinClass = () => {
     if (!classCode || classCode.length !== 6) {
       toast({
-        title: "Error",
-        description: "Please enter a valid 6-digit class code",
-        type: "error",
+        title: 'Error',
+        description: 'Please enter a valid 6-digit class code',
+        type: 'error',
       });
       return;
     }
 
     toast({
-      title: "Info",
-      description: "Join class functionality will be implemented soon",
-      type: "info",
+      title: 'Info',
+      description: 'Join class functionality will be implemented soon',
+      type: 'info',
     });
   };
 
   const handleClose = () => {
     resetCreateForm();
-    setClassCode("");
+    setClassCode('');
     onOpenChange(false);
   };
 
@@ -112,15 +115,15 @@ export const ClassModal: React.FC<ClassModalProps> = ({
     >
       <TabSwitch
         options={[
-          { value: "create", label: "Create A Class", color: "#0890A8" },
-          { value: "join", label: "Join A Class", color: "#058F3A" },
+          { value: 'create', label: 'Create A Class', color: '#0890A8' },
+          { value: 'join', label: 'Join A Class', color: '#058F3A' },
         ]}
         value={activeTab}
-        onChange={(value) => setActiveTab(value as "create" | "join")}
+        onChange={(value) => setActiveTab(value as 'create' | 'join')}
         className="mb-8"
       />
 
-      {activeTab === "create" ? (
+      {activeTab === 'create' ? (
         <form
           onSubmit={handleSubmitCreate(onCreateClass)}
           className="space-y-4"
@@ -128,7 +131,7 @@ export const ClassModal: React.FC<ClassModalProps> = ({
           <Input
             label="Class Name"
             placeholder="Enter class name"
-            {...registerCreate("name")}
+            {...registerCreate('name')}
             error={createErrors.name?.message}
             required
           />
@@ -136,7 +139,7 @@ export const ClassModal: React.FC<ClassModalProps> = ({
           <Input
             label="School/University/Group Name"
             placeholder="Enter school/university/group name"
-            {...registerCreate("schoolName")}
+            {...registerCreate('schoolName')}
             error={createErrors.schoolName?.message}
             required
           />
@@ -155,7 +158,7 @@ export const ClassModal: React.FC<ClassModalProps> = ({
               className="bg-[#0890A8] text-white"
               disabled={isCreating || !isCreateValid}
             >
-              {isCreating ? "Creating..." : "Create Class"}
+              {isCreating ? 'Creating...' : 'Create Class'}
             </Button>
           </div>
         </form>

@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
-import React, { useState, useRef, KeyboardEvent, ClipboardEvent } from "react";
-import { cn } from "@/lib/utils";
+import React, { ClipboardEvent, KeyboardEvent, useRef, useState } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface OtpInputProps {
   length?: number;
@@ -14,9 +15,9 @@ export const OtpInput: React.FC<OtpInputProps> = ({
   length = 6,
   onComplete,
   label,
-  helperText = "Input the six digit code that has been sent to your email",
+  helperText = 'Input the six digit code that has been sent to your email',
 }) => {
-  const [otp, setOtp] = useState<string[]>(Array(length).fill(""));
+  const [otp, setOtp] = useState<string[]>(Array(length).fill(''));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (
@@ -27,7 +28,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
 
     if (value.length > 1) {
       // Handle paste or multiple character input
-      const chars = value.split("").slice(0, length);
+      const chars = value.split('').slice(0, length);
       const newOtp = [...otp];
 
       chars.forEach((char, idx) => {
@@ -42,8 +43,8 @@ export const OtpInput: React.FC<OtpInputProps> = ({
       const nextIndex = Math.min(index + chars.length, length - 1);
       inputRefs.current[nextIndex]?.focus();
 
-      if (newOtp.every((val) => val !== "")) {
-        onComplete?.(newOtp.join(""));
+      if (newOtp.every((val) => val !== '')) {
+        onComplete?.(newOtp.join(''));
       }
     } else {
       // Handle single character input
@@ -56,20 +57,20 @@ export const OtpInput: React.FC<OtpInputProps> = ({
         inputRefs.current[index + 1]?.focus();
       }
 
-      if (newOtp.every((val) => val !== "")) {
-        onComplete?.(newOtp.join(""));
+      if (newOtp.every((val) => val !== '')) {
+        onComplete?.(newOtp.join(''));
       }
     }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
       // Move to previous input on backspace if current is empty
       inputRefs.current[index - 1]?.focus();
-    } else if (e.key === "ArrowLeft" && index > 0) {
+    } else if (e.key === 'ArrowLeft' && index > 0) {
       // Move to previous input on left arrow
       inputRefs.current[index - 1]?.focus();
-    } else if (e.key === "ArrowRight" && index < length - 1) {
+    } else if (e.key === 'ArrowRight' && index < length - 1) {
       // Move to next input on right arrow
       inputRefs.current[index + 1]?.focus();
     }
@@ -77,10 +78,10 @@ export const OtpInput: React.FC<OtpInputProps> = ({
 
   const handlePaste = (e: ClipboardEvent<HTMLInputElement>, index: number) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text/plain").trim();
+    const pastedData = e.clipboardData.getData('text/plain').trim();
 
     if (pastedData) {
-      const chars = pastedData.split("").slice(0, length - index);
+      const chars = pastedData.split('').slice(0, length - index);
       const newOtp = [...otp];
 
       chars.forEach((char, idx) => {
@@ -95,8 +96,8 @@ export const OtpInput: React.FC<OtpInputProps> = ({
       const nextIndex = Math.min(index + chars.length, length - 1);
       inputRefs.current[nextIndex]?.focus();
 
-      if (newOtp.every((val) => val !== "")) {
-        onComplete?.(newOtp.join(""));
+      if (newOtp.every((val) => val !== '')) {
+        onComplete?.(newOtp.join(''));
       }
     }
   };
@@ -121,8 +122,8 @@ export const OtpInput: React.FC<OtpInputProps> = ({
             type="text"
             maxLength={1}
             className={cn(
-              "w-12 h-12 text-center text-xl font-semibold border border-[#ACACAC] rounded-md focus:outline-none focus:ring focus:border-[#0890A8]",
-              otp[index] ? "text-black" : "text-[#ACACAC]"
+              'w-12 h-12 text-center text-xl font-semibold border border-[#ACACAC] rounded-md focus:outline-none focus:ring focus:border-[#0890A8]',
+              otp[index] ? 'text-black' : 'text-[#ACACAC]'
             )}
             value={otp[index]}
             onChange={(e) => handleChange(e, index)}

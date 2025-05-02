@@ -1,1 +1,1 @@
-export { default as QuizSetItem } from "./QuizSetItem";
+export { default as QuizSetItem } from './QuizSetItem';

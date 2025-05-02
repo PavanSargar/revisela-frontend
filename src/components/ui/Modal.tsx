@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React, { useEffect } from 'react';
+
+import * as Dialog from '@radix-ui/react-dialog';
+import { X } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 
 interface ModalProps {
   isOpen: boolean;
@@ -29,16 +31,16 @@ export const Modal: React.FC<ModalProps> = ({
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.documentElement.classList.add("modal-open");
-      document.body.classList.add("modal-open");
+      document.documentElement.classList.add('modal-open');
+      document.body.classList.add('modal-open');
     } else {
-      document.documentElement.classList.remove("modal-open");
-      document.body.classList.remove("modal-open");
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
     }
 
     return () => {
-      document.documentElement.classList.remove("modal-open");
-      document.body.classList.remove("modal-open");
+      document.documentElement.classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
     };
   }, [isOpen]);
 
@@ -51,7 +53,7 @@ export const Modal: React.FC<ModalProps> = ({
         <Dialog.Overlay className="fixed inset-0 z-[100] bg-overlay-gray backdrop-blur-sm animate-fadeIn" />
         <Dialog.Content
           className={cn(
-            "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg p-6 focus:outline-none z-[101] w-[90%] max-w-md animate-scaleIn",
+            'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg p-6 focus:outline-none z-[101] w-[90%] max-w-md animate-scaleIn',
             contentClassName
           )}
         >
@@ -66,7 +68,7 @@ export const Modal: React.FC<ModalProps> = ({
             </Dialog.Close>
           )}
 
-          {typeof title === "string" ? (
+          {typeof title === 'string' ? (
             <Dialog.Title className="text-lg font-semibold text-secondary-black mb-2">
               {title}
             </Dialog.Title>

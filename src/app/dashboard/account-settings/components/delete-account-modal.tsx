@@ -1,8 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Trash2 } from "lucide-react";
-import { Button, Input, Modal } from "@/components/ui";
+import React, { useState } from 'react';
+
+import { Trash2 } from 'lucide-react';
+
+import { Button, Input, Modal } from '@/components/ui';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -15,35 +17,35 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   onOpenChange,
   onDelete,
 }) => {
-  const [reason, setReason] = useState("");
-  const [password, setPassword] = useState("");
+  const [reason, setReason] = useState('');
+  const [password, setPassword] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleDelete = async () => {
     if (!password) {
-      setError("Please enter your password to confirm deletion");
+      setError('Please enter your password to confirm deletion');
       return;
     }
 
     try {
-      setError("");
+      setError('');
       setIsDeleting(true);
       // In a real implementation, we would pass the password to verify
       // For now, we'll just call the delete function
       await onDelete();
       handleClose();
     } catch (error: any) {
-      setError(error.message || "Failed to delete account");
+      setError(error.message || 'Failed to delete account');
     } finally {
       setIsDeleting(false);
     }
   };
 
   const handleClose = () => {
-    setReason("");
-    setPassword("");
-    setError("");
+    setReason('');
+    setPassword('');
+    setError('');
     onOpenChange(false);
   };
 
@@ -96,7 +98,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             type="button"
             disabled={isDeleting}
           >
-            {isDeleting ? "Deleting..." : "Confirm"}
+            {isDeleting ? 'Deleting...' : 'Confirm'}
           </Button>
         </div>
       </div>

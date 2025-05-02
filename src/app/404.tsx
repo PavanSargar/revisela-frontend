@@ -1,7 +1,9 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAppSelector } from "@/store";
+'use client';
+
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
+import { useAppSelector } from '@/store';
 
 interface ErrorProps {
   error?: Error;
@@ -17,9 +19,9 @@ const Error = ({ error, reset }: ErrorProps) => {
     // Set up redirection timer
     const timer = setTimeout(() => {
       if (isAuthenticated) {
-        router.push("/dashboard");
+        router.push('/dashboard');
       } else {
-        router.push("/auth/login");
+        router.push('/auth/login');
       }
     }, 5000);
 
@@ -48,7 +50,7 @@ const Error = ({ error, reset }: ErrorProps) => {
             Oops! Something went wrong
           </h1>
           <p className="mt-2 text-gray-600">
-            {error?.message || "An unexpected error occurred"}
+            {error?.message || 'An unexpected error occurred'}
           </p>
         </div>
 

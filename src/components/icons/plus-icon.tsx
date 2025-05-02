@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
 interface IconProps {
   className?: string;
   size?: number;
 }
 
-const PlusIcon: React.FC<IconProps> = ({ className = "", size = 24 }) => {
+const PlusIcon: React.FC<IconProps> = ({ className = '', size = 24 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

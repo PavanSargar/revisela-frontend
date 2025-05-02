@@ -1,10 +1,11 @@
-import React from "react";
-import LoadingSpinner from "./LoadingSpinner";
+import React from 'react';
+
+import LoadingSpinner from './LoadingSpinner';
 
 interface ContentLoaderProps {
   message?: string;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
-  variant?: "primary" | "secondary" | "light";
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  variant?: 'primary' | 'secondary' | 'light';
   className?: string;
   spinnerClassName?: string;
   fullScreen?: boolean;
@@ -14,16 +15,16 @@ interface ContentLoaderProps {
  * A content loader component with spinner and message
  */
 export const ContentLoader: React.FC<ContentLoaderProps> = ({
-  message = "Loading...",
-  size = "lg",
-  variant = "primary",
-  className = "",
-  spinnerClassName = "",
+  message = 'Loading...',
+  size = 'lg',
+  variant = 'primary',
+  className = '',
+  spinnerClassName = '',
   fullScreen = false,
 }) => {
   const wrapperClasses = fullScreen
-    ? "fixed inset-0 z-50 bg-white/80 backdrop-blur-sm"
-    : "w-full";
+    ? 'fixed inset-0 z-50 bg-white/80 backdrop-blur-sm'
+    : 'w-full';
 
   return (
     <div

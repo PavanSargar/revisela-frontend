@@ -1,63 +1,68 @@
-"use client";
-import React, { useState } from "react";
-import { Folder } from "lucide-react";
-import { QuizSetItem } from "../library/components";
-import { FolderItem } from "@/components/ui/folder";
-import { Breadcrumb, BreadcrumbItem } from "@/components/ui/Breadcrumb";
-import { ROUTES } from "@/constants/routes";
+'use client';
+
+import React, { useState } from 'react';
+
+import { Folder } from 'lucide-react';
+
+import { Breadcrumb, BreadcrumbItem } from '@/components/ui/Breadcrumb';
+import { FolderItem } from '@/components/ui/folder';
+
+import { ROUTES } from '@/constants/routes';
+
+import { QuizSetItem } from '../library/components';
 
 export default function BookmarksPage() {
-  const [currentFolder, setCurrentFolder] = useState("Bookmarked Folder 1");
+  const [currentFolder, setCurrentFolder] = useState('Bookmarked Folder 1');
 
   // Mock folders data
   const folders = [
-    { id: "1", name: "Bookmarked Folder 1" },
-    { id: "2", name: "Bookmarked Folder 2" },
-    { id: "3", name: "Bookmarked Folder 3" },
-    { id: "4", name: "Bookmarked Folder 4" },
-    { id: "5", name: "Bookmarked Folder 5" },
-    { id: "6", name: "Bookmarked Folder 6" },
+    { id: '1', name: 'Bookmarked Folder 1' },
+    { id: '2', name: 'Bookmarked Folder 2' },
+    { id: '3', name: 'Bookmarked Folder 3' },
+    { id: '4', name: 'Bookmarked Folder 4' },
+    { id: '5', name: 'Bookmarked Folder 5' },
+    { id: '6', name: 'Bookmarked Folder 6' },
   ];
 
   // Mock bookmarked quiz sets data
   const bookmarkedQuizSets = [
     {
-      id: "1",
-      title: "IB Calculus",
+      id: '1',
+      title: 'IB Calculus',
       description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "Sam Smith", isCurrentUser: false },
+        'Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.',
+      tags: ['Maths', 'IB', 'Calculus'],
+      creator: { name: 'Sam Smith', isCurrentUser: false },
       rating: 2,
       isBookmarked: true,
     },
     {
-      id: "4",
-      title: "Physics Mechanics",
+      id: '4',
+      title: 'Physics Mechanics',
       description:
-        "Master the fundamentals of mechanics including motion, forces, energy, and momentum with this comprehensive quiz set.",
-      tags: ["Physics", "Science", "Mechanics"],
-      creator: { name: "Robert Chen", isCurrentUser: false },
+        'Master the fundamentals of mechanics including motion, forces, energy, and momentum with this comprehensive quiz set.',
+      tags: ['Physics', 'Science', 'Mechanics'],
+      creator: { name: 'Robert Chen', isCurrentUser: false },
       rating: 5,
       isBookmarked: true,
     },
     {
-      id: "7",
-      title: "English Literature",
+      id: '7',
+      title: 'English Literature',
       description:
-        "Explore classic and contemporary literature with questions about famous authors, literary devices, and critical analysis.",
-      tags: ["English", "Literature", "AP"],
-      creator: { name: "Jane Austen", isCurrentUser: false },
+        'Explore classic and contemporary literature with questions about famous authors, literary devices, and critical analysis.',
+      tags: ['English', 'Literature', 'AP'],
+      creator: { name: 'Jane Austen', isCurrentUser: false },
       rating: 4,
       isBookmarked: true,
     },
     {
-      id: "8",
-      title: "Computer Science Principles",
+      id: '8',
+      title: 'Computer Science Principles',
       description:
-        "Review fundamental concepts in computing including algorithms, data structures, and programming paradigms.",
-      tags: ["CS", "Programming", "Technology"],
-      creator: { name: "Alan Turing", isCurrentUser: false },
+        'Review fundamental concepts in computing including algorithms, data structures, and programming paradigms.',
+      tags: ['CS', 'Programming', 'Technology'],
+      creator: { name: 'Alan Turing', isCurrentUser: false },
       rating: 5,
       isBookmarked: true,
     },
@@ -66,7 +71,7 @@ export default function BookmarksPage() {
   // Define breadcrumb items
   const breadcrumbItems: BreadcrumbItem[] = [
     {
-      label: "Bookmarked",
+      label: 'Bookmarked',
       href: ROUTES.DASHBOARD.BOOKMARKS,
     },
     {

@@ -1,7 +1,7 @@
-export { ToastProvider, useToast } from "./toast-context";
-
 // Re-export a toast function for easier access
-import { useToast as useToastHook } from "./toast-context";
+import { useToast as useToastHook } from './toast-context';
+
+export { ToastProvider, useToast } from './toast-context';
 
 // This is your global toast function - ensure it's only called in client components
 export const toast = {
@@ -50,7 +50,7 @@ export const toast = {
   show: (props: {
     title: string;
     description?: string;
-    type?: "success" | "error" | "warning" | "info";
+    type?: 'success' | 'error' | 'warning' | 'info';
     action?: React.ReactNode;
     duration?: number;
   }) => {
@@ -72,7 +72,7 @@ export function useToastFunction() {
         action?: React.ReactNode;
         duration?: number;
       }) => {
-        showToast({ ...props, type: "success" });
+        showToast({ ...props, type: 'success' });
       },
       error: (props: {
         title: string;
@@ -80,7 +80,7 @@ export function useToastFunction() {
         action?: React.ReactNode;
         duration?: number;
       }) => {
-        showToast({ ...props, type: "error" });
+        showToast({ ...props, type: 'error' });
       },
       warning: (props: {
         title: string;
@@ -88,7 +88,7 @@ export function useToastFunction() {
         action?: React.ReactNode;
         duration?: number;
       }) => {
-        showToast({ ...props, type: "warning" });
+        showToast({ ...props, type: 'warning' });
       },
       info: (props: {
         title: string;
@@ -96,12 +96,12 @@ export function useToastFunction() {
         action?: React.ReactNode;
         duration?: number;
       }) => {
-        showToast({ ...props, type: "info" });
+        showToast({ ...props, type: 'info' });
       },
       show: (props: {
         title: string;
         description?: string;
-        type?: "success" | "error" | "warning" | "info";
+        type?: 'success' | 'error' | 'warning' | 'info';
         action?: React.ReactNode;
         duration?: number;
       }) => {

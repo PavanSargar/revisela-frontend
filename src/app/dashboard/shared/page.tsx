@@ -1,82 +1,86 @@
-"use client";
-import React, { useState } from "react";
-import { Folder } from "lucide-react";
-import { QuizSetItem } from "../library/components";
-import { FolderItem } from "@/components/ui/folder";
-import { Breadcrumb, BreadcrumbItem } from "@/components/ui/Breadcrumb";
+'use client';
+
+import React, { useState } from 'react';
+
+import { Folder } from 'lucide-react';
+
+import { Breadcrumb, BreadcrumbItem } from '@/components/ui/Breadcrumb';
+import { FolderItem } from '@/components/ui/folder';
+
+import { QuizSetItem } from '../library/components';
 
 export default function SharedPage() {
-  const [currentFolder, setCurrentFolder] = useState("Shared Folder 1");
+  const [currentFolder, setCurrentFolder] = useState('Shared Folder 1');
 
   // Mock folders data
   const folders = [
-    { id: "1", name: "Shared Folder 1" },
-    { id: "2", name: "Shared Folder 2" },
-    { id: "3", name: "Shared Folder 3" },
-    { id: "4", name: "Shared Folder 4" },
-    { id: "5", name: "Shared Folder 5" },
-    { id: "6", name: "Shared Folder 6" },
+    { id: '1', name: 'Shared Folder 1' },
+    { id: '2', name: 'Shared Folder 2' },
+    { id: '3', name: 'Shared Folder 3' },
+    { id: '4', name: 'Shared Folder 4' },
+    { id: '5', name: 'Shared Folder 5' },
+    { id: '6', name: 'Shared Folder 6' },
   ];
 
   // Mock shared quiz sets data
   const sharedQuizSets = [
     {
-      id: "1",
-      title: "IB Calculus",
+      id: '1',
+      title: 'IB Calculus',
       description:
-        "Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.",
-      tags: ["Maths", "IB", "Calculus"],
-      creator: { name: "Sam Smith", isCurrentUser: false },
+        'Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.',
+      tags: ['Maths', 'IB', 'Calculus'],
+      creator: { name: 'Sam Smith', isCurrentUser: false },
       rating: 2,
       isBookmarked: true,
     },
     {
-      id: "2",
-      title: "Biology Fundamentals",
+      id: '2',
+      title: 'Biology Fundamentals',
       description:
-        "A comprehensive set covering cell biology, genetics, ecology, and evolution with practice questions for each topic.",
-      tags: ["Biology", "Science", "AP"],
-      creator: { name: "Emma Watson", isCurrentUser: false },
+        'A comprehensive set covering cell biology, genetics, ecology, and evolution with practice questions for each topic.',
+      tags: ['Biology', 'Science', 'AP'],
+      creator: { name: 'Emma Watson', isCurrentUser: false },
       rating: 4,
       isBookmarked: false,
     },
     {
-      id: "3",
-      title: "World History",
+      id: '3',
+      title: 'World History',
       description:
-        "From ancient civilizations to modern day events, this quiz set helps you master key historical facts and concepts.",
-      tags: ["History", "Social Studies", "IB"],
-      creator: { name: "John Davis", isCurrentUser: false },
+        'From ancient civilizations to modern day events, this quiz set helps you master key historical facts and concepts.',
+      tags: ['History', 'Social Studies', 'IB'],
+      creator: { name: 'John Davis', isCurrentUser: false },
       rating: 3,
       isBookmarked: false,
     },
     {
-      id: "4",
-      title: "Physics Mechanics",
+      id: '4',
+      title: 'Physics Mechanics',
       description:
-        "Master the fundamentals of mechanics including motion, forces, energy, and momentum with this comprehensive quiz set.",
-      tags: ["Physics", "Science", "Mechanics"],
-      creator: { name: "Robert Chen", isCurrentUser: false },
+        'Master the fundamentals of mechanics including motion, forces, energy, and momentum with this comprehensive quiz set.',
+      tags: ['Physics', 'Science', 'Mechanics'],
+      creator: { name: 'Robert Chen', isCurrentUser: false },
       rating: 5,
       isBookmarked: true,
     },
     {
-      id: "5",
-      title: "Spanish Vocabulary",
+      id: '5',
+      title: 'Spanish Vocabulary',
       description:
-        "Build your Spanish vocabulary with this extensive quiz set covering everyday topics, travel, business, and more.",
-      tags: ["Spanish", "Language", "Vocabulary"],
-      creator: { name: "Maria Rodriguez", isCurrentUser: false },
+        'Build your Spanish vocabulary with this extensive quiz set covering everyday topics, travel, business, and more.',
+      tags: ['Spanish', 'Language', 'Vocabulary'],
+      creator: { name: 'Maria Rodriguez', isCurrentUser: false },
       rating: 4,
       isBookmarked: false,
     },
     {
-      id: "6",
-      title: "Chemistry Basics",
+      id: '6',
+      title: 'Chemistry Basics',
       description:
-        "Review essential chemistry concepts including atomic structure, periodic trends, bonding, and chemical reactions.",
-      tags: ["Chemistry", "Science", "AP"],
-      creator: { name: "David Kim", isCurrentUser: false },
+        'Review essential chemistry concepts including atomic structure, periodic trends, bonding, and chemical reactions.',
+      tags: ['Chemistry', 'Science', 'AP'],
+      creator: { name: 'David Kim', isCurrentUser: false },
       rating: 3,
       isBookmarked: false,
     },
@@ -85,8 +89,8 @@ export default function SharedPage() {
   // Define breadcrumb items
   const breadcrumbItems: BreadcrumbItem[] = [
     {
-      label: "Shared With Me",
-      href: "/dashboard/shared",
+      label: 'Shared With Me',
+      href: '/dashboard/shared',
     },
     {
       label: currentFolder,

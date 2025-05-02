@@ -1,14 +1,17 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from '@tanstack/react-query';
+
 import {
-  loginSuccess,
   loginFailure,
   loginStart,
+  loginSuccess,
   logout,
   updateUser,
-} from "@/store/slices/authSlice";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { AUTH_ENDPOINTS, USER_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../api-client";
+} from '@/store/slices/authSlice';
+
+import { useAppDispatch, useAppSelector } from '@/store';
+
+import { apiRequest } from '../api-client';
+import { AUTH_ENDPOINTS, USER_ENDPOINTS } from '../endpoints';
 
 // Type definitions
 interface LoginCredentials {
@@ -95,9 +98,9 @@ export const useLogin = () => {
       dispatch(loginSuccess({ user, token: data?.access_token }));
 
       // Store token in localStorage with the correct name
-      localStorage.setItem("authToken", data?.access_token);
+      localStorage.setItem('authToken', data?.access_token);
 
-      localStorage.setItem("userDetails", JSON.stringify(user));
+      localStorage.setItem('userDetails', JSON.stringify(user));
     },
     onError: (error) => {
       dispatch(loginFailure(error.message));
@@ -135,9 +138,9 @@ export const useSignup = () => {
         };
 
         // Store token in localStorage
-        localStorage.setItem("authToken", data?.result.access_token);
+        localStorage.setItem('authToken', data?.result.access_token);
 
-        localStorage.setItem("userDetails", JSON.stringify(user));
+        localStorage.setItem('userDetails', JSON.stringify(user));
 
         // Update Redux state
         dispatch(loginSuccess({ user, token: data?.result.access_token }));
@@ -151,10 +154,10 @@ export const useUserProfile = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   return useQuery({
-    queryKey: ["user", user?.id],
+    queryKey: ['user', user?.id],
     queryFn: async () => {
       const response = await apiRequest(
-        USER_ENDPOINTS.GET_USER(user?.id || "")
+        USER_ENDPOINTS.GET_USER(user?.id || '')
       );
 
       if (response.error) {
@@ -194,8 +197,8 @@ export const useLogout = () => {
       const response = await apiRequest(AUTH_ENDPOINTS.LOGOUT);
 
       // Even if the API call fails, we still want to clear the local state
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("userDetails");
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userDetails');
 
       return response.status === 200;
     },
@@ -247,7 +250,7 @@ export const useInitAuthUser = () => {
   const { isAuthenticated, token } = useAppSelector((state) => state.auth);
 
   return useQuery({
-    queryKey: ["user", "me"],
+    queryKey: ['user', 'me'],
     queryFn: async (): Promise<UserData> => {
       const response = await apiRequest(USER_ENDPOINTS.GET_PROFILE);
       if (response.error) throw response.error;
@@ -290,7 +293,7 @@ export const useRefreshToken = () => {
       };
 
       dispatch(loginSuccess({ user, token: data.result.access_token }));
-      localStorage.setItem("authToken", data.result.access_token);
+      localStorage.setItem('authToken', data.result.access_token);
     },
   });
 };

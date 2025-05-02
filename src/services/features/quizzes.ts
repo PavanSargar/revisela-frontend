@@ -1,7 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { QUIZ_ENDPOINTS } from "../endpoints";
-import { apiRequest } from "../api-client";
-import { QUERY_KEYS } from "../query-keys";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { apiRequest } from '../api-client';
+import { QUIZ_ENDPOINTS } from '../endpoints';
+import { QUERY_KEYS } from '../query-keys';
 
 // Define the QuizSet interface
 interface QuizSet {
@@ -25,7 +26,7 @@ interface QuizData {
 // Get quizzes by tag
 export const useQuizzesByTag = (tag: string) => {
   return useQuery({
-    queryKey: ["quizzes", "tag", tag],
+    queryKey: ['quizzes', 'tag', tag],
     queryFn: async () => {
       const response = await apiRequest(QUIZ_ENDPOINTS.GET_QUIZZES_BY_TAG(tag));
 
@@ -62,9 +63,9 @@ export const useUpdateQuiz = () => {
       return response.data!;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["quiz", data.id] });
-      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
-      queryClient.invalidateQueries({ queryKey: ["myQuizzes"] });
+      queryClient.invalidateQueries({ queryKey: ['quiz', data.id] });
+      queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+      queryClient.invalidateQueries({ queryKey: ['myQuizzes'] });
     },
   });
 };
@@ -86,9 +87,9 @@ export const useDeleteQuiz = () => {
       return quizId;
     },
     onSuccess: (quizId) => {
-      queryClient.invalidateQueries({ queryKey: ["quiz", quizId] });
-      queryClient.invalidateQueries({ queryKey: ["quizzes"] });
-      queryClient.invalidateQueries({ queryKey: ["myQuizzes"] });
+      queryClient.invalidateQueries({ queryKey: ['quiz', quizId] });
+      queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+      queryClient.invalidateQueries({ queryKey: ['myQuizzes'] });
     },
   });
 };

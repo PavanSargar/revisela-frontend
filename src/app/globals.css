@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 /* Custom utility classes */
 .hide-scrollbar {
@@ -109,14 +109,14 @@ body.dropdown-open {
 
 /* Add cursor pointer to interactive elements */
 button:not([disabled]),
-[role="button"]:not([disabled]),
+[role='button']:not([disabled]),
 a:not([disabled]),
 .clickable {
   cursor: pointer;
 }
 
 button[disabled],
-[role="button"][disabled],
+[role='button'][disabled],
 a[disabled],
 .disabled {
   cursor: not-allowed;

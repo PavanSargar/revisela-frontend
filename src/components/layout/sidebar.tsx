@@ -1,18 +1,22 @@
-"use client";
-import React, { useState, useEffect } from "react";
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
 import {
-  Home,
-  Library,
-  Users,
   Bookmark,
   Clock,
-  Trash,
   GraduationCap,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ROUTES } from "@/constants/routes";
-import { ClassModal } from "@/components/modals";
+  Home,
+  Library,
+  Trash,
+  Users,
+} from 'lucide-react';
+
+import { ClassModal } from '@/components/modals';
+
+import { ROUTES } from '@/constants/routes';
 
 type Props = {};
 
@@ -25,11 +29,11 @@ type MenuItem = {
 
 const Sidebar = (props: Props) => {
   const pathname = usePathname();
-  const [activeTab, setActiveTab] = useState("/dashboard");
+  const [activeTab, setActiveTab] = useState('/dashboard');
   const [showClasses, setShowClasses] = useState(false);
   const [isClassModalOpen, setIsClassModalOpen] = useState(false);
-  const [classModalType, setClassModalType] = useState<"create" | "join">(
-    "create"
+  const [classModalType, setClassModalType] = useState<'create' | 'join'>(
+    'create'
   );
 
   useEffect(() => {
@@ -40,40 +44,40 @@ const Sidebar = (props: Props) => {
     return activeTab === path;
   };
 
-  const activeItemStyle = "bg-[#0890A8] text-white";
+  const activeItemStyle = 'bg-[#0890A8] text-white';
   const inactiveItemStyle =
-    "text-secondary-black hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer";
+    'text-secondary-black hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer';
 
   // Main navigation menu items
   const mainMenuItems: MenuItem[] = [
     {
       path: ROUTES.DASHBOARD.HOME,
-      label: "Dashboard",
+      label: 'Dashboard',
       icon: <Home size={20} />,
     },
     {
       path: ROUTES.DASHBOARD.LIBRARY,
-      label: "My Library",
+      label: 'My Library',
       icon: <Library size={20} />,
     },
     {
       path: ROUTES.DASHBOARD.SHARED,
-      label: "Shared With Me",
+      label: 'Shared With Me',
       icon: <Users size={20} />,
     },
     {
       path: ROUTES.DASHBOARD.BOOKMARKS,
-      label: "Bookmarked",
+      label: 'Bookmarked',
       icon: <Bookmark size={20} />,
     },
     {
       path: ROUTES.DASHBOARD.RECENT,
-      label: "Recent",
+      label: 'Recent',
       icon: <Clock size={20} />,
     },
     {
       path: ROUTES.DASHBOARD.TRASH,
-      label: "Trash",
+      label: 'Trash',
       icon: <Trash size={20} />,
     },
   ];
@@ -96,12 +100,12 @@ const Sidebar = (props: Props) => {
   const hasClasses = classMenuItems.length > 0;
 
   const handleCreateClass = () => {
-    setClassModalType("create");
+    setClassModalType('create');
     setIsClassModalOpen(true);
   };
 
   const handleJoinClass = () => {
-    setClassModalType("join");
+    setClassModalType('join');
     setIsClassModalOpen(true);
   };
 
@@ -132,14 +136,14 @@ const Sidebar = (props: Props) => {
             <button
               onClick={() => setShowClasses(!showClasses)}
               className={`flex w-full items-center gap-3 p-2 rounded-md ${
-                pathname.includes("/classes")
+                pathname.includes('/classes')
                   ? activeItemStyle
                   : inactiveItemStyle
               }`}
             >
               <GraduationCap size={20} />
               <span className="text-[16px]">My Classes</span>
-              <span className="ml-auto">{showClasses ? "▲" : "▼"}</span>
+              <span className="ml-auto">{showClasses ? '▲' : '▼'}</span>
             </button>
 
             {/* Joined Classes or Empty State */}
@@ -153,22 +157,22 @@ const Sidebar = (props: Props) => {
                       href={item.path}
                       className={`flex items-center gap-3 p-2 rounded-md ${
                         isActive(item.path)
-                          ? "bg-[#0890A8] text-white"
-                          : "hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer"
+                          ? 'bg-[#0890A8] text-white'
+                          : 'hover:bg-[#0890A8]/10 hover:text-[#0890A8] cursor-pointer'
                       }`}
                     >
                       <div
                         className={`p-1 rounded ${
                           isActive(item.path)
-                            ? "bg-[#0890A8]"
-                            : "bg-[#0890A8] bg-opacity-10"
+                            ? 'bg-[#0890A8]'
+                            : 'bg-[#0890A8] bg-opacity-10'
                         }`}
                       >
                         <div
                           className={
                             isActive(item.path)
-                              ? "text-white"
-                              : "text-[#0890A8]"
+                              ? 'text-white'
+                              : 'text-[#0890A8]'
                           }
                         >
                           {item.icon}
@@ -176,7 +180,7 @@ const Sidebar = (props: Props) => {
                       </div>
                       <span
                         className={`text-[16px] ${
-                          isActive(item.path) ? "font-medium" : "text-[#0890A8]"
+                          isActive(item.path) ? 'font-medium' : 'text-[#0890A8]'
                         }`}
                       >
                         {item.label}

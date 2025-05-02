@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Modal, Button } from "@/components/ui";
-import { useMoveFolder } from "@/services/features/folders";
-import { useToast } from "@/components/ui/toast";
-import { Home, ArrowRight, Loader2 } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import { useQueryClient } from '@tanstack/react-query';
+import { ArrowRight, Home, Loader2 } from 'lucide-react';
+
+import { useMoveFolder } from '@/services/features/folders';
+import { QUERY_KEYS } from '@/services/query-keys';
+
+import { Button, Modal } from '@/components/ui';
 import {
-  FolderProvider,
   FolderExplorer,
+  FolderProvider,
   useFolderSystem,
-} from "@/components/ui/folder";
-import { useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "@/services/query-keys";
+} from '@/components/ui/folder';
+import { useToast } from '@/components/ui/toast';
 
 interface MoveFolderModalProps {
   isOpen: boolean;
@@ -95,8 +98,8 @@ const FilteredFolderExplorer = ({
                   }
                   className={`hover:text-teal-600 ${
                     index === breadcrumbs.length - 1
-                      ? "font-medium text-teal-700"
-                      : ""
+                      ? 'font-medium text-teal-700'
+                      : ''
                   }`}
                 >
                   {crumb.name}
@@ -148,8 +151,8 @@ const FilteredFolderExplorer = ({
           <div className="p-6 text-center text-gray-500">
             <p className="text-sm">
               {currentFolderId
-                ? "This folder is empty"
-                : "No folders available"}
+                ? 'This folder is empty'
+                : 'No folders available'}
             </p>
           </div>
         )}
@@ -182,7 +185,7 @@ const MoveFolderContent = ({
   const [selectedFolderId, setSelectedFolderId] = useState<string | undefined>(
     undefined
   );
-  const [selectedFolderName, setSelectedFolderName] = useState<string>("");
+  const [selectedFolderName, setSelectedFolderName] = useState<string>('');
 
   // Store the folder path for invalidation later
   const folderPathRef = useRef<string[]>([]);
@@ -203,7 +206,7 @@ const MoveFolderContent = ({
       // Toggle selection if clicking the same folder again
       if (id === selectedFolderId) {
         setSelectedFolderId(undefined);
-        setSelectedFolderName("");
+        setSelectedFolderName('');
       } else {
         setSelectedFolderId(id);
         setSelectedFolderName(name);
@@ -248,7 +251,7 @@ const MoveFolderContent = ({
       queryKey: QUERY_KEYS.FOLDERS.byParent(undefined),
     });
 
-    console.log("Invalidated queries for folders:", {
+    console.log('Invalidated queries for folders:', {
       folderId,
       currentExplorerFolder: explorerCurrentFolderId,
       breadcrumbPath: folderPathRef.current,
@@ -267,18 +270,18 @@ const MoveFolderContent = ({
           invalidateAllQueries();
 
           toast({
-            title: "Success",
+            title: 'Success',
             description: `Folder moved to "${selectedFolderName}"`,
-            type: "success",
+            type: 'success',
           });
           onOpenChange(false);
           if (onSuccess) onSuccess();
         },
         onError: (error) => {
           toast({
-            title: "Error",
-            description: error.message || "Failed to move folder",
-            type: "error",
+            title: 'Error',
+            description: error.message || 'Failed to move folder',
+            type: 'error',
           });
         },
       }
@@ -297,25 +300,25 @@ const MoveFolderContent = ({
   // Move to root folder (My Library)
   const handleMoveToRoot = useCallback(() => {
     moveFolder.mutate(
-      { folderId, targetFolderId: "root" },
+      { folderId, targetFolderId: 'root' },
       {
         onSuccess: () => {
           // Invalidate all necessary queries
           invalidateAllQueries();
 
           toast({
-            title: "Success",
-            description: "Folder moved to My Library",
-            type: "success",
+            title: 'Success',
+            description: 'Folder moved to My Library',
+            type: 'success',
           });
           onOpenChange(false);
           if (onSuccess) onSuccess();
         },
         onError: (error) => {
           toast({
-            title: "Error",
-            description: error.message || "Failed to move folder",
-            type: "error",
+            title: 'Error',
+            description: error.message || 'Failed to move folder',
+            type: 'error',
           });
         },
       }
@@ -347,7 +350,7 @@ const MoveFolderContent = ({
         {selectedFolderId && (
           <div className="mt-3 p-3 bg-teal-50 border border-teal-200 rounded-md">
             <p className="text-sm font-medium text-teal-700">
-              Selected destination:{" "}
+              Selected destination:{' '}
               <span className="font-bold">{selectedFolderName}</span>
             </p>
           </div>
@@ -363,7 +366,7 @@ const MoveFolderContent = ({
           className="flex items-center gap-1 border-gray-300"
         >
           {moveFolder.isPending &&
-          moveFolder.variables?.targetFolderId === "root" ? (
+          moveFolder.variables?.targetFolderId === 'root' ? (
             <Loader2 size={16} className="animate-spin" />
           ) : (
             <Home size={16} />
@@ -376,17 +379,17 @@ const MoveFolderContent = ({
           onClick={handleMove}
           className={`flex items-center gap-1 ${
             selectedFolderId && !moveFolder.isPending
-              ? "bg-teal-600 hover:bg-teal-700 text-white"
-              : "bg-gray-200 text-gray-500 cursor-not-allowed"
+              ? 'bg-teal-600 hover:bg-teal-700 text-white'
+              : 'bg-gray-200 text-gray-500 cursor-not-allowed'
           }`}
         >
           {moveFolder.isPending &&
-          moveFolder.variables?.targetFolderId !== "root" ? (
+          moveFolder.variables?.targetFolderId !== 'root' ? (
             <Loader2 size={16} className="animate-spin" />
           ) : (
             <ArrowRight size={16} />
           )}
-          <span>{moveFolder.isPending ? "Moving..." : "Move"}</span>
+          <span>{moveFolder.isPending ? 'Moving...' : 'Move'}</span>
         </Button>
       </div>
     </div>
@@ -398,7 +401,7 @@ export const MoveFolderModal: React.FC<MoveFolderModalProps> = ({
   onOpenChange,
   folderId,
   onSuccess,
-  folderName = "Folder 1",
+  folderName = 'Folder 1',
   parentFolderId,
 }) => {
   return (

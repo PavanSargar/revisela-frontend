@@ -1,8 +1,9 @@
-import React from "react";
-import SkeletonLoader from "./SkeletonLoader";
+import React from 'react';
+
+import SkeletonLoader from './SkeletonLoader';
 
 interface GridSkeletonLoaderProps {
-  type: "folder" | "quiz";
+  type: 'folder' | 'quiz';
   count?: number;
   columns?: 1 | 2 | 3 | 4;
   className?: string;
@@ -12,17 +13,17 @@ interface GridSkeletonLoaderProps {
  * A grid skeleton loader for folder and quiz set grids
  */
 export const GridSkeletonLoader: React.FC<GridSkeletonLoaderProps> = ({
-  type = "folder",
+  type = 'folder',
   count = 6,
   columns = 3,
-  className = "",
+  className = '',
 }) => {
   // Define grid columns based on responsive design
   const gridCols = {
-    1: "grid-cols-1",
-    2: "grid-cols-1 sm:grid-cols-2",
-    3: "grid-cols-1 sm:grid-cols-2 md:grid-cols-3",
-    4: "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+    1: 'grid-cols-1',
+    2: 'grid-cols-1 sm:grid-cols-2',
+    3: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
+    4: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
   };
 
   // Folder item skeleton
@@ -63,7 +64,7 @@ export const GridSkeletonLoader: React.FC<GridSkeletonLoaderProps> = ({
     .fill(null)
     .map((_, index) => (
       <div key={index}>
-        {type === "folder" ? renderFolderSkeleton() : renderQuizSkeleton()}
+        {type === 'folder' ? renderFolderSkeleton() : renderQuizSkeleton()}
       </div>
     ));
 

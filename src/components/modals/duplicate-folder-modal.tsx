@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { Modal, Input, Button } from "@/components/ui";
-import { useDuplicateFolder } from "@/services/features/folders";
-import { useToast } from "@/components/ui/toast";
+import React, { useState } from 'react';
+
+import { useDuplicateFolder } from '@/services/features/folders';
+
+import { Button, Input, Modal } from '@/components/ui';
+import { useToast } from '@/components/ui/toast';
 
 interface DuplicateFolderModalProps {
   isOpen: boolean;
@@ -15,7 +17,7 @@ export const DuplicateFolderModal: React.FC<DuplicateFolderModalProps> = ({
   isOpen,
   onOpenChange,
   folderId,
-  originalName = "",
+  originalName = '',
   onSuccess,
 }) => {
   const [name, setName] = useState(`Copy of ${originalName}`.trim());
@@ -25,9 +27,9 @@ export const DuplicateFolderModal: React.FC<DuplicateFolderModalProps> = ({
   const handleDuplicate = () => {
     if (!name.trim()) {
       toast({
-        title: "Error",
-        description: "Please provide a name for the duplicated folder",
-        type: "error",
+        title: 'Error',
+        description: 'Please provide a name for the duplicated folder',
+        type: 'error',
       });
       return;
     }
@@ -37,18 +39,18 @@ export const DuplicateFolderModal: React.FC<DuplicateFolderModalProps> = ({
       {
         onSuccess: () => {
           toast({
-            title: "Success",
-            description: "Folder duplicated successfully",
-            type: "success",
+            title: 'Success',
+            description: 'Folder duplicated successfully',
+            type: 'success',
           });
           handleClose();
           if (onSuccess) onSuccess();
         },
         onError: (error) => {
           toast({
-            title: "Error",
-            description: error.message || "Failed to duplicate folder",
-            type: "error",
+            title: 'Error',
+            description: error.message || 'Failed to duplicate folder',
+            type: 'error',
           });
         },
       }
@@ -75,7 +77,7 @@ export const DuplicateFolderModal: React.FC<DuplicateFolderModalProps> = ({
             onClick={handleDuplicate}
             disabled={duplicateFolder.isPending}
           >
-            {duplicateFolder.isPending ? "Duplicating..." : "Duplicate"}
+            {duplicateFolder.isPending ? 'Duplicating...' : 'Duplicate'}
           </Button>
         </div>
       }

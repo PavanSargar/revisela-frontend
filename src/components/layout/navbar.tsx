@@ -1,24 +1,32 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Button, Dropdown } from "../ui";
-import Logo from "@/assets/icons/revisela-logo.png";
-import { useLogout } from "@/services/features/auth";
-import { Folder, GraduationCap } from "lucide-react";
+'use client';
+
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
+import { Folder, GraduationCap } from 'lucide-react';
+
+import { useLogout } from '@/services/features/auth';
+
 import {
-  SearchIcon,
-  GlobeIcon,
-  PlusIcon,
-  FileDocumentIcon,
-  UserIcon,
   EditIcon,
+  FileDocumentIcon,
+  GlobeIcon,
   LogoutIcon,
-} from "@/components/icons";
-import { CreateFolderModal } from "@/components/modals";
-import { ROUTES } from "@/constants/routes";
-import { useAppSelector } from "@/store";
-import { selectProfileImage, selectUser } from "@/store/slices/authSlice";
+  PlusIcon,
+  SearchIcon,
+  UserIcon,
+} from '@/components/icons';
+import { CreateFolderModal } from '@/components/modals';
+
+import { selectProfileImage, selectUser } from '@/store/slices/authSlice';
+
+import { ROUTES } from '@/constants/routes';
+
+import Logo from '@/assets/icons/revisela-logo.png';
+import { useAppSelector } from '@/store';
+
+import { Button, Dropdown } from '../ui';
 
 const RootNavbar = () => {
   const router = useRouter();
@@ -98,7 +106,7 @@ const RootNavbar = () => {
                   </div>
                 ),
                 onClick: handleCreateQuizSet,
-                className: "text-[15px] text-secondary-black",
+                className: 'text-[15px] text-secondary-black',
               },
               {
                 label: (
@@ -108,7 +116,7 @@ const RootNavbar = () => {
                   </div>
                 ),
                 onClick: handleCreateFolder,
-                className: "text-[15px] text-secondary-black",
+                className: 'text-[15px] text-secondary-black',
               },
               {
                 label: (
@@ -118,7 +126,7 @@ const RootNavbar = () => {
                   </div>
                 ),
                 onClick: handleCreateClass,
-                className: "text-[15px] text-secondary-black",
+                className: 'text-[15px] text-secondary-black',
               },
             ]}
           />
@@ -152,18 +160,18 @@ const RootNavbar = () => {
                   </div>
                 ),
                 onClick: handleAccountSettingsClick,
-                className: "text-[15px] text-secondary-black",
+                className: 'text-[15px] text-secondary-black',
               },
               {
                 label: (
                   <div className="flex items-center gap-2">
                     <LogoutIcon size={16} />
-                    {isLoggingOut ? "Logging out..." : "Logout"}
+                    {isLoggingOut ? 'Logging out...' : 'Logout'}
                   </div>
                 ),
                 onClick: handleLogout,
                 disabled: isLoggingOut,
-                className: "text-[15px] text-red-500",
+                className: 'text-[15px] text-red-500',
               },
             ]}
           />
@@ -176,7 +184,7 @@ const RootNavbar = () => {
         onOpenChange={setIsFolderModalOpen}
         onSuccess={() => {
           // Optionally redirect to library page
-          router.push("/dashboard/library");
+          router.push('/dashboard/library');
         }}
       />
     </>

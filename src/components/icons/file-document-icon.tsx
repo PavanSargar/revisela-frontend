@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface IconProps {
   className?: string;
@@ -6,7 +6,7 @@ interface IconProps {
 }
 
 const FileDocumentIcon: React.FC<IconProps> = ({
-  className = "",
+  className = '',
   size = 16,
 }) => {
   return (

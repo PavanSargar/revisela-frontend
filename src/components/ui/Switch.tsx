@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
-import { forwardRef } from "react";
+import { forwardRef } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface SwitchProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -29,7 +30,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
     };
 
     return (
-      <div className={cn("flex flex-col", className)}>
+      <div className={cn('flex flex-col', className)}>
         <div className="flex items-start gap-3">
           <div className="flex-1">
             {label && (
@@ -45,7 +46,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
             type="button"
             onClick={handleToggle}
             className={`cursor-pointer relative w-12 h-6 rounded-full flex items-center transition-colors duration-300 ${
-              checked ? "bg-[#0890A8] justify-end" : "bg-gray-300 justify-start"
+              checked ? 'bg-[#0890A8] justify-end' : 'bg-gray-300 justify-start'
             }`}
             aria-checked={checked}
             role="switch"
@@ -69,4 +70,4 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
   }
 );
 
-Switch.displayName = "Switch";
+Switch.displayName = 'Switch';

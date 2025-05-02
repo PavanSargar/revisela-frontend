@@ -1,5 +1,6 @@
-import React from "react";
-import { Modal, Button } from "@/components/ui";
+import React from 'react';
+
+import { Button, Modal } from '@/components/ui';
 
 export interface ConfirmationModalProps {
   isOpen: boolean;
@@ -19,9 +20,9 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onOpenChange,
   title,
   description,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
-  confirmButtonClass = "bg-[#0890A8] hover:bg-[#0890A8]/80 text-white",
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  confirmButtonClass = 'bg-[#0890A8] hover:bg-[#0890A8]/80 text-white',
   onConfirm,
   isLoading = false,
   children,
@@ -47,7 +48,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             onClick={handleConfirm}
             disabled={isLoading}
           >
-            {isLoading ? "Processing..." : confirmText}
+            {isLoading ? 'Processing...' : confirmText}
           </Button>
         </div>
       }

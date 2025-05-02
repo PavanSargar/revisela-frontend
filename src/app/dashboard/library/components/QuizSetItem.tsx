@@ -1,14 +1,16 @@
-import React from "react";
+import React from 'react';
+
 import {
   Bookmark,
-  RefreshCw,
-  Trash2,
   Copy,
   Edit,
-  Share,
   ExternalLink,
-} from "lucide-react";
-import { ActionDropdown } from "@/components/ui";
+  RefreshCw,
+  Share,
+  Trash2,
+} from 'lucide-react';
+
+import { ActionDropdown } from '@/components/ui';
 
 interface QuizSetItemProps {
   id?: string;
@@ -28,7 +30,7 @@ interface QuizSetItemProps {
 }
 
 const QuizSetItem: React.FC<QuizSetItemProps> = ({
-  id = "",
+  id = '',
   title,
   description,
   tags,
@@ -97,40 +99,40 @@ const QuizSetItem: React.FC<QuizSetItemProps> = ({
             <ActionDropdown
               items={[
                 {
-                  label: "Edit",
+                  label: 'Edit',
                   icon: <Edit size={16} />,
                   onClick: (e) => {
-                    console.log("Edit quiz set:", id);
+                    console.log('Edit quiz set:', id);
                   },
                 },
                 {
-                  label: "Duplicate",
+                  label: 'Duplicate',
                   icon: <Copy size={16} />,
                   onClick: (e) => {
-                    console.log("Duplicate quiz set:", id);
+                    console.log('Duplicate quiz set:', id);
                   },
                 },
                 {
-                  label: "Share",
+                  label: 'Share',
                   icon: <Share size={16} />,
                   onClick: (e) => {
-                    console.log("Share quiz set:", id);
+                    console.log('Share quiz set:', id);
                   },
                 },
                 {
-                  label: "Open in new tab",
+                  label: 'Open in new tab',
                   icon: <ExternalLink size={16} />,
                   onClick: (e) => {
-                    console.log("Open quiz set in new tab:", id);
+                    console.log('Open quiz set in new tab:', id);
                   },
                 },
                 {
-                  label: "Move to trash",
+                  label: 'Move to trash',
                   icon: <Trash2 size={16} />,
                   onClick: (e) => {
-                    console.log("Move quiz set to trash:", id);
+                    console.log('Move quiz set to trash:', id);
                   },
-                  variant: "danger",
+                  variant: 'danger',
                 },
               ]}
             />
@@ -159,14 +161,14 @@ const QuizSetItem: React.FC<QuizSetItemProps> = ({
           <p className="text-sm font-medium">{creator.name}</p>
           {!creator.isCurrentUser && (
             <p className="text-xs text-gray-500">
-              {creator.shared ? "Just Shared" : "Not Shared"}
+              {creator.shared ? 'Just Shared' : 'Not Shared'}
             </p>
           )}
           {rating > 0 && (
             <div className="flex">
               {Array.from({ length: 5 }).map((_, i) => (
                 <span key={i} className="text-yellow-400">
-                  {i < rating ? "★" : "☆"}
+                  {i < rating ? '★' : '☆'}
                 </span>
               ))}
             </div>

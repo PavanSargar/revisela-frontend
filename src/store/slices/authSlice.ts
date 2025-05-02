@@ -1,19 +1,21 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "@/store";
-import { safeLocalStorage } from "@/lib/utils";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+
+import { safeLocalStorage } from '@/lib/utils';
+
+import { RootState } from '@/store';
 
 // Add a utility function to get profile image
 export const getProfileImageFromStorage = (): string => {
   try {
-    const userDetailsStr = safeLocalStorage.getItem("userDetails");
+    const userDetailsStr = safeLocalStorage.getItem('userDetails');
     if (userDetailsStr) {
       const userDetails = JSON.parse(userDetailsStr);
-      return userDetails.profileImage || "";
+      return userDetails.profileImage || '';
     }
   } catch (error) {
-    console.error("Error reading profile image from storage", error);
+    console.error('Error reading profile image from storage', error);
   }
-  return "";
+  return '';
 };
 
 interface User {
@@ -41,12 +43,12 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     initAuth: (state) => {
-      const token = safeLocalStorage.getItem("authToken");
-      const userDetailsStr = safeLocalStorage.getItem("userDetails");
+      const token = safeLocalStorage.getItem('authToken');
+      const userDetailsStr = safeLocalStorage.getItem('userDetails');
 
       if (token) {
         state.token = token;
@@ -57,7 +59,7 @@ const authSlice = createSlice({
             const userDetails = JSON.parse(userDetailsStr);
             state.user = userDetails;
           } catch (error) {
-            console.error("Failed to parse user details", error);
+            console.error('Failed to parse user details', error);
           }
         }
       }
@@ -97,14 +99,14 @@ const authSlice = createSlice({
       }
 
       try {
-        const userDetailsStr = safeLocalStorage.getItem("userDetails");
+        const userDetailsStr = safeLocalStorage.getItem('userDetails');
         if (userDetailsStr) {
           const userDetails = JSON.parse(userDetailsStr);
           userDetails.profileImage = action.payload;
-          safeLocalStorage.setItem("userDetails", JSON.stringify(userDetails));
+          safeLocalStorage.setItem('userDetails', JSON.stringify(userDetails));
         }
       } catch (error) {
-        console.error("Failed to update profile image in storage", error);
+        console.error('Failed to update profile image in storage', error);
       }
     },
   },

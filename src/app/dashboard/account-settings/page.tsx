@@ -1,19 +1,27 @@
-"use client";
-import Image from "next/image";
-import React, { useState, useEffect, useRef } from "react";
-import { Switch } from "@/components/ui";
-import { User, Trash2, Upload } from "lucide-react";
-import { useAppDispatch } from "@/store";
-import { logout, updateProfileImage } from "@/store/slices/authSlice";
-import EditProfileDetail from "./components/edit-profile-detail";
-import DeleteAccountModal from "./components/delete-account-modal";
-import ChangePasswordModal from "./components/change-password-modal";
-import { useInitAuthUser } from "@/services/features/auth";
-import { useUpdateProfile, useDeleteAccount } from "@/services/features/users";
-import { useToast } from "@/components/ui/toast";
-import { formatToDDMMMYYYY, safeLocalStorage } from "@/lib/utils";
-import { useUploadProfileImageAlt } from "@/services/features/uploads";
-import { ContentLoader, LoadingSpinner } from "@/components/ui/loaders";
+'use client';
+
+import Image from 'next/image';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { Trash2, Upload, User } from 'lucide-react';
+
+import { useInitAuthUser } from '@/services/features/auth';
+import { useUploadProfileImageAlt } from '@/services/features/uploads';
+import { useDeleteAccount, useUpdateProfile } from '@/services/features/users';
+
+import { Switch } from '@/components/ui';
+import { ContentLoader, LoadingSpinner } from '@/components/ui/loaders';
+import { useToast } from '@/components/ui/toast';
+
+import { logout, updateProfileImage } from '@/store/slices/authSlice';
+
+import { formatToDDMMMYYYY, safeLocalStorage } from '@/lib/utils';
+
+import { useAppDispatch } from '@/store';
+
+import ChangePasswordModal from './components/change-password-modal';
+import DeleteAccountModal from './components/delete-account-modal';
+import EditProfileDetail from './components/edit-profile-detail';
 
 const AccountSettings = () => {
   const { toast } = useToast();
@@ -39,15 +47,15 @@ const AccountSettings = () => {
 
   // Setup state for user profile
   const [userProfile, setUserProfile] = useState({
-    fullName: "",
-    username: "",
-    email: "",
-    birthday: "",
-    profileImage: "",
+    fullName: '',
+    username: '',
+    email: '',
+    birthday: '',
+    profileImage: '',
   });
 
   // Add state for profile image
-  const [profileImage, setProfileImage] = useState("");
+  const [profileImage, setProfileImage] = useState('');
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -59,11 +67,11 @@ const AccountSettings = () => {
   useEffect(() => {
     if (userData) {
       setUserProfile({
-        fullName: String(userData?.name || ""),
-        username: String(userData?.username || ""),
-        email: String(userData?.email || ""),
-        birthday: formatToDDMMMYYYY(String(userData?.birthday || "")),
-        profileImage: String(userData?.profileImage || ""),
+        fullName: String(userData?.name || ''),
+        username: String(userData?.username || ''),
+        email: String(userData?.email || ''),
+        birthday: formatToDDMMMYYYY(String(userData?.birthday || '')),
+        profileImage: String(userData?.profileImage || ''),
       });
 
       // Set profile image if it exists
@@ -97,61 +105,61 @@ const AccountSettings = () => {
 
     // Check if restricted fields (fullName, birthday) have already been changed once
     if (
-      (field === "fullName" || field === "birthday") &&
+      (field === 'fullName' || field === 'birthday') &&
       fieldEditHistory[field]
     ) {
       toast({
-        title: "Edit Restricted",
+        title: 'Edit Restricted',
         description: `Your ${
-          field === "fullName" ? "full name" : "birthday"
+          field === 'fullName' ? 'full name' : 'birthday'
         } can only be changed once.`,
-        type: "error",
+        type: 'error',
       });
       return;
     }
 
     // Validate fields based on their type
-    if (value.trim() === "") {
+    if (value.trim() === '') {
       toast({
-        title: "Validation Error",
+        title: 'Validation Error',
         description: `${field} cannot be empty.`,
-        type: "error",
+        type: 'error',
       });
       return;
     }
 
     // Field-specific validation
-    if (field === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    if (field === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       toast({
-        title: "Validation Error",
-        description: "Please enter a valid email address.",
-        type: "error",
+        title: 'Validation Error',
+        description: 'Please enter a valid email address.',
+        type: 'error',
       });
       return;
     }
 
-    if (field === "username" && !/^[a-zA-Z0-9_]+$/.test(value)) {
+    if (field === 'username' && !/^[a-zA-Z0-9_]+$/.test(value)) {
       toast({
-        title: "Validation Error",
+        title: 'Validation Error',
         description:
-          "Username can only contain letters, numbers, and underscores.",
-        type: "error",
+          'Username can only contain letters, numbers, and underscores.',
+        type: 'error',
       });
       return;
     }
 
     // Birthday validation (assuming DD-MMM-YYYY format)
-    if (field === "birthday") {
+    if (field === 'birthday') {
       try {
         // Simple format check for DD-MMM-YYYY
         if (!/^\d{2}-[A-Za-z]{3}-\d{4}$/.test(value)) {
-          throw new Error("Invalid date format");
+          throw new Error('Invalid date format');
         }
       } catch (error) {
         toast({
-          title: "Validation Error",
-          description: "Invalid date format. Please use DD-MMM-YYYY format.",
-          type: "error",
+          title: 'Validation Error',
+          description: 'Invalid date format. Please use DD-MMM-YYYY format.',
+          type: 'error',
         });
         return;
       }
@@ -165,10 +173,10 @@ const AccountSettings = () => {
 
     // Map local field names to API field names
     const fieldMap: Record<string, string> = {
-      fullName: "name",
-      username: "username",
-      email: "email",
-      birthday: "birthday",
+      fullName: 'name',
+      username: 'username',
+      email: 'email',
+      birthday: 'birthday',
     };
 
     // Call API to update the profile
@@ -177,7 +185,7 @@ const AccountSettings = () => {
       {
         onSuccess: () => {
           // If this is a restricted field, mark it as changed in history
-          if (field === "fullName" || field === "birthday") {
+          if (field === 'fullName' || field === 'birthday') {
             const updatedHistory = { ...fieldEditHistory, [field]: true };
             setFieldEditHistory(updatedHistory);
 
@@ -190,12 +198,12 @@ const AccountSettings = () => {
             }
 
             toast({
-              title: "Profile Updated",
+              title: 'Profile Updated',
               description: `Your ${field} has been updated. Note that this field can only be changed once.`,
             });
           } else {
             toast({
-              title: "Profile Updated",
+              title: 'Profile Updated',
               description: `Your ${field} has been updated successfully.`,
             });
           }
@@ -208,7 +216,7 @@ const AccountSettings = () => {
           }));
 
           toast({
-            title: "Update Failed",
+            title: 'Update Failed',
             description: error.message || `Failed to update ${field}.`,
           });
         },
@@ -221,24 +229,24 @@ const AccountSettings = () => {
       deleteAccount(undefined, {
         onSuccess: () => {
           // Clear auth state
-          safeLocalStorage.removeItem("authToken");
+          safeLocalStorage.removeItem('authToken');
           dispatch(logout());
 
           toast({
-            title: "Account Deleted",
-            description: "Your account has been deleted successfully.",
-            type: "success",
+            title: 'Account Deleted',
+            description: 'Your account has been deleted successfully.',
+            type: 'success',
           });
 
           // Redirect to home page
-          window.location.href = "/";
+          window.location.href = '/';
           resolve(true);
         },
         onError: (error) => {
           toast({
-            title: "Delete Failed",
-            description: error.message || "Failed to delete your account.",
-            type: "error",
+            title: 'Delete Failed',
+            description: error.message || 'Failed to delete your account.',
+            type: 'error',
           });
           reject(error);
         },
@@ -276,18 +284,18 @@ const AccountSettings = () => {
         { file },
         {
           onSuccess: (data) => {
-            setProfileImage(data?.url || "");
-            dispatch(updateProfileImage(data?.url || ""));
+            setProfileImage(data?.url || '');
+            dispatch(updateProfileImage(data?.url || ''));
             toast({
-              title: "Profile Updated",
-              description: "Your profile image has been updated successfully.",
+              title: 'Profile Updated',
+              description: 'Your profile image has been updated successfully.',
             });
           },
           onError: (error) => {
             toast({
-              title: "Upload Failed",
-              description: error.message || "Failed to upload image.",
-              type: "error",
+              title: 'Upload Failed',
+              description: error.message || 'Failed to upload image.',
+              type: 'error',
             });
           },
           onSettled: () => {
@@ -297,9 +305,9 @@ const AccountSettings = () => {
       );
     } catch (error: any) {
       toast({
-        title: "Upload Failed",
-        description: error.message || "Failed to upload image.",
-        type: "error",
+        title: 'Upload Failed',
+        description: error.message || 'Failed to upload image.',
+        type: 'error',
       });
       setIsUploadingImage(false);
     }
@@ -343,7 +351,7 @@ const AccountSettings = () => {
                     src={profileImage}
                     alt="Profile"
                     className={`h-full w-full object-cover ${
-                      isUploadingImage ? "blur-sm" : ""
+                      isUploadingImage ? 'blur-sm' : ''
                     }`}
                     width={96}
                     height={96}
@@ -380,7 +388,7 @@ const AccountSettings = () => {
                 ) : (
                   <div className="flex items-center justify-center text-[12px]">
                     <Upload size={14} className="mr-1" />
-                    {profileImage ? "Change" : "Upload"}
+                    {profileImage ? 'Change' : 'Upload'}
                   </div>
                 )}
               </button>
@@ -395,22 +403,22 @@ const AccountSettings = () => {
             accentLabel={true}
             disabled={fieldEditHistory.fullName}
             editHint={
-              fieldEditHistory.fullName ? "Can only be changed once" : undefined
+              fieldEditHistory.fullName ? 'Can only be changed once' : undefined
             }
-            onSave={(value) => handleUpdateProfile("fullName", value)}
+            onSave={(value) => handleUpdateProfile('fullName', value)}
           />
 
           <EditProfileDetail
             label="Username"
             value={userProfile.username}
-            onSave={(value) => handleUpdateProfile("username", value)}
+            onSave={(value) => handleUpdateProfile('username', value)}
           />
 
           <EditProfileDetail
             label="Email"
             value={userProfile.email}
             fieldType="email"
-            onSave={(value) => handleUpdateProfile("email", value)}
+            onSave={(value) => handleUpdateProfile('email', value)}
           />
 
           <EditProfileDetail
@@ -419,9 +427,9 @@ const AccountSettings = () => {
             fieldType="date"
             disabled={fieldEditHistory.birthday}
             editHint={
-              fieldEditHistory.birthday ? "Can only be changed once" : undefined
+              fieldEditHistory.birthday ? 'Can only be changed once' : undefined
             }
-            onSave={(value) => handleUpdateProfile("birthday", value)}
+            onSave={(value) => handleUpdateProfile('birthday', value)}
           />
         </div>
       </div>
