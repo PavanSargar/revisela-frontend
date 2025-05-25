@@ -12,3 +12,4 @@ export * from './Dropdown';
 export * from './ActionDropdown';
 export * from './TabSwitch';
 export * from './loaders';
+export { default as BookmarkToggleButton } from './BookmarkToggleButton';

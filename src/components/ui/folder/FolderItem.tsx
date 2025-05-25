@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import {
-  BookmarkIcon,
+  Bookmark,
   Copy,
   Folder,
   FolderSymlink,
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 
 import {
+  useBookmarkFolder,
   useDeleteFolder,
   usePermanentlyDeleteFolder,
 } from '@/services/features/folders';
@@ -20,7 +21,12 @@ import {
   DuplicateFolderModal,
   MoveFolderModal,
 } from '@/components/modals';
-import { ActionDropdown, Button, Modal } from '@/components/ui';
+import {
+  ActionDropdown,
+  BookmarkToggleButton,
+  Button,
+  Modal,
+} from '@/components/ui';
 import { useToast } from '@/components/ui/toast';
 
 export interface FolderItemProps {
@@ -33,6 +39,7 @@ export interface FolderItemProps {
   className?: string;
   isInTrash?: boolean;
   handleDeleteInParent?: boolean;
+  isBookmarked?: boolean;
 }
 
 const FolderItem: React.FC<FolderItemProps> = ({
@@ -45,12 +52,14 @@ const FolderItem: React.FC<FolderItemProps> = ({
   className = '',
   isInTrash = false,
   handleDeleteInParent = false,
+  isBookmarked = false,
 }) => {
   const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
   const [moveModalOpen, setMoveModalOpen] = useState(false);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
 
   const deleteFolder = useDeleteFolder();
+  const bookmarkFolder = useBookmarkFolder();
   const { toast } = useToast();
   const permanentlyDeleteFolder = usePermanentlyDeleteFolder();
 
@@ -62,8 +71,25 @@ const FolderItem: React.FC<FolderItemProps> = ({
     setDuplicateModalOpen(true);
   };
 
-  const handleBookmark = () => {
-    console.log('Bookmark folder:', id);
+  const handleBookmark = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    bookmarkFolder.mutate(
+      { folderId: id, bookmarked: !isBookmarked },
+      {
+        onSuccess: () => {
+          toast({
+            title: isBookmarked ? 'Bookmark removed' : 'Bookmark added',
+          });
+        },
+        onError: (error) => {
+          toast({
+            title: 'Failed to update bookmark',
+          });
+          console.error('Failed to update bookmark:', error);
+        },
+      }
+    );
   };
 
   const handleMove = () => {
@@ -127,6 +153,13 @@ const FolderItem: React.FC<FolderItemProps> = ({
         <div className="flex items-center gap-2">
           {customIcon || <Folder size={20} className="text-[#0890A8]" />}
           <span className="text-[#444444]">{name}</span>
+          {!isInTrash && isBookmarked && (
+            <Bookmark
+              size={18}
+              className="text-[#0890A8] fill-[#0890A8]"
+              strokeWidth={1.5}
+            />
+          )}
         </div>
         {isInTrash ? (
           <ActionDropdown
@@ -146,48 +179,61 @@ const FolderItem: React.FC<FolderItemProps> = ({
                   e.stopPropagation();
                   setRemoveModalOpen(true);
                 },
-                variant: 'danger',
               },
             ]}
           />
         ) : (
-          <ActionDropdown
-            items={[
-              {
-                label: 'Duplicate',
-                icon: <Copy size={16} />,
-                onClick: (e) => {
-                  e.stopPropagation();
-                  setDuplicateModalOpen(true);
+          <div className="flex items-center gap-2">
+            {!isInTrash && !isBookmarked && (
+              <BookmarkToggleButton
+                isBookmarked={isBookmarked}
+                onClick={handleBookmark}
+              />
+            )}
+            <ActionDropdown
+              items={[
+                {
+                  label: 'Duplicate',
+                  icon: <Copy size={16} />,
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setDuplicateModalOpen(true);
+                  },
                 },
-              },
-              {
-                label: 'Bookmark',
-                icon: <BookmarkIcon size={16} />,
-                onClick: (e) => {
-                  e.stopPropagation();
-                  handleBookmark();
+                {
+                  label: isBookmarked ? 'Remove Bookmark' : 'Bookmark',
+                  icon: (
+                    <Bookmark
+                      size={16}
+                      className={
+                        isBookmarked ? 'fill-[#0890A8] text-[#0890A8]' : ''
+                      }
+                    />
+                  ),
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    handleBookmark(e);
+                  },
                 },
-              },
-              {
-                label: 'Move',
-                icon: <FolderSymlink size={16} />,
-                onClick: (e) => {
-                  e.stopPropagation();
-                  setMoveModalOpen(true);
+                {
+                  label: 'Move',
+                  icon: <FolderSymlink size={16} />,
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setMoveModalOpen(true);
+                  },
                 },
-              },
-              {
-                label: 'Remove',
-                icon: <Trash2 size={16} />,
-                onClick: (e) => {
-                  e.stopPropagation();
-                  setRemoveModalOpen(true);
+                {
+                  label: 'Remove',
+                  icon: <Trash2 size={16} />,
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    setRemoveModalOpen(true);
+                  },
                 },
-                variant: 'danger',
-              },
-            ]}
-          />
+              ]}
+            />
+          </div>
         )}
       </div>
 

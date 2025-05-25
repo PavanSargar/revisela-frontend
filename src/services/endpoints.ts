@@ -119,6 +119,17 @@ export const FOLDER_ENDPOINTS = {
       method: 'GET',
     }) as EndpointConfig,
 
+  GET_BOOKMARKED_FOLDERS: {
+    url: `${API_BASE_URL}/folders/bookmarked`,
+    method: 'GET',
+  } as EndpointConfig,
+
+  BOOKMARK_FOLDER: (folderId: string) =>
+    ({
+      url: `${API_BASE_URL}/folders/${folderId}/bookmark`,
+      method: 'POST',
+    }) as EndpointConfig,
+
   CREATE_FOLDER: {
     url: `${API_BASE_URL}/folders`,
     method: 'POST',
@@ -179,6 +190,19 @@ export const QUIZ_ENDPOINTS = {
     url: `${API_BASE_URL}/quizzes/my-quizzes`,
     method: 'GET',
   } as EndpointConfig,
+
+  // GET bookmarked quizzes
+  GET_BOOKMARKED_QUIZZES: {
+    url: `${API_BASE_URL}/quizzes/bookmarked`,
+    method: 'GET',
+  } as EndpointConfig,
+
+  // Bookmark or unbookmark a quiz
+  BOOKMARK_QUIZ: (quizId: string) =>
+    ({
+      url: `${API_BASE_URL}/quizzes/${quizId}/bookmark`,
+      method: 'POST',
+    }) as EndpointConfig,
 
   // Search quizzes
   SEARCH_QUIZZES: {

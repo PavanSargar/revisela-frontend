@@ -28,33 +28,32 @@ export const GridSkeletonLoader: React.FC<GridSkeletonLoaderProps> = ({
 
   // Folder item skeleton
   const renderFolderSkeleton = () => (
-    <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 flex flex-col space-y-3">
-      <div className="flex items-center space-x-3">
-        <SkeletonLoader type="circle" className="w-10 h-10" />
-        <SkeletonLoader type="text" className="h-5 w-2/3" />
+    <div className="p-4 border rounded-lg bg-gray-50 flex justify-between items-center">
+      <div className="flex items-center gap-2">
+        <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse w-[20px] h-[20px] rounded-full"></div>
+        <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse h-5 w-40 rounded"></div>
       </div>
-      <SkeletonLoader type="text" className="h-4 w-1/2" />
-      <div className="flex justify-end">
-        <SkeletonLoader type="button" className="h-8 w-20" />
+      <div className="p-1 rounded-full">
+        <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse w-[18px] h-[18px] rounded-full"></div>
       </div>
     </div>
   );
 
   // Quiz item skeleton
   const renderQuizSkeleton = () => (
-    <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 flex flex-col space-y-3">
-      <SkeletonLoader type="text" className="h-6 w-4/5" />
-      <SkeletonLoader type="text" className="h-4 w-full" />
-      <SkeletonLoader type="text" className="h-4 w-3/4" />
+    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-col space-y-3">
+      <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse h-6 w-4/5 rounded"></div>
+      <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse h-4 w-full rounded"></div>
+      <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse h-4 w-3/4 rounded"></div>
       <div className="flex items-center space-x-2 mt-2">
-        <SkeletonLoader type="circle" className="w-7 h-7" />
-        <SkeletonLoader type="text" className="h-4 w-24" />
+        <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse w-7 h-7 rounded-full"></div>
+        <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse h-4 w-24 rounded"></div>
       </div>
       <div className="flex justify-between mt-2">
-        <SkeletonLoader type="text" className="h-6 w-16" />
+        <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse h-6 w-16 rounded"></div>
         <div className="flex space-x-2">
-          <SkeletonLoader type="circle" className="w-8 h-8" />
-          <SkeletonLoader type="circle" className="w-8 h-8" />
+          <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse w-8 h-8 rounded-full"></div>
+          <div className="bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse w-8 h-8 rounded-full"></div>
         </div>
       </div>
     </div>

@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 
 import { Folder } from 'lucide-react';
 
+import { useBookmarkedFolders } from '@/services/features/folders';
+import { useBookmarkedQuizzes } from '@/services/features/quizzes';
+
 import { Breadcrumb, BreadcrumbItem } from '@/components/ui/Breadcrumb';
 import { FolderItem } from '@/components/ui/folder';
 
@@ -12,61 +15,14 @@ import { ROUTES } from '@/constants/routes';
 import { QuizSetItem } from '../library/components';
 
 export default function BookmarksPage() {
-  const [currentFolder, setCurrentFolder] = useState('Bookmarked Folder 1');
+  const [currentFolder, setCurrentFolder] = useState('All Bookmarks');
 
-  // Mock folders data
-  const folders = [
-    { id: '1', name: 'Bookmarked Folder 1' },
-    { id: '2', name: 'Bookmarked Folder 2' },
-    { id: '3', name: 'Bookmarked Folder 3' },
-    { id: '4', name: 'Bookmarked Folder 4' },
-    { id: '5', name: 'Bookmarked Folder 5' },
-    { id: '6', name: 'Bookmarked Folder 6' },
-  ];
+  const { data: bookmarkedFolders = [], isLoading: foldersLoading } =
+    useBookmarkedFolders();
+  const { data: bookmarkedQuizzesResponse, isLoading: quizzesLoading } =
+    useBookmarkedQuizzes();
 
-  // Mock bookmarked quiz sets data
-  const bookmarkedQuizSets = [
-    {
-      id: '1',
-      title: 'IB Calculus',
-      description:
-        'Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.',
-      tags: ['Maths', 'IB', 'Calculus'],
-      creator: { name: 'Sam Smith', isCurrentUser: false },
-      rating: 2,
-      isBookmarked: true,
-    },
-    {
-      id: '4',
-      title: 'Physics Mechanics',
-      description:
-        'Master the fundamentals of mechanics including motion, forces, energy, and momentum with this comprehensive quiz set.',
-      tags: ['Physics', 'Science', 'Mechanics'],
-      creator: { name: 'Robert Chen', isCurrentUser: false },
-      rating: 5,
-      isBookmarked: true,
-    },
-    {
-      id: '7',
-      title: 'English Literature',
-      description:
-        'Explore classic and contemporary literature with questions about famous authors, literary devices, and critical analysis.',
-      tags: ['English', 'Literature', 'AP'],
-      creator: { name: 'Jane Austen', isCurrentUser: false },
-      rating: 4,
-      isBookmarked: true,
-    },
-    {
-      id: '8',
-      title: 'Computer Science Principles',
-      description:
-        'Review fundamental concepts in computing including algorithms, data structures, and programming paradigms.',
-      tags: ['CS', 'Programming', 'Technology'],
-      creator: { name: 'Alan Turing', isCurrentUser: false },
-      rating: 5,
-      isBookmarked: true,
-    },
-  ];
+  const bookmarkedQuizzes = bookmarkedQuizzesResponse?.data?.data || [];
 
   // Define breadcrumb items
   const breadcrumbItems: BreadcrumbItem[] = [
@@ -95,16 +51,28 @@ export default function BookmarksPage() {
         <h2 className="text-xl font-medium text-[#444444] mb-4">
           Bookmarked Folders
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {folders.map((folder) => (
-            <FolderItem
-              key={folder.id}
-              id={folder.id}
-              name={folder.name}
-              onClick={() => setCurrentFolder(folder.name)}
-            />
-          ))}
-        </div>
+
+        {foldersLoading ? (
+          <div className="p-4 bg-white rounded-lg border shadow-sm">
+            <p className="text-gray-500">Loading bookmarked folders...</p>
+          </div>
+        ) : bookmarkedFolders.length === 0 ? (
+          <div className="p-4 bg-white rounded-lg border shadow-sm">
+            <p className="text-gray-500">No bookmarked folders found.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {bookmarkedFolders.map((folder: any) => (
+              <FolderItem
+                key={folder._id}
+                id={folder._id}
+                name={folder.name}
+                isBookmarked={true}
+                onClick={() => setCurrentFolder(folder.name)}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Quiz Sets Section */}
@@ -112,19 +80,34 @@ export default function BookmarksPage() {
         <h2 className="text-xl font-medium text-[#444444] mb-4">
           Bookmarked Quiz Sets
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {bookmarkedQuizSets.map((quizSet) => (
-            <QuizSetItem
-              key={quizSet.id}
-              title={quizSet.title}
-              description={quizSet.description}
-              tags={quizSet.tags}
-              creator={quizSet.creator}
-              rating={quizSet.rating}
-              isBookmarked={quizSet.isBookmarked}
-            />
-          ))}
-        </div>
+
+        {quizzesLoading ? (
+          <div className="p-4 bg-white rounded-lg border shadow-sm">
+            <p className="text-gray-500">Loading bookmarked quizzes...</p>
+          </div>
+        ) : bookmarkedQuizzes.length === 0 ? (
+          <div className="p-4 bg-white rounded-lg border shadow-sm">
+            <p className="text-gray-500">No bookmarked quizzes found.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {bookmarkedQuizzes.map((quizSet: any) => (
+              <QuizSetItem
+                key={quizSet._id}
+                id={quizSet._id}
+                title={quizSet.title}
+                description={quizSet.description || ''}
+                tags={quizSet.tags || []}
+                creator={{
+                  name: quizSet.createdBy?.name || 'Unknown',
+                  isCurrentUser: false,
+                }}
+                rating={quizSet.rating}
+                isBookmarked={true}
+              />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

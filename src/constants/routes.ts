@@ -28,7 +28,7 @@ export const ROUTES = {
       JOIN: '/dashboard/classes/join',
     },
     QUIZ_SETS: {
-      CREATE: '/dashboard/quiz-sets/create',
+      CREATE: '/dashboard/create-set',
     },
   },
 

@@ -14,12 +14,12 @@ export default function SharedPage() {
 
   // Mock folders data
   const folders = [
-    { id: '1', name: 'Shared Folder 1' },
-    { id: '2', name: 'Shared Folder 2' },
-    { id: '3', name: 'Shared Folder 3' },
-    { id: '4', name: 'Shared Folder 4' },
-    { id: '5', name: 'Shared Folder 5' },
-    { id: '6', name: 'Shared Folder 6' },
+    { id: '1', name: 'Shared Folder 1', isBookmarked: true },
+    { id: '2', name: 'Shared Folder 2', isBookmarked: false },
+    { id: '3', name: 'Shared Folder 3', isBookmarked: true },
+    { id: '4', name: 'Shared Folder 4', isBookmarked: false },
+    { id: '5', name: 'Shared Folder 5', isBookmarked: false },
+    { id: '6', name: 'Shared Folder 6', isBookmarked: true },
   ];
 
   // Mock shared quiz sets data
@@ -119,6 +119,7 @@ export default function SharedPage() {
               key={folder?.id}
               id={folder?.id}
               name={folder?.name}
+              isBookmarked={folder?.isBookmarked}
               onClick={() => setCurrentFolder(folder?.name)}
             />
           ))}

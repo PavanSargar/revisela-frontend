@@ -7,6 +7,7 @@ export interface Folder {
   _id: string;
   name: string;
   parentFolder?: string;
+  isBookmarked?: boolean;
   [key: string]: any;
 }
 
@@ -47,6 +48,7 @@ const FolderGrid: React.FC<FolderGridProps> = ({
               key={folder._id}
               id={folder._id}
               name={folder.name}
+              isBookmarked={folder.isBookmarked}
               onClick={onFolderClick}
               onDelete={onFolderDelete}
               customIcon={folderIcon}

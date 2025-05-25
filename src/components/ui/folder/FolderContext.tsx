@@ -17,6 +17,7 @@ import {
 export interface SubFolder {
   _id: string;
   name: string;
+  isBookmarked?: boolean;
 }
 
 export interface Folder {

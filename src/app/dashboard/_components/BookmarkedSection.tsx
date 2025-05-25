@@ -5,41 +5,22 @@ import React from 'react';
 
 import { ChevronRight } from 'lucide-react';
 
+import { useBookmarkedQuizzes } from '@/services/features/quizzes';
+
 import ChevronRightIcon from '@/components/icons/chevron-right';
+
+import { ROUTES } from '@/constants/routes';
 
 import { QuizSetItem } from '../library/components';
 
 const BookmarkedSection = () => {
-  const bookmarkedQuizSets = [
-    {
-      id: '1',
-      title: 'IB Calculus',
-      description:
-        'Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.',
-      tags: ['Maths', 'IB', 'Calculus'],
-      creator: { name: 'Sam Smith', isCurrentUser: false },
-      rating: 2,
-      isBookmarked: true,
-    },
-    {
-      id: '2',
-      title: 'IB Calculus',
-      description:
-        'Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.',
-      tags: ['Maths', 'IB', 'Calculus'],
-      creator: { name: 'You', isCurrentUser: true, shared: false },
-      isBookmarked: true,
-    },
-    {
-      id: '3',
-      title: 'IB Calculus',
-      description:
-        'Designed for both SL and HL students, this set covers key topics such as limits, differentiation, and integration, along with their real-world applications.',
-      tags: ['Maths', 'IB', 'Calculus'],
-      creator: { name: 'You', isCurrentUser: true, shared: false },
-      isBookmarked: true,
-    },
-  ];
+  const { data: bookmarkedQuizzesResponse, isLoading } = useBookmarkedQuizzes();
+  const bookmarkedQuizzes = bookmarkedQuizzesResponse?.data?.data || [];
+
+  // If no bookmarked quizzes, don't render this section
+  if (!isLoading && bookmarkedQuizzes.length === 0) {
+    return null;
+  }
 
   return (
     <section>
@@ -56,19 +37,28 @@ const BookmarkedSection = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {bookmarkedQuizSets.map((quizSet) => (
-          <QuizSetItem
-            key={quizSet.id}
-            title={quizSet.title}
-            description={quizSet.description}
-            tags={quizSet.tags}
-            creator={quizSet.creator}
-            rating={quizSet.rating}
-            isBookmarked={quizSet.isBookmarked}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="p-4 bg-white rounded-lg border shadow-sm">
+          <p className="text-gray-500">Loading bookmarked quizzes...</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {bookmarkedQuizzes.slice(0, 3).map((quizSet: any) => (
+            <QuizSetItem
+              key={quizSet._id}
+              id={quizSet._id}
+              title={quizSet.title}
+              description={quizSet.description || ''}
+              tags={quizSet.tags || []}
+              creator={{
+                name: quizSet.createdBy?.name || 'Unknown',
+                isCurrentUser: false,
+              }}
+              isBookmarked={true}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };
