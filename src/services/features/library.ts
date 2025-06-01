@@ -145,7 +145,7 @@ export const useCreateQuiz = () => {
 };
 
 // Update a quiz
-export const useUpdateQuiz = () => {
+export const useUpdateQuizSet = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -179,7 +179,7 @@ export const useUpdateQuiz = () => {
 };
 
 // Delete a quiz
-export const useDeleteQuiz = () => {
+export const useDeleteQuizSet = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

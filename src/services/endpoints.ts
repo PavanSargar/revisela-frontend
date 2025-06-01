@@ -432,3 +432,21 @@ export const UPLOAD_ENDPOINTS = {
       method: 'DELETE',
     }) as EndpointConfig,
 };
+
+// Shared content endpoints
+export const SHARED_ENDPOINTS = {
+  GET_ALL_SHARED: {
+    url: `${API_BASE_URL}/shared`,
+    method: 'GET',
+  } as EndpointConfig,
+
+  GET_SHARED_FOLDERS: {
+    url: `${API_BASE_URL}/shared/folders`,
+    method: 'GET',
+  } as EndpointConfig,
+
+  GET_SHARED_QUIZZES: {
+    url: `${API_BASE_URL}/shared/quizzes`,
+    method: 'GET',
+  } as EndpointConfig,
+};

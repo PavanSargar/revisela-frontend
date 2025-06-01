@@ -1394,7 +1394,7 @@
                 }
               ]
             },
-            "description": "Move a quiz from its current folder(s) to a target folder. The quiz will be removed from all current folders and added to the target folder."
+            "description": "Move a quiz from its current folder(s) to a target folder. The quiz will be removed from all current folders and added to the target folder. You can move a quiz if you are either the quiz creator or have admin access to any folder containing the quiz."
           },
           "response": []
         },
@@ -1588,6 +1588,171 @@
         }
       ],
       "description": "Folder management endpoints"
+    },
+    {
+      "name": "Shared",
+      "item": [
+        {
+          "name": "Get All Shared Content",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/shared",
+              "host": ["{{baseUrl}}"],
+              "path": ["shared"]
+            },
+            "description": "Get all content shared with the current user (folders and quizzes)"
+          },
+          "response": [
+            {
+              "name": "Example Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{authToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/shared",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["shared"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"folders\": [\n            {\n                \"_id\": \"64a69b8ea0b5c68f4bcd1234\",\n                \"name\": \"Math Study Materials\",\n                \"description\": \"Shared math resources\",\n                \"owner\": {\n                    \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n                    \"name\": \"John Doe\",\n                    \"username\": \"johndoe\",\n                    \"email\": \"john@example.com\"\n                },\n                \"userAccessLevel\": \"collaborator\",\n                \"isBookmarked\": true,\n                \"type\": \"folder\",\n                \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n                \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n            }\n        ],\n        \"quizzes\": [\n            {\n                \"_id\": \"64a69b8ea0b5c68f4bcd9876\",\n                \"title\": \"Algebra Basics\",\n                \"description\": \"Basic algebra questions\",\n                \"tags\": [\"math\", \"algebra\"],\n                \"isPublic\": true,\n                \"createdBy\": {\n                    \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n                    \"name\": \"John Doe\",\n                    \"username\": \"johndoe\",\n                    \"email\": \"john@example.com\"\n                },\n                \"isBookmarked\": false,\n                \"type\": \"quiz\",\n                \"sharedVia\": {\n                    \"folderId\": \"64a69b8ea0b5c68f4bcd1234\",\n                    \"folderName\": \"Math Study Materials\",\n                    \"accessLevel\": \"collaborator\"\n                },\n                \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n                \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n            }\n        ],\n        \"totalCount\": {\n            \"folders\": 1,\n            \"quizzes\": 1,\n            \"total\": 2\n        }\n    },\n    \"message\": \"Found 2 shared items\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Shared Folders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/shared/folders",
+              "host": ["{{baseUrl}}"],
+              "path": ["shared", "folders"]
+            },
+            "description": "Get only folders shared with the current user"
+          },
+          "response": [
+            {
+              "name": "Example Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{authToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/shared/folders",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["shared", "folders"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"_id\": \"64a69b8ea0b5c68f4bcd1234\",\n            \"name\": \"Math Study Materials\",\n            \"description\": \"Shared math resources\",\n            \"owner\": {\n                \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n                \"name\": \"John Doe\",\n                \"username\": \"johndoe\",\n                \"email\": \"john@example.com\"\n            },\n            \"sharedWith\": [\n                {\n                    \"user\": {\n                        \"_id\": \"64a69b8ea0b5c68f4bcd9999\",\n                        \"name\": \"Current User\",\n                        \"username\": \"currentuser\",\n                        \"email\": \"current@example.com\"\n                    },\n                    \"accessLevel\": \"collaborator\"\n                }\n            ],\n            \"userAccessLevel\": \"collaborator\",\n            \"isBookmarked\": true,\n            \"type\": \"folder\",\n            \"publicAccess\": \"none\",\n            \"isInTrash\": false,\n            \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n            \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n        }\n    ],\n    \"count\": 1,\n    \"message\": \"Found 1 shared folders\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Shared Quizzes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/shared/quizzes",
+              "host": ["{{baseUrl}}"],
+              "path": ["shared", "quizzes"]
+            },
+            "description": "Get only quizzes shared with the current user (via shared folders)"
+          },
+          "response": [
+            {
+              "name": "Example Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{authToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/shared/quizzes",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["shared", "quizzes"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"_id\": \"64a69b8ea0b5c68f4bcd9876\",\n            \"title\": \"Algebra Basics\",\n            \"description\": \"Basic algebra questions\",\n            \"tags\": [\"math\", \"algebra\"],\n            \"questions\": [\n                {\n                    \"type\": \"mcq\",\n                    \"question\": \"What is x + 5 = 10?\",\n                    \"answer\": \"5\",\n                    \"options\": [\n                        {\n                            \"label\": \"3\",\n                            \"value\": \"3\"\n                        },\n                        {\n                            \"label\": \"5\",\n                            \"value\": \"5\"\n                        },\n                        {\n                            \"label\": \"7\",\n                            \"value\": \"7\"\n                        }\n                    ]\n                }\n            ],\n            \"isPublic\": true,\n            \"createdBy\": {\n                \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n                \"name\": \"John Doe\",\n                \"username\": \"johndoe\",\n                \"email\": \"john@example.com\"\n            },\n            \"isBookmarked\": false,\n            \"type\": \"quiz\",\n            \"sharedVia\": {\n                \"folderId\": \"64a69b8ea0b5c68f4bcd1234\",\n                \"folderName\": \"Math Study Materials\",\n                \"accessLevel\": \"collaborator\"\n            },\n            \"isInTrash\": false,\n            \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n            \"updatedAt\": \"2024-01-01T00:00:00.000Z\"\n        }\n    ],\n    \"count\": 1,\n    \"message\": \"Found 1 shared quizzes\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Shared content endpoints"
     }
   ]
 }

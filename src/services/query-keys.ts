@@ -58,6 +58,13 @@ export const QUERY_KEYS = {
   LIBRARY: {
     quizSets: (folderId?: string) => ['quizSets', folderId] as const,
   },
+
+  // Shared content related keys
+  SHARED: {
+    all: ['shared'] as const,
+    folders: ['shared', 'folders'] as const,
+    quizzes: ['shared', 'quizzes'] as const,
+  },
 };
 
 /**
