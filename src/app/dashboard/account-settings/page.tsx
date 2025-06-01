@@ -13,8 +13,13 @@ import { Switch } from '@/components/ui';
 import { ContentLoader, LoadingSpinner } from '@/components/ui/loaders';
 import { useToast } from '@/components/ui/toast';
 
-import { logout, updateProfileImage } from '@/store/slices/authSlice';
+import {
+  clearAuthData,
+  logout,
+  updateProfileImage,
+} from '@/store/slices/authSlice';
 
+import { performLogout } from '@/lib/auth-utils';
 import { formatToDDMMMYYYY, safeLocalStorage } from '@/lib/utils';
 
 import { useAppDispatch } from '@/store';
@@ -228,8 +233,8 @@ const AccountSettings = () => {
     return new Promise((resolve, reject) => {
       deleteAccount(undefined, {
         onSuccess: () => {
-          // Clear auth state
-          safeLocalStorage.removeItem('authToken');
+          // Use centralized logout function
+          performLogout();
           dispatch(logout());
 
           toast({

@@ -1,17 +1,23 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import {
+  AUTH_STORAGE_KEYS,
+  clearAllAuthData,
+  getAuthToken,
+  getUserDetails,
+} from '@/lib/auth-utils';
 import { safeLocalStorage } from '@/lib/utils';
 
 import { RootState } from '@/store';
 
+// Export the centralized clear function for backward compatibility
+export const clearAuthData = clearAllAuthData;
+
 // Add a utility function to get profile image
 export const getProfileImageFromStorage = (): string => {
   try {
-    const userDetailsStr = safeLocalStorage.getItem('userDetails');
-    if (userDetailsStr) {
-      const userDetails = JSON.parse(userDetailsStr);
-      return userDetails.profileImage || '';
-    }
+    const userDetails = getUserDetails();
+    return userDetails?.profileImage || '';
   } catch (error) {
     console.error('Error reading profile image from storage', error);
   }
@@ -47,20 +53,15 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     initAuth: (state) => {
-      const token = safeLocalStorage.getItem('authToken');
-      const userDetailsStr = safeLocalStorage.getItem('userDetails');
+      const token = getAuthToken();
+      const userDetails = getUserDetails();
 
       if (token) {
         state.token = token;
         state.isAuthenticated = true;
 
-        if (userDetailsStr) {
-          try {
-            const userDetails = JSON.parse(userDetailsStr);
-            state.user = userDetails;
-          } catch (error) {
-            console.error('Failed to parse user details', error);
-          }
+        if (userDetails) {
+          state.user = userDetails;
         }
       }
     },
@@ -83,10 +84,14 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
     logout: (state) => {
+      // Clear Redux state
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
       state.error = null;
+
+      // Clear localStorage using centralized utility
+      clearAllAuthData();
     },
     updateUser: (state, action: PayloadAction<Partial<User>>) => {
       if (state.user) {
@@ -99,11 +104,13 @@ const authSlice = createSlice({
       }
 
       try {
-        const userDetailsStr = safeLocalStorage.getItem('userDetails');
-        if (userDetailsStr) {
-          const userDetails = JSON.parse(userDetailsStr);
+        const userDetails = getUserDetails();
+        if (userDetails) {
           userDetails.profileImage = action.payload;
-          safeLocalStorage.setItem('userDetails', JSON.stringify(userDetails));
+          safeLocalStorage.setItem(
+            AUTH_STORAGE_KEYS.USER_DETAILS,
+            JSON.stringify(userDetails)
+          );
         }
       } catch (error) {
         console.error('Failed to update profile image in storage', error);

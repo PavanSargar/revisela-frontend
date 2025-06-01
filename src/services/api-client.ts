@@ -4,7 +4,17 @@
  * This file provides a unified way to make API requests using the endpoints defined in endpoints.ts.
  * It handles common API request needs like authentication, error handling, and response parsing.
  */
+import { getAuthToken, handleUnauthorizedAccess } from '@/lib/auth-utils';
+
 import { EndpointConfig } from './endpoints';
+
+// Global function to handle 401 unauthorized errors
+let handleUnauthorized: (() => void) | null = null;
+
+// Function to set the unauthorized handler (will be called from app initialization)
+export const setUnauthorizedHandler = (handler: () => void) => {
+  handleUnauthorized = handler;
+};
 
 // Type for API request options
 export interface ApiRequestOptions {
@@ -60,7 +70,7 @@ export async function apiRequest<T = ApiData>(
     };
 
     if (withAuth) {
-      const token = localStorage.getItem('authToken');
+      const token = getAuthToken();
       if (token) {
         requestHeaders['Authorization'] = `Bearer ${token}`;
       }
@@ -81,6 +91,17 @@ export async function apiRequest<T = ApiData>(
     }
 
     if (!response.ok) {
+      // Handle 401 Unauthorized errors globally
+      if (response.status === 401) {
+        // Use the centralized unauthorized handler first
+        handleUnauthorizedAccess();
+
+        // Also call the app-specific handler if set
+        if (handleUnauthorized) {
+          handleUnauthorized();
+        }
+      }
+
       // Handle API error responses
       const error = new Error(
         data?.message || `Request failed with status ${response.status}`
@@ -163,7 +184,7 @@ export async function uploadFile<T = ApiData>(
     };
 
     if (withAuth) {
-      const token = localStorage.getItem('authToken');
+      const token = getAuthToken();
       if (token) {
         requestHeaders['Authorization'] = `Bearer ${token}`;
       }
@@ -184,6 +205,17 @@ export async function uploadFile<T = ApiData>(
     }
 
     if (!response.ok) {
+      // Handle 401 Unauthorized errors globally
+      if (response.status === 401) {
+        // Use the centralized unauthorized handler first
+        handleUnauthorizedAccess();
+
+        // Also call the app-specific handler if set
+        if (handleUnauthorized) {
+          handleUnauthorized();
+        }
+      }
+
       // Handle API error responses
       const error = new Error(
         data?.message || `Request failed with status ${response.status}`

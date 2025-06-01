@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -27,8 +27,12 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { mutate: login, isPending, error: apiError } = useLogin();
-  console.log(apiError);
+
+  // Check for success or session expired messages
+  const signupSuccess = searchParams.get('signup') === 'success';
+  const sessionExpired = searchParams.get('session') === 'expired';
 
   const {
     register,
@@ -85,6 +89,21 @@ const Login = () => {
         <div className="w-[50%] h-[1px] bg-[#000]"></div>
       </div>
 
+      {/* Success message for signup completion */}
+      {signupSuccess && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+          Account created successfully! Please log in with your credentials.
+        </div>
+      )}
+
+      {/* Session expired message */}
+      {sessionExpired && (
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+          Your session has expired. Please log in again.
+        </div>
+      )}
+
+      {/* API error message */}
       {apiError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           {apiError instanceof Error ? apiError.message : 'Login failed'}

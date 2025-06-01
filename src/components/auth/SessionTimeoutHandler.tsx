@@ -7,6 +7,8 @@ import { Toast } from '@/components/ui';
 
 import { logout } from '@/store/slices/authSlice';
 
+import { isTokenExpired, performLogout } from '@/lib/auth-utils';
+
 import { useAppDispatch, useAppSelector } from '@/store';
 
 // Helper function to decode JWT and get expiration time
@@ -40,6 +42,9 @@ export const SessionTimeoutHandler = () => {
     // Clear warning
     setShowWarning(false);
 
+    // Use centralized logout function
+    performLogout();
+
     // Dispatch logout action
     dispatch(logout());
 
@@ -49,6 +54,12 @@ export const SessionTimeoutHandler = () => {
 
   const checkTokenExpiration = useCallback(() => {
     if (!token) return;
+
+    // Use centralized token validation
+    if (isTokenExpired()) {
+      handleSessionTimeout();
+      return;
+    }
 
     const expirationTime = getTokenExpiration(token);
     if (!expirationTime) return;

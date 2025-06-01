@@ -85,8 +85,8 @@ const SignUp = () => {
       },
       {
         onSuccess: () => {
-          // Direct navigation to dashboard
-          window.location.href = '/dashboard'; // Force a full page refresh
+          // Redirect to login page with success message
+          router.push('/auth?signup=success');
         },
       }
     );
