@@ -3,28 +3,41 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '../api-client';
 import { CLASS_ENDPOINTS } from '../endpoints';
 
-// Types
+// Types based on the Postman collection
 interface ClassMember {
   _id: string;
-  userId: string;
-  user?: {
+  user: {
+    _id: string;
     name: string;
     email: string;
     username?: string;
   };
-  role: 'admin' | 'member' | 'collaborator';
-  status: 'invited' | 'active';
+  accessLevel: 'owner' | 'admin' | 'collaborator' | 'member';
+  joinedAt: string;
 }
 
 interface Class {
   _id: string;
   name: string;
   description: string;
-  subject?: string;
+  classCode: string;
+  owner: {
+    _id: string;
+    name: string;
+    email: string;
+    username?: string;
+  };
+  members: ClassMember[];
+  quizzes: any[];
+  folders: any[];
+  publicAccess: 'public' | 'restricted' | 'private';
+  isActive: boolean;
+  isArchived: boolean;
   createdAt: string;
   updatedAt: string;
-  isPublic: boolean;
-  members?: ClassMember[];
+  isOwner: boolean;
+  userAccessLevel: 'owner' | 'admin' | 'collaborator' | 'member';
+  memberCount: number;
 }
 
 interface ClassInvitation {
@@ -43,8 +56,7 @@ export const useCreateClass = () => {
     mutationFn: async (data: {
       name: string;
       description: string;
-      subject?: string;
-      isPublic: boolean;
+      publicAccess?: 'public' | 'restricted' | 'private';
     }) => {
       const response = await apiRequest<Class>(CLASS_ENDPOINTS.CREATE_CLASS, {
         body: data,
@@ -64,11 +76,11 @@ export const useCreateClass = () => {
 };
 
 // Get all classes the current user is a member of
-export const useMyClasses = () => {
+export const useMyClasses = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ['my-classes'],
     queryFn: async () => {
-      const response = await apiRequest<Class[]>(
+      const response = await apiRequest<{ data: Class[] }>(
         CLASS_ENDPOINTS.GET_MY_CLASSES
       );
 
@@ -76,8 +88,9 @@ export const useMyClasses = () => {
         throw response.error;
       }
 
-      return response.data!;
+      return response.data?.data;
     },
+    enabled: options?.enabled !== false, // Default to true unless explicitly set to false
   });
 };
 
@@ -110,7 +123,11 @@ export const useUpdateClass = () => {
       data,
     }: {
       classId: string;
-      data: Partial<Class>;
+      data: {
+        name?: string;
+        description?: string;
+        publicAccess?: 'public' | 'restricted' | 'private';
+      };
     }) => {
       const response = await apiRequest<Class>(
         CLASS_ENDPOINTS.UPDATE_CLASS(classId),
@@ -153,7 +170,322 @@ export const useDeleteClass = () => {
   });
 };
 
-// Add member to class
+// Join class with class code
+export const useJoinClass = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (classCode: string) => {
+      const response = await apiRequest<Class>(CLASS_ENDPOINTS.JOIN_CLASS, {
+        body: { classCode },
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data!;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-classes'] });
+    },
+  });
+};
+
+// Leave class
+export const useLeaveClass = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (classId: string) => {
+      const response = await apiRequest(CLASS_ENDPOINTS.LEAVE_CLASS(classId));
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return classId;
+    },
+    onSuccess: (classId) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+      queryClient.invalidateQueries({ queryKey: ['my-classes'] });
+    },
+  });
+};
+
+// Add members to class
+export const useAddClassMembers = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      classId,
+      data,
+    }: {
+      classId: string;
+      data: {
+        emails: string[];
+        accessLevel: 'admin' | 'collaborator' | 'member';
+      };
+    }) => {
+      const response = await apiRequest(CLASS_ENDPOINTS.ADD_MEMBERS(classId), {
+        body: data,
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data;
+    },
+    onSuccess: (_, { classId }) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+      queryClient.invalidateQueries({ queryKey: ['my-classes'] });
+    },
+  });
+};
+
+// Update member access level
+export const useUpdateMemberAccess = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      classId,
+      userId,
+      accessLevel,
+    }: {
+      classId: string;
+      userId: string;
+      accessLevel: 'admin' | 'collaborator' | 'member';
+    }) => {
+      const response = await apiRequest(
+        CLASS_ENDPOINTS.UPDATE_MEMBER_ACCESS(classId, userId),
+        {
+          body: { accessLevel },
+        }
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data;
+    },
+    onSuccess: (_, { classId }) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+    },
+  });
+};
+
+// Remove member from class
+export const useRemoveClassMember = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      classId,
+      userId,
+    }: {
+      classId: string;
+      userId: string;
+    }) => {
+      const response = await apiRequest(
+        CLASS_ENDPOINTS.REMOVE_MEMBER(classId, userId)
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return { classId, userId };
+    },
+    onSuccess: ({ classId }) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+    },
+  });
+};
+
+// Archive class
+export const useArchiveClass = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (classId: string) => {
+      const response = await apiRequest(CLASS_ENDPOINTS.ARCHIVE_CLASS(classId));
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return classId;
+    },
+    onSuccess: (classId) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+      queryClient.invalidateQueries({ queryKey: ['my-classes'] });
+    },
+  });
+};
+
+// Restore class
+export const useRestoreClass = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (classId: string) => {
+      const response = await apiRequest(CLASS_ENDPOINTS.RESTORE_CLASS(classId));
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return classId;
+    },
+    onSuccess: (classId) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+      queryClient.invalidateQueries({ queryKey: ['my-classes'] });
+    },
+  });
+};
+
+// Add quiz to class
+export const useAddQuizToClass = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      classId,
+      quizId,
+    }: {
+      classId: string;
+      quizId: string;
+    }) => {
+      const response = await apiRequest(
+        CLASS_ENDPOINTS.ADD_QUIZ_TO_CLASS(classId),
+        {
+          body: { quizId },
+        }
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return { classId, quizId };
+    },
+    onSuccess: ({ classId }) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+    },
+  });
+};
+
+// Remove quiz from class
+export const useRemoveQuizFromClass = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      classId,
+      quizId,
+    }: {
+      classId: string;
+      quizId: string;
+    }) => {
+      const response = await apiRequest(
+        CLASS_ENDPOINTS.REMOVE_QUIZ_FROM_CLASS(classId, quizId)
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return { classId, quizId };
+    },
+    onSuccess: ({ classId }) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+    },
+  });
+};
+
+// Get class quizzes
+export const useClassQuizzes = (classId: string) => {
+  return useQuery({
+    queryKey: ['class', classId, 'quizzes'],
+    queryFn: async () => {
+      const response = await apiRequest(
+        CLASS_ENDPOINTS.GET_CLASS_QUIZZES(classId)
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data!;
+    },
+    enabled: !!classId,
+  });
+};
+
+// Add folder to class
+export const useAddFolderToClass = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      classId,
+      folderId,
+    }: {
+      classId: string;
+      folderId: string;
+    }) => {
+      const response = await apiRequest(
+        CLASS_ENDPOINTS.ADD_FOLDER_TO_CLASS(classId),
+        {
+          body: { folderId },
+        }
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return { classId, folderId };
+    },
+    onSuccess: ({ classId }) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+    },
+  });
+};
+
+// Remove folder from class
+export const useRemoveFolderFromClass = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      classId,
+      folderId,
+    }: {
+      classId: string;
+      folderId: string;
+    }) => {
+      const response = await apiRequest(
+        CLASS_ENDPOINTS.REMOVE_FOLDER_FROM_CLASS(classId, folderId)
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return { classId, folderId };
+    },
+    onSuccess: ({ classId }) => {
+      queryClient.invalidateQueries({ queryKey: ['class', classId] });
+    },
+  });
+};
+
+// Legacy hooks for backward compatibility
 export const useAddClassMember = () => {
   const queryClient = useQueryClient();
 
@@ -187,7 +519,6 @@ export const useAddClassMember = () => {
   });
 };
 
-// Get class members
 export const useClassMembers = (classId: string) => {
   return useQuery({
     queryKey: ['class', classId, 'members'],
@@ -206,38 +537,6 @@ export const useClassMembers = (classId: string) => {
   });
 };
 
-// Remove member from class
-export const useRemoveClassMember = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      classId,
-      memberId,
-    }: {
-      classId: string;
-      memberId: string;
-    }) => {
-      const response = await apiRequest(
-        CLASS_ENDPOINTS.REMOVE_MEMBER(classId, memberId)
-      );
-
-      if (response.error) {
-        throw response.error;
-      }
-
-      return { classId, memberId };
-    },
-    onSuccess: ({ classId }) => {
-      queryClient.invalidateQueries({
-        queryKey: ['class', classId, 'members'],
-      });
-      queryClient.invalidateQueries({ queryKey: ['class', classId] });
-    },
-  });
-};
-
-// Accept class invitation
 export const useAcceptClassInvitation = () => {
   const queryClient = useQueryClient();
 
@@ -260,7 +559,6 @@ export const useAcceptClassInvitation = () => {
   });
 };
 
-// Get pending invitations
 export const usePendingInvitations = () => {
   return useQuery({
     queryKey: ['class-invitations'],
@@ -275,54 +573,5 @@ export const usePendingInvitations = () => {
 
       return response.data!;
     },
-  });
-};
-
-// Add quiz to class
-export const useAddQuizToClass = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      classId,
-      quizId,
-    }: {
-      classId: string;
-      quizId: string;
-    }) => {
-      const response = await apiRequest(
-        CLASS_ENDPOINTS.ADD_QUIZ_TO_CLASS(classId, quizId)
-      );
-
-      if (response.error) {
-        throw response.error;
-      }
-
-      return { classId, quizId };
-    },
-    onSuccess: ({ classId }) => {
-      queryClient.invalidateQueries({
-        queryKey: ['class', classId, 'quizzes'],
-      });
-    },
-  });
-};
-
-// Get class quizzes
-export const useClassQuizzes = (classId: string) => {
-  return useQuery({
-    queryKey: ['class', classId, 'quizzes'],
-    queryFn: async () => {
-      const response = await apiRequest(
-        CLASS_ENDPOINTS.GET_CLASS_QUIZZES(classId)
-      );
-
-      if (response.error) {
-        throw response.error;
-      }
-
-      return response.data!;
-    },
-    enabled: !!classId,
   });
 };

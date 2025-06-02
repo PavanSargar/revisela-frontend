@@ -35,6 +35,12 @@
       "value": "",
       "type": "string",
       "description": "Parent folder ID"
+    },
+    {
+      "key": "classId",
+      "value": "",
+      "type": "string",
+      "description": "Class ID"
     }
   ],
   "item": [
@@ -1588,6 +1594,720 @@
         }
       ],
       "description": "Folder management endpoints"
+    },
+    {
+      "name": "Classes",
+      "item": [
+        {
+          "name": "Create Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Advanced Mathematics\",\n    \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n    \"publicAccess\": \"restricted\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes"]
+            },
+            "description": "Create a new class. Only authenticated users can create classes."
+          },
+          "response": [
+            {
+              "name": "Example Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{authToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Advanced Mathematics\",\n    \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n    \"publicAccess\": \"restricted\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/classes",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["classes"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n    \"_id\": \"64a69b8ea0b5c68f4bcd1111\",\n    \"name\": \"Advanced Mathematics\",\n    \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n    \"classCode\": \"ABC123\",\n    \"owner\": {\n        \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n        \"name\": \"Test User\",\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\"\n    },\n    \"members\": [],\n    \"quizzes\": [],\n    \"folders\": [],\n    \"publicAccess\": \"restricted\",\n    \"isActive\": true,\n    \"isArchived\": false,\n    \"createdAt\": \"2023-07-06T12:00:00.000Z\",\n    \"updatedAt\": \"2023-07-06T12:00:00.000Z\",\n    \"isOwner\": true,\n    \"userAccessLevel\": \"owner\",\n    \"memberCount\": 0\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Classes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes"]
+            },
+            "description": "Get all classes for the authenticated user (owned and joined)"
+          },
+          "response": [
+            {
+              "name": "Example Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{authToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/classes",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["classes"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "[\n    {\n        \"_id\": \"64a69b8ea0b5c68f4bcd1111\",\n        \"name\": \"Advanced Mathematics\",\n        \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n        \"classCode\": \"ABC123\",\n        \"owner\": {\n            \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n            \"name\": \"Test User\",\n            \"username\": \"testuser\",\n            \"email\": \"test@example.com\"\n        },\n        \"members\": [\n            {\n                \"user\": {\n                    \"_id\": \"64a69b8ea0b5c68f4bcd9999\",\n                    \"name\": \"Student User\",\n                    \"username\": \"student1\",\n                    \"email\": \"student1@example.com\"\n                },\n                \"accessLevel\": \"member\",\n                \"joinedAt\": \"2023-07-06T13:00:00.000Z\"\n            }\n        ],\n        \"quizzes\": [],\n        \"folders\": [],\n        \"publicAccess\": \"restricted\",\n        \"isActive\": true,\n        \"isArchived\": false,\n        \"createdAt\": \"2023-07-06T12:00:00.000Z\",\n        \"updatedAt\": \"2023-07-06T12:00:00.000Z\",\n        \"isOwner\": true,\n        \"userAccessLevel\": \"owner\",\n        \"memberCount\": 1\n    }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Class by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                }
+              ]
+            },
+            "description": "Get a specific class by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Advanced Mathematics - Updated\",\n    \"description\": \"Updated description for the advanced mathematics course\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                }
+              ]
+            },
+            "description": "Update a class. Only class owner or admin can update."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                }
+              ]
+            },
+            "description": "Delete a class. Only class owner or admin can delete."
+          },
+          "response": []
+        },
+        {
+          "name": "Join Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"classCode\": \"ABC123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes/join",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", "join"]
+            },
+            "description": "Join a class using class code"
+          },
+          "response": [
+            {
+              "name": "Example Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{authToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"classCode\": \"ABC123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/classes/join",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["classes", "join"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n    \"_id\": \"64a69b8ea0b5c68f4bcd1111\",\n    \"name\": \"Advanced Mathematics\",\n    \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n    \"classCode\": \"ABC123\",\n    \"owner\": {\n        \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n        \"name\": \"Test User\",\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\"\n    },\n    \"members\": [\n        {\n            \"user\": {\n                \"_id\": \"64a69b8ea0b5c68f4bcd9999\",\n                \"name\": \"Current User\",\n                \"username\": \"currentuser\",\n                \"email\": \"current@example.com\"\n            },\n            \"accessLevel\": \"member\",\n            \"joinedAt\": \"2023-07-06T14:00:00.000Z\"\n        }\n    ],\n    \"isOwner\": false,\n    \"userAccessLevel\": \"member\",\n    \"memberCount\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Leave Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/leave",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "leave"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                }
+              ]
+            },
+            "description": "Leave a class"
+          },
+          "response": []
+        },
+        {
+          "name": "Add Members to Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"emails\": [\"student1@example.com\", \"student2@example.com\"],\n    \"accessLevel\": \"member\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "members"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                }
+              ]
+            },
+            "description": "Add members to class by email. Only class owner or admin can add members."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Member Access Level",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"accessLevel\": \"collaborator\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/members/:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "members", ":userId"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "User ID"
+                }
+              ]
+            },
+            "description": "Update member access level. Only class owner or admin can update member access."
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Member from Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/members/:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "members", ":userId"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "User ID"
+                }
+              ]
+            },
+            "description": "Remove member from class. Only class owner or admin can remove members."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Quiz to Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"quizId\": \"64a69b8ea0b5c68f4bcd9012\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/quizzes",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "quizzes"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                }
+              ]
+            },
+            "description": "Add quiz to class. Only class owner or collaborator can add quizzes."
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Quiz from Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/quizzes/:quizId",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "quizzes", ":quizId"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                },
+                {
+                  "key": "quizId",
+                  "value": "{{quizId}}",
+                  "description": "Quiz ID"
+                }
+              ]
+            },
+            "description": "Remove quiz from class. Only class owner or collaborator can remove quizzes."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Folder to Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"folderId\": \"64a69b8ea0b5c68f4bcd1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/folders",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "folders"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                }
+              ]
+            },
+            "description": "Add folder to class. Only class owner or collaborator can add folders."
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Folder from Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/folders/:folderId",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "folders", ":folderId"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                },
+                {
+                  "key": "folderId",
+                  "value": "{{folderId}}",
+                  "description": "Folder ID"
+                }
+              ]
+            },
+            "description": "Remove folder from class. Only class owner or collaborator can remove folders."
+          },
+          "response": []
+        },
+        {
+          "name": "Archive Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/archive",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "archive"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                }
+              ]
+            },
+            "description": "Archive a class. Only class owner or admin can archive."
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Class",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/classes/:id/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["classes", ":id", "restore"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{classId}}",
+                  "description": "Class ID"
+                }
+              ]
+            },
+            "description": "Restore an archived class. Only class owner or admin can restore."
+          },
+          "response": []
+        }
+      ],
+      "description": "Class management endpoints"
     },
     {
       "name": "Shared",
