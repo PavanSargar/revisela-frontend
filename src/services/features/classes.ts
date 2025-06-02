@@ -55,7 +55,7 @@ export const useCreateClass = () => {
   return useMutation({
     mutationFn: async (data: {
       name: string;
-      description: string;
+      orgName: string;
       publicAccess?: 'public' | 'restricted' | 'private';
     }) => {
       const response = await apiRequest<Class>(CLASS_ENDPOINTS.CREATE_CLASS, {

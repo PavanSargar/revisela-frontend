@@ -1620,7 +1620,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Advanced Mathematics\",\n    \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n    \"publicAccess\": \"restricted\"\n}",
+              "raw": "{\n    \"name\": \"Advanced Mathematics\",\n    \"orgName\": \"Stanford University\",\n    \"publicAccess\": \"restricted\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1657,7 +1657,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Advanced Mathematics\",\n    \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n    \"publicAccess\": \"restricted\"\n}",
+                  "raw": "{\n    \"name\": \"Advanced Mathematics\",\n    \"orgName\": \"Stanford University\",\n    \"publicAccess\": \"restricted\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1675,7 +1675,7 @@
               "_postman_previewlanguage": "json",
               "header": [],
               "cookie": [],
-              "body": "{\n    \"_id\": \"64a69b8ea0b5c68f4bcd1111\",\n    \"name\": \"Advanced Mathematics\",\n    \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n    \"classCode\": \"ABC123\",\n    \"owner\": {\n        \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n        \"name\": \"Test User\",\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\"\n    },\n    \"members\": [],\n    \"quizzes\": [],\n    \"folders\": [],\n    \"publicAccess\": \"restricted\",\n    \"isActive\": true,\n    \"isArchived\": false,\n    \"createdAt\": \"2023-07-06T12:00:00.000Z\",\n    \"updatedAt\": \"2023-07-06T12:00:00.000Z\",\n    \"isOwner\": true,\n    \"userAccessLevel\": \"owner\",\n    \"memberCount\": 0\n}"
+              "body": "{\n    \"_id\": \"64a69b8ea0b5c68f4bcd1111\",\n    \"name\": \"Advanced Mathematics\",\n    \"orgName\": \"Stanford University\",\n    \"classCode\": \"ABC123\",\n    \"owner\": {\n        \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n        \"name\": \"Test User\",\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\"\n    },\n    \"members\": [],\n    \"quizzes\": [],\n    \"folders\": [],\n    \"publicAccess\": \"restricted\",\n    \"isActive\": true,\n    \"isArchived\": false,\n    \"createdAt\": \"2023-07-06T12:00:00.000Z\",\n    \"updatedAt\": \"2023-07-06T12:00:00.000Z\",\n    \"isOwner\": true,\n    \"userAccessLevel\": \"owner\",\n    \"memberCount\": 0\n}"
             }
           ]
         },
@@ -1728,7 +1728,7 @@
               "_postman_previewlanguage": "json",
               "header": [],
               "cookie": [],
-              "body": "[\n    {\n        \"_id\": \"64a69b8ea0b5c68f4bcd1111\",\n        \"name\": \"Advanced Mathematics\",\n        \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n        \"classCode\": \"ABC123\",\n        \"owner\": {\n            \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n            \"name\": \"Test User\",\n            \"username\": \"testuser\",\n            \"email\": \"test@example.com\"\n        },\n        \"members\": [\n            {\n                \"user\": {\n                    \"_id\": \"64a69b8ea0b5c68f4bcd9999\",\n                    \"name\": \"Student User\",\n                    \"username\": \"student1\",\n                    \"email\": \"student1@example.com\"\n                },\n                \"accessLevel\": \"member\",\n                \"joinedAt\": \"2023-07-06T13:00:00.000Z\"\n            }\n        ],\n        \"quizzes\": [],\n        \"folders\": [],\n        \"publicAccess\": \"restricted\",\n        \"isActive\": true,\n        \"isArchived\": false,\n        \"createdAt\": \"2023-07-06T12:00:00.000Z\",\n        \"updatedAt\": \"2023-07-06T12:00:00.000Z\",\n        \"isOwner\": true,\n        \"userAccessLevel\": \"owner\",\n        \"memberCount\": 1\n    }\n]"
+              "body": "[\n    {\n        \"_id\": \"64a69b8ea0b5c68f4bcd1111\",\n        \"name\": \"Advanced Mathematics\",\n        \"orgName\": \"Stanford University\",\n        \"classCode\": \"ABC123\",\n        \"owner\": {\n            \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n            \"name\": \"Test User\",\n            \"username\": \"testuser\",\n            \"email\": \"test@example.com\"\n        },\n        \"members\": [\n            {\n                \"user\": {\n                    \"_id\": \"64a69b8ea0b5c68f4bcd9999\",\n                    \"name\": \"Student User\",\n                    \"username\": \"student1\",\n                    \"email\": \"student1@example.com\"\n                },\n                \"accessLevel\": \"member\",\n                \"joinedAt\": \"2023-07-06T13:00:00.000Z\"\n            }\n        ],\n        \"quizzes\": [],\n        \"folders\": [],\n        \"publicAccess\": \"restricted\",\n        \"isActive\": true,\n        \"isArchived\": false,\n        \"createdAt\": \"2023-07-06T12:00:00.000Z\",\n        \"updatedAt\": \"2023-07-06T12:00:00.000Z\",\n        \"isOwner\": true,\n        \"userAccessLevel\": \"owner\",\n        \"memberCount\": 1\n    }\n]"
             }
           ]
         },
@@ -1785,7 +1785,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Advanced Mathematics - Updated\",\n    \"description\": \"Updated description for the advanced mathematics course\"\n}",
+              "raw": "{\n    \"name\": \"Advanced Mathematics - Updated\",\n    \"orgName\": \"MIT\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1916,7 +1916,7 @@
               "_postman_previewlanguage": "json",
               "header": [],
               "cookie": [],
-              "body": "{\n    \"_id\": \"64a69b8ea0b5c68f4bcd1111\",\n    \"name\": \"Advanced Mathematics\",\n    \"description\": \"A comprehensive course covering advanced mathematical concepts\",\n    \"classCode\": \"ABC123\",\n    \"owner\": {\n        \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n        \"name\": \"Test User\",\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\"\n    },\n    \"members\": [\n        {\n            \"user\": {\n                \"_id\": \"64a69b8ea0b5c68f4bcd9999\",\n                \"name\": \"Current User\",\n                \"username\": \"currentuser\",\n                \"email\": \"current@example.com\"\n            },\n            \"accessLevel\": \"member\",\n            \"joinedAt\": \"2023-07-06T14:00:00.000Z\"\n        }\n    ],\n    \"isOwner\": false,\n    \"userAccessLevel\": \"member\",\n    \"memberCount\": 1\n}"
+              "body": "{\n    \"_id\": \"64a69b8ea0b5c68f4bcd1111\",\n    \"name\": \"Advanced Mathematics\",\n    \"orgName\": \"Stanford University\",\n    \"classCode\": \"ABC123\",\n    \"owner\": {\n        \"_id\": \"64a69b8ea0b5c68f4bcd5678\",\n        \"name\": \"Test User\",\n        \"username\": \"testuser\",\n        \"email\": \"test@example.com\"\n    },\n    \"members\": [\n        {\n            \"user\": {\n                \"_id\": \"64a69b8ea0b5c68f4bcd9999\",\n                \"name\": \"Current User\",\n                \"username\": \"currentuser\",\n                \"email\": \"current@example.com\"\n            },\n            \"accessLevel\": \"member\",\n            \"joinedAt\": \"2023-07-06T14:00:00.000Z\"\n        }\n    ],\n    \"isOwner\": false,\n    \"userAccessLevel\": \"member\",\n    \"memberCount\": 1\n}"
             }
           ]
         },
