@@ -58,6 +58,7 @@ const FolderExplorer: React.FC<FolderExplorerProps> = ({
     ? subFolders.map((sf) => ({
         _id: sf._id,
         name: sf.name,
+        isBookmarked: sf.isBookmarked,
       }))
     : folders;
 

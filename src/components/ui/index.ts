@@ -11,4 +11,6 @@ export * from './Toast';
 export * from './Dropdown';
 export * from './ActionDropdown';
 export * from './TabSwitch';
+export * from './SocialButton';
 export * from './loaders';
+export { default as BookmarkToggleButton } from './BookmarkToggleButton';

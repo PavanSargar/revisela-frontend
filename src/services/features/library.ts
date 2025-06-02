@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import { apiRequest } from '../api-client';
 import { QUIZ_ENDPOINTS } from '../endpoints';
@@ -28,8 +33,14 @@ interface QuizSetResponse {
   };
 }
 // Fetch quiz sets, optionally by folder
-export const useQuizSets = (folderId?: string) => {
-  return useQuery({
+export const useQuizSets = (
+  folderId?: string,
+  options?: Omit<
+    UseQueryOptions<QuizSetResponse['data'], unknown, QuizSetResponse['data']>,
+    'queryKey' | 'queryFn'
+  >
+) => {
+  return useQuery<QuizSetResponse['data'], unknown>({
     queryKey: ['quizSets', folderId],
     queryFn: async () => {
       const endpoint = folderId
@@ -40,8 +51,13 @@ export const useQuizSets = (folderId?: string) => {
       if (response.error) {
         throw response.error;
       }
-      return response.data?.data;
+      if (!response.data?.data) {
+        // If data is undefined, return an empty result
+        return { results: [], totalCount: 0 };
+      }
+      return response.data.data;
     },
+    ...options,
   });
 };
 
@@ -129,7 +145,7 @@ export const useCreateQuiz = () => {
 };
 
 // Update a quiz
-export const useUpdateQuiz = () => {
+export const useUpdateQuizSet = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -163,7 +179,7 @@ export const useUpdateQuiz = () => {
 };
 
 // Delete a quiz
-export const useDeleteQuiz = () => {
+export const useDeleteQuizSet = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

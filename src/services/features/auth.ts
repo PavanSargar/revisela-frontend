@@ -1,12 +1,15 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import {
+  clearAuthData,
   loginFailure,
   loginStart,
   loginSuccess,
   logout,
   updateUser,
 } from '@/store/slices/authSlice';
+
+import { storeAuthData } from '@/lib/auth-utils';
 
 import { useAppDispatch, useAppSelector } from '@/store';
 
@@ -97,10 +100,8 @@ export const useLogin = () => {
 
       dispatch(loginSuccess({ user, token: data?.access_token }));
 
-      // Store token in localStorage with the correct name
-      localStorage.setItem('authToken', data?.access_token);
-
-      localStorage.setItem('userDetails', JSON.stringify(user));
+      // Store authentication data using centralized utility
+      storeAuthData(data?.access_token, user);
     },
     onError: (error) => {
       dispatch(loginFailure(error.message));
@@ -110,8 +111,6 @@ export const useLogin = () => {
 
 // Hook for signup mutation
 export const useSignup = () => {
-  const dispatch = useAppDispatch();
-
   return useMutation({
     mutationFn: async (data: SignupData) => {
       const response = await apiRequest(AUTH_ENDPOINTS.SIGNUP, {
@@ -125,27 +124,8 @@ export const useSignup = () => {
 
       return response.data;
     },
-    onSuccess: (data: any) => {
-      // Check if the signup API returns a token and user data
-      if (data?.result?.access_token && data?.result?.user) {
-        // Format user data to match the expected structure
-        const user = {
-          id: data?.result.user._id,
-          name: data?.result.user.name,
-          email: data?.result.user.email,
-          username: data?.result.user.username,
-          profileImage: data?.result.user.profileImage,
-        };
-
-        // Store token in localStorage
-        localStorage.setItem('authToken', data?.result.access_token);
-
-        localStorage.setItem('userDetails', JSON.stringify(user));
-
-        // Update Redux state
-        dispatch(loginSuccess({ user, token: data?.result.access_token }));
-      }
-    },
+    // Remove onSuccess handler - no automatic login
+    // The component will handle the redirect to login page
   });
 };
 
@@ -197,8 +177,7 @@ export const useLogout = () => {
       const response = await apiRequest(AUTH_ENDPOINTS.LOGOUT);
 
       // Even if the API call fails, we still want to clear the local state
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userDetails');
+      clearAuthData();
 
       return response.status === 200;
     },
@@ -293,7 +272,9 @@ export const useRefreshToken = () => {
       };
 
       dispatch(loginSuccess({ user, token: data.result.access_token }));
-      localStorage.setItem('authToken', data.result.access_token);
+
+      // Store authentication data using centralized utility
+      storeAuthData(data.result.access_token, user);
     },
   });
 };

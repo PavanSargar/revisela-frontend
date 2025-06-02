@@ -27,6 +27,7 @@ export const QUERY_KEYS = {
     byTag: (tag: string) => ['quizzes', 'tag', tag] as const,
     search: (query: string) => ['quizSearch', query] as const,
     trash: ['quizzes', 'trash'] as const,
+    bookmarked: ['quizzes', 'bookmarked'] as const,
   },
 
   // Folder related keys
@@ -35,6 +36,7 @@ export const QUERY_KEYS = {
     byParent: (parentId?: string) => ['folders', parentId] as const,
     details: (folderId: string) => ['folder', folderId] as const,
     trash: ['folders', 'trash'] as const,
+    bookmarked: ['folders', 'bookmarked'] as const,
   },
 
   // Class related keys
@@ -55,6 +57,13 @@ export const QUERY_KEYS = {
   // Library related keys
   LIBRARY: {
     quizSets: (folderId?: string) => ['quizSets', folderId] as const,
+  },
+
+  // Shared content related keys
+  SHARED: {
+    all: ['shared'] as const,
+    folders: ['shared', 'folders'] as const,
+    quizzes: ['shared', 'quizzes'] as const,
   },
 };
 

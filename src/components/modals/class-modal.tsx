@@ -55,9 +55,8 @@ export const ClassModal: React.FC<ClassModalProps> = ({
     createClass(
       {
         name: data.name,
-        description: `Class for ${data.schoolName}`,
-        subject: data.schoolName,
-        isPublic: false,
+        orgName: data.schoolName,
+        publicAccess: 'restricted',
       },
       {
         onSuccess: () => {

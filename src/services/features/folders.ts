@@ -8,6 +8,7 @@ import { FOLDER_ENDPOINTS } from '../endpoints';
 interface SubFolder {
   _id: string;
   name: string;
+  isBookmarked?: boolean;
 }
 
 interface Folder {
@@ -22,6 +23,7 @@ interface Folder {
   publicAccess?: string;
   createdAt: string;
   updatedAt: string;
+  isBookmarked?: boolean;
 }
 
 interface CreateFolderRequest {
@@ -33,6 +35,15 @@ interface CreateFolderRequest {
 
 interface FolderResponse {
   data: Folder[];
+}
+
+// Define response interfaces for bookmarked folders
+interface FolderApiResponse {
+  data: {
+    success: boolean;
+    count: number;
+    data: Folder[];
+  };
 }
 
 // Fetch user's folders
@@ -314,6 +325,73 @@ export const useDuplicateFolder = () => {
       // Invalidate folders query to refresh the list
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.FOLDERS.all,
+      });
+    },
+  });
+};
+
+// Get bookmarked folders
+export const useBookmarkedFolders = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.FOLDERS.bookmarked,
+    queryFn: async () => {
+      const response = await apiRequest<FolderApiResponse>(
+        FOLDER_ENDPOINTS.GET_BOOKMARKED_FOLDERS
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data?.data?.data || [];
+    },
+  });
+};
+
+// Bookmark/unbookmark folder
+export const useBookmarkFolder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      folderId,
+      bookmarked,
+    }: {
+      folderId: string;
+      bookmarked: boolean;
+    }) => {
+      const response = await apiRequest(
+        FOLDER_ENDPOINTS.BOOKMARK_FOLDER(folderId),
+        {
+          body: { bookmarked },
+        }
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return { folderId, bookmarked };
+    },
+    onSuccess: ({ folderId, bookmarked }) => {
+      // Update the specific folder data in the cache
+      queryClient.setQueryData(
+        QUERY_KEYS.FOLDERS.details(folderId),
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          return { ...oldData, isBookmarked: bookmarked };
+        }
+      );
+
+      // Invalidate related queries
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.FOLDERS.bookmarked,
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.FOLDERS.all });
+
+      // Invalidate parent folder queries to update UI state
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.FOLDERS.byParent(),
       });
     },
   });

@@ -10,6 +10,7 @@ interface QuizSet {
   title: string;
   description?: string;
   questions?: any[];
+  isBookmarked?: boolean;
   // Add other relevant properties based on your application's data model
 }
 
@@ -20,8 +21,89 @@ interface QuizData {
   description?: string;
   questions?: unknown[];
   createdBy?: string;
+  isBookmarked?: boolean;
   // Add other properties as needed
 }
+
+// Define response interfaces
+interface ApiResponse<T> {
+  success: boolean;
+  count: number;
+  data: T[];
+}
+
+interface QuizResponse {
+  data: {
+    success: boolean;
+    count: number;
+    data: QuizData[];
+  };
+}
+
+// Get bookmarked quizzes
+export const useBookmarkedQuizzes = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.QUIZZES.bookmarked,
+    queryFn: async () => {
+      const response = await apiRequest<QuizResponse>(
+        QUIZ_ENDPOINTS.GET_BOOKMARKED_QUIZZES
+      );
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return response.data;
+    },
+  });
+};
+
+// Bookmark/unbookmark quiz
+export const useBookmarkQuiz = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      quizId,
+      bookmarked,
+    }: {
+      quizId: string;
+      bookmarked: boolean;
+    }) => {
+      const response = await apiRequest(QUIZ_ENDPOINTS.BOOKMARK_QUIZ(quizId), {
+        body: { bookmarked },
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      return { quizId, bookmarked };
+    },
+    onSuccess: ({ quizId, bookmarked }) => {
+      // Update the specific quiz data in the cache
+      queryClient.setQueryData(
+        QUERY_KEYS.QUIZZES.details(quizId),
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          return { ...oldData, isBookmarked: bookmarked };
+        }
+      );
+
+      // Invalidate related queries
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.QUIZZES.bookmarked,
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZZES.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZZES.myQuizzes });
+
+      // Also invalidate library queries to update UI state across the app
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.LIBRARY.quizSets(),
+      });
+    },
+  });
+};
 
 // Get quizzes by tag
 export const useQuizzesByTag = (tag: string) => {

@@ -7,6 +7,7 @@ import { useQuizSets } from '@/services/features/library';
 
 import { FolderExplorer, FolderProvider } from '@/components/ui/folder';
 import { GridSkeletonLoader } from '@/components/ui/loaders';
+import { useToast } from '@/components/ui/toast';
 
 import { ROUTES } from '@/constants/routes';
 
@@ -15,12 +16,18 @@ import { QuizSetItem } from './components';
 export default function LibraryPage() {
   const searchParams = useSearchParams();
   const folderId = searchParams.get('folderId') || undefined;
+  const { toast } = useToast();
 
   const [currentFolderId, setCurrentFolderId] = useState<string | undefined>(
     folderId
   );
-  const { data: quizSets, isLoading: isQuizSetsLoading } =
-    useQuizSets(currentFolderId);
+  const {
+    data: quizSets,
+    isLoading: isQuizSetsLoading,
+    refetch,
+  } = useQuizSets(currentFolderId, {
+    refetchOnMount: true,
+  });
 
   // Update currentFolderId when URL parameter changes
   useEffect(() => {
@@ -30,6 +37,14 @@ export default function LibraryPage() {
   // Handle folder navigation
   const handleFolderClick = (folderId: string) => {
     setCurrentFolderId(folderId);
+  };
+
+  // Handle quiz deletion
+  const handleQuizDeleted = async () => {
+    toast({
+      title: 'Quiz moved to trash',
+    });
+    refetch();
   };
 
   return (
@@ -53,16 +68,20 @@ export default function LibraryPage() {
                 {quizSets?.results?.map((quizSet) => (
                   <QuizSetItem
                     key={quizSet?._id}
+                    id={quizSet?._id}
                     title={quizSet?.title}
-                    description={quizSet?.description}
+                    description={quizSet?.description || ''}
                     tags={quizSet?.tags || []}
-                    creator={{
-                      name: 'Pawan',
-                      isCurrentUser: true,
-                      shared: false,
-                    }}
-                    rating={quizSet?.rating}
-                    isBookmarked={quizSet?.isBookmarked}
+                    creator={
+                      quizSet?.creator || {
+                        name: 'User',
+                        isCurrentUser: true,
+                        shared: false,
+                      }
+                    }
+                    rating={quizSet?.rating || 0}
+                    isBookmarked={quizSet?.isBookmarked || false}
+                    onDelete={handleQuizDeleted}
                   />
                 ))}
               </div>

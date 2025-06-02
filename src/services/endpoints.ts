@@ -6,7 +6,7 @@
  */
 
 // Base API URL that can be environment-specific
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Type definitions for endpoint configurations
 export type EndpointConfig = {
@@ -119,6 +119,17 @@ export const FOLDER_ENDPOINTS = {
       method: 'GET',
     }) as EndpointConfig,
 
+  GET_BOOKMARKED_FOLDERS: {
+    url: `${API_BASE_URL}/folders/bookmarked`,
+    method: 'GET',
+  } as EndpointConfig,
+
+  BOOKMARK_FOLDER: (folderId: string) =>
+    ({
+      url: `${API_BASE_URL}/folders/${folderId}/bookmark`,
+      method: 'POST',
+    }) as EndpointConfig,
+
   CREATE_FOLDER: {
     url: `${API_BASE_URL}/folders`,
     method: 'POST',
@@ -179,6 +190,19 @@ export const QUIZ_ENDPOINTS = {
     url: `${API_BASE_URL}/quizzes/my-quizzes`,
     method: 'GET',
   } as EndpointConfig,
+
+  // GET bookmarked quizzes
+  GET_BOOKMARKED_QUIZZES: {
+    url: `${API_BASE_URL}/quizzes/bookmarked`,
+    method: 'GET',
+  } as EndpointConfig,
+
+  // Bookmark or unbookmark a quiz
+  BOOKMARK_QUIZ: (quizId: string) =>
+    ({
+      url: `${API_BASE_URL}/quizzes/${quizId}/bookmark`,
+      method: 'POST',
+    }) as EndpointConfig,
 
   // Search quizzes
   SEARCH_QUIZZES: {
@@ -282,7 +306,7 @@ export const CLASS_ENDPOINTS = {
   } as EndpointConfig,
 
   GET_MY_CLASSES: {
-    url: `${API_BASE_URL}/classes/my-classes`,
+    url: `${API_BASE_URL}/classes`,
     method: 'GET',
   } as EndpointConfig,
 
@@ -309,16 +333,82 @@ export const CLASS_ENDPOINTS = {
       method: 'DELETE',
     }) as EndpointConfig,
 
-  ADD_MEMBER: (classId: string) =>
+  JOIN_CLASS: {
+    url: `${API_BASE_URL}/classes/join`,
+    method: 'POST',
+  } as EndpointConfig,
+
+  LEAVE_CLASS: (classId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/leave`,
+      method: 'DELETE',
+    }) as EndpointConfig,
+
+  ADD_MEMBERS: (classId: string) =>
     ({
       url: `${API_BASE_URL}/classes/${classId}/members`,
       method: 'POST',
     }) as EndpointConfig,
 
-  REMOVE_MEMBER: (classId: string, memberId: string) =>
+  UPDATE_MEMBER_ACCESS: (classId: string, userId: string) =>
     ({
-      url: `${API_BASE_URL}/classes/${classId}/members/${memberId}`,
+      url: `${API_BASE_URL}/classes/${classId}/members/${userId}`,
+      method: 'PATCH',
+    }) as EndpointConfig,
+
+  REMOVE_MEMBER: (classId: string, userId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/members/${userId}`,
       method: 'DELETE',
+    }) as EndpointConfig,
+
+  ADD_QUIZ_TO_CLASS: (classId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/quizzes`,
+      method: 'POST',
+    }) as EndpointConfig,
+
+  REMOVE_QUIZ_FROM_CLASS: (classId: string, quizId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/quizzes/${quizId}`,
+      method: 'DELETE',
+    }) as EndpointConfig,
+
+  GET_CLASS_QUIZZES: (classId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/quizzes`,
+      method: 'GET',
+    }) as EndpointConfig,
+
+  ADD_FOLDER_TO_CLASS: (classId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/folders`,
+      method: 'POST',
+    }) as EndpointConfig,
+
+  REMOVE_FOLDER_FROM_CLASS: (classId: string, folderId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/folders/${folderId}`,
+      method: 'DELETE',
+    }) as EndpointConfig,
+
+  ARCHIVE_CLASS: (classId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/archive`,
+      method: 'PATCH',
+    }) as EndpointConfig,
+
+  RESTORE_CLASS: (classId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/restore`,
+      method: 'PATCH',
+    }) as EndpointConfig,
+
+  // Legacy endpoints for backward compatibility
+  ADD_MEMBER: (classId: string) =>
+    ({
+      url: `${API_BASE_URL}/classes/${classId}/members`,
+      method: 'POST',
     }) as EndpointConfig,
 
   GET_MEMBERS: (classId: string) =>
@@ -337,18 +427,6 @@ export const CLASS_ENDPOINTS = {
     url: `${API_BASE_URL}/classes/invitations/pending`,
     method: 'GET',
   } as EndpointConfig,
-
-  ADD_QUIZ_TO_CLASS: (classId: string, quizId: string) =>
-    ({
-      url: `${API_BASE_URL}/classes/${classId}/quizzes/${quizId}`,
-      method: 'POST',
-    }) as EndpointConfig,
-
-  GET_CLASS_QUIZZES: (classId: string) =>
-    ({
-      url: `${API_BASE_URL}/classes/${classId}/quizzes`,
-      method: 'GET',
-    }) as EndpointConfig,
 };
 
 // Email endpoints
@@ -407,4 +485,22 @@ export const UPLOAD_ENDPOINTS = {
       url: `${API_BASE_URL}/uploads/${key}`,
       method: 'DELETE',
     }) as EndpointConfig,
+};
+
+// Shared content endpoints
+export const SHARED_ENDPOINTS = {
+  GET_ALL_SHARED: {
+    url: `${API_BASE_URL}/shared`,
+    method: 'GET',
+  } as EndpointConfig,
+
+  GET_SHARED_FOLDERS: {
+    url: `${API_BASE_URL}/shared/folders`,
+    method: 'GET',
+  } as EndpointConfig,
+
+  GET_SHARED_QUIZZES: {
+    url: `${API_BASE_URL}/shared/quizzes`,
+    method: 'GET',
+  } as EndpointConfig,
 };

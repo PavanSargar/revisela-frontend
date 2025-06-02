@@ -23,3 +23,5 @@ export * from './features/quizzes';
 export * from './features/classes';
 export * from './features/emails';
 export * from './features/uploads';
+export * from './features/library';
+export * from './features/shared';

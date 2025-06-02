@@ -37,7 +37,7 @@ export const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
     button: 'h-10 w-32 rounded-md',
     input: 'h-10 w-full rounded-md',
     avatar: 'h-12 w-12 rounded-full',
-    folder: 'h-44 w-full rounded-lg',
+    folder: 'h-12 w-full rounded-lg',
     quiz: 'h-56 w-full rounded-lg',
   };
 
